@@ -14,14 +14,20 @@
 		"db:push": "turbo -F server db:push",
 		"db:studio": "turbo -F server db:studio",
 		"db:generate": "turbo -F server db:generate",
-		"db:migrate": "turbo -F server db:migrate"
+		"db:migrate": "turbo -F server db:migrate",
+		"cf:deploy": "turbo -F server deploy && turbo -F web deploy",
+		"cf:deploy:server": "turbo -F server deploy",
+		"cf:deploy:web": "turbo -F web deploy",
+		"cf:dev": "concurrently \"turbo -F server dev:wrangler\" \"turbo -F web pages:dev\"",
+		"cf:setup": "echo 'Voir CLOUDFLARE_DEPLOYMENT.md pour les instructions de configuration'"
 	},
 	"dependencies": {},
 	"devDependencies": {
 		"turbo": "^2.5.4",
 		"@biomejs/biome": "1.9.4",
 		"husky": "^9.1.7",
-		"lint-staged": "^15.5.0"
+		"lint-staged": "^15.5.0",
+		"concurrently": "^9.1.0"
 	},
 	"lint-staged": {
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [

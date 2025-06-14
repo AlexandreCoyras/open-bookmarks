@@ -11,7 +11,11 @@
 		"db:push": "drizzle-kit push",
 		"db:studio": "drizzle-kit studio",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate"
+		"db:migrate": "drizzle-kit migrate",
+		"deploy": "wrangler deploy",
+		"dev:wrangler": "wrangler dev",
+		"cf:login": "wrangler auth login",
+		"cf:d1:create": "wrangler d1 create open-bookmarks-db"
 	},
 	"dependencies": {
 		"dotenv": "^16.4.7",
@@ -31,6 +35,8 @@
 		"typescript": "^5.8.2",
 		"@types/bun": "^1.2.6",
 		"drizzle-kit": "^0.30.5",
-		"@types/pg": "^8.11.11"
+		"@types/pg": "^8.11.11",
+		"wrangler": "^3.78.12",
+		"@cloudflare/workers-types": "^4.20241218.0"
 	}
 }

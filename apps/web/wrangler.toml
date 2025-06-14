@@ -1,0 +1,8 @@
+name = "open-bookmarks-web"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "open-bookmarks-web"
+
+[env.staging]
+name = "open-bookmarks-web-staging" 

@@ -7,10 +7,10 @@ import { logger } from "hono/logger";
 import { stream } from "hono/streaming";
 import { auth } from "./lib/auth";
 import { createContext } from "./lib/context";
-import { env } from "./lib/env";
+import { type HonoEnv, env } from "./lib/env";
 import { appRouter } from "./routers/index";
 
-const app = new Hono();
+const app = new Hono<HonoEnv>();
 
 app.use(logger());
 app.use(
