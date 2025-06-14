@@ -1,17 +1,20 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../db";
+import type { drizzle } from "drizzle-orm/d1";
 import * as schema from "../db/schema/auth";
-import { env } from "./env";
 
-export const auth = betterAuth({
-	database: drizzleAdapter(db, {
-		provider: "pg",
-
-		schema: schema,
-	}),
-	trustedOrigins: [env.CORS_ORIGIN],
-	emailAndPassword: {
-		enabled: true,
-	},
-});
+export function createAuth(
+	database: ReturnType<typeof drizzle>,
+	corsOrigin: string,
+) {
+	return betterAuth({
+		database: drizzleAdapter(database, {
+			provider: "sqlite",
+			schema: schema,
+		}),
+		trustedOrigins: [corsOrigin],
+		emailAndPassword: {
+			enabled: true,
+		},
+	});
+}

@@ -1,30 +1,45 @@
 name = "open-bookmarks-api"
 main = "src/index.ts"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [build]
 command = "bun run build"
 
-# Variables d'environnement (à configurer dans le dashboard Cloudflare)
-[vars]
-CORS_ORIGIN = "https://your-app.pages.dev"
-BETTER_AUTH_URL = "https://open-bookmarks-api.your-subdomain.workers.dev"
+[dev]
+port = 3000
+ip = "127.0.0.1"
 
 # Secrets à configurer via wrangler secret put
-# wrangler secret put DATABASE_URL
-# wrangler secret put DATABASE_URL_POOLER  
 # wrangler secret put BETTER_AUTH_SECRET
-# wrangler secret put GOOGLE_GENERATIVE_AI_API_KEY
 
+# Base de données locale par défaut
 [[d1_databases]]
 binding = "DB"
-database_name = "open-bookmarks-db"
-database_id = "your-database-id"
+database_name = "open-bookmarks-local"
+database_id = "local"
+migrations_dir = "src/db/migrations"
 
 [env.production]
 name = "open-bookmarks-api"
-vars = { CORS_ORIGIN = "https://your-production-domain.com" }
+vars = { CORS_ORIGIN = "https://test-cloudflare.open-bookmarks.pages.dev", BETTER_AUTH_URL = "https://open-bookmarks-api.alexandrecoyras.workers.dev" }
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "open-bookmarks-d1"
+database_id = "469d1a1c-a7ba-4603-ab34-8046deefdeca"
+migrations_dir = "src/db/migrations"
+
+[env.development]
+name = "open-bookmarks-api-dev"
+vars = { CORS_ORIGIN = "http://localhost:3001", BETTER_AUTH_URL = "http://localhost:3000" }
+
+[[env.development.d1_databases]]
+binding = "DB"
+database_name = "open-bookmarks-local"
+database_id = "local"
+preview_database_id = "local"
+migrations_dir = "src/db/migrations"
 
 [env.staging]
 name = "open-bookmarks-api-staging"

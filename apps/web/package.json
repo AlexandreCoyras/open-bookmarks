@@ -4,14 +4,14 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "vite --port=3001",
+		"dev": "vite --port 3001",
 		"build": "vite build",
 		"serve": "vite preview",
 		"start": "vite",
 		"check-types": "tsc --noEmit",
 		"generate-pwa-assets": "pwa-assets-generator",
 		"deploy": "bun run build && wrangler pages deploy dist",
-		"pages:dev": "wrangler pages dev dist --port 3001"
+		"vite:dev": "wrangler pages dev dist --port 3001"
 	},
 	"devDependencies": {
 		"@tanstack/react-router-devtools": "^1.114.27",

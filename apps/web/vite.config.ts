@@ -1,6 +1,6 @@
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import tanstackRouter from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
@@ -8,7 +8,7 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
-		TanStackRouterVite({}),
+		tanstackRouter(),
 		react(),
 		VitePWA({
 			registerType: "autoUpdate",
@@ -37,13 +37,10 @@ export default defineConfig({
 		sourcemap: true,
 		rollupOptions: {
 			output: {
-				manualChunks: {
-					vendor: ["react", "react-dom"],
-					router: ["@tanstack/react-router"],
-					ui: [
-						"@radix-ui/react-dialog",
-						"@radix-ui/react-dropdown-menu",
-					],
+				manualChunks: (id) => {
+					if (id.includes("node_modules")) {
+						return "vendor";
+					}
 				},
 			},
 		},

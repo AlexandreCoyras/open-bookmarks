@@ -6,16 +6,16 @@
 		"build": "tsc && tsc-alias",
 		"check-types": "tsc --noEmit",
 		"compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
-		"dev": "bun run --hot src/index.ts",
+		"dev": "wrangler dev --local --env development",
+		"dev:remote": "wrangler dev --env development",
+		"dev:bun": "bun run --hot src/index.ts",
 		"start": "bun run dist/src/index.js",
-		"db:push": "drizzle-kit push",
-		"db:studio": "drizzle-kit studio",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate",
-		"deploy": "wrangler deploy",
-		"dev:wrangler": "wrangler dev",
-		"cf:login": "wrangler auth login",
-		"cf:d1:create": "wrangler d1 create open-bookmarks-db"
+		"db:apply:local": "wrangler d1 migrations apply DB --local --env development",
+		"db:apply:prod": "wrangler d1 migrations apply DB",
+		"db:list:local": "wrangler d1 migrations list DB --local --env development",
+		"db:list:prod": "wrangler d1 migrations list DB",
+		"deploy": "wrangler deploy"
 	},
 	"dependencies": {
 		"dotenv": "^16.4.7",
@@ -31,12 +31,13 @@
 		"better-auth": "^1.2.9"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20241218.0",
+		"@types/bun": "^1.2.6",
+		"@types/pg": "^8.11.11",
+		"better-sqlite3": "^11.10.0",
+		"drizzle-kit": "^0.30.5",
 		"tsc-alias": "^1.8.11",
 		"typescript": "^5.8.2",
-		"@types/bun": "^1.2.6",
-		"drizzle-kit": "^0.30.5",
-		"@types/pg": "^8.11.11",
-		"wrangler": "^3.78.12",
-		"@cloudflare/workers-types": "^4.20241218.0"
+		"wrangler": "^3.114.9"
 	}
 }

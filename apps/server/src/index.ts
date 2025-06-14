@@ -5,25 +5,42 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { stream } from "hono/streaming";
-import { auth } from "./lib/auth";
 import { createContext } from "./lib/context";
-import { type HonoEnv, env } from "./lib/env";
+import type { HonoEnv } from "./lib/env";
 import { appRouter } from "./routers/index";
 
 const app = new Hono<HonoEnv>();
 
 app.use(logger());
-app.use(
-	"/*",
-	cors({
-		origin: env.CORS_ORIGIN,
-		allowMethods: ["GET", "POST", "OPTIONS"],
-		allowHeaders: ["Content-Type", "Authorization"],
-		credentials: true,
-	}),
-);
 
-app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
+app.use("/*", async (c, next) => {
+	const corsOrigin = c.env.CORS_ORIGIN || "*";
+
+	const corsMiddleware = cors({
+		origin: (origin) => {
+			// En développement, accepter tous les origines
+			if (process.env.NODE_ENV === "development") {
+				return origin;
+			}
+
+			if (origin === corsOrigin) {
+				return origin;
+			}
+			return null;
+		},
+		allowMethods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+		allowHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+		credentials: true,
+	});
+
+	return corsMiddleware(c, next);
+});
+
+app.on(["POST", "GET"], "/api/auth/**", async (c) => {
+	const context = await createContext({ context: c });
+
+	return context.auth.handler(c.req.raw);
+});
 
 app.use(
 	"/trpc/*",
