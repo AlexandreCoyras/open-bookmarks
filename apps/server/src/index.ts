@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { google } from "@ai-sdk/google";
 import { trpcServer } from "@hono/trpc-server";
 import { streamText } from "ai";
@@ -8,6 +7,7 @@ import { logger } from "hono/logger";
 import { stream } from "hono/streaming";
 import { auth } from "./lib/auth";
 import { createContext } from "./lib/context";
+import { env } from "./lib/env";
 import { appRouter } from "./routers/index";
 
 const app = new Hono();
@@ -16,7 +16,7 @@ app.use(logger());
 app.use(
 	"/*",
 	cors({
-		origin: process.env.CORS_ORIGIN || "",
+		origin: env.CORS_ORIGIN,
 		allowMethods: ["GET", "POST", "OPTIONS"],
 		allowHeaders: ["Content-Type", "Authorization"],
 		credentials: true,
