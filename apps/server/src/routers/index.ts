@@ -11,6 +11,8 @@ export const appRouter = router({
 			user: ctx.session.user,
 		};
 	}),
+
 	todo: todoRouter,
 });
+
 export type AppRouter = typeof appRouter;

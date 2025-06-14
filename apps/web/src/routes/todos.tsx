@@ -66,7 +66,9 @@ function TodosRoute() {
 			<Card>
 				<CardHeader>
 					<CardTitle>Todo List</CardTitle>
-					<CardDescription>Manage your tasks efficiently</CardDescription>
+					<CardDescription>
+						Manage your tasks efficiently
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form
@@ -81,7 +83,9 @@ function TodosRoute() {
 						/>
 						<Button
 							type="submit"
-							disabled={createMutation.isPending || !newTodoText.trim()}
+							disabled={
+								createMutation.isPending || !newTodoText.trim()
+							}
 						>
 							{createMutation.isPending ? (
 								<Loader2 className="h-4 w-4 animate-spin" />
@@ -96,7 +100,9 @@ function TodosRoute() {
 							<Loader2 className="h-6 w-6 animate-spin" />
 						</div>
 					) : todos.data?.length === 0 ? (
-						<p className="py-4 text-center">No todos yet. Add one above!</p>
+						<p className="py-4 text-center">
+							No todos yet. Add one above!
+						</p>
 					) : (
 						<ul className="space-y-2">
 							{todos.data?.map((todo) => (
@@ -108,7 +114,10 @@ function TodosRoute() {
 										<Checkbox
 											checked={todo.completed}
 											onCheckedChange={() =>
-												handleToggleTodo(todo.id, todo.completed)
+												handleToggleTodo(
+													todo.id,
+													todo.completed,
+												)
 											}
 											id={`todo-${todo.id}`}
 										/>
@@ -122,7 +131,9 @@ function TodosRoute() {
 									<Button
 										variant="ghost"
 										size="icon"
-										onClick={() => handleDeleteTodo(todo.id)}
+										onClick={() =>
+											handleDeleteTodo(todo.id)
+										}
 										aria-label="Delete todo"
 									>
 										<Trash2 className="h-4 w-4" />

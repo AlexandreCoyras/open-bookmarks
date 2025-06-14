@@ -38,9 +38,13 @@ function RouteComponent() {
 							}`}
 						>
 							<p className="mb-1 font-semibold text-sm">
-								{message.role === "user" ? "You" : "AI Assistant"}
+								{message.role === "user"
+									? "You"
+									: "AI Assistant"}
 							</p>
-							<div className="whitespace-pre-wrap">{message.content}</div>
+							<div className="whitespace-pre-wrap">
+								{message.content}
+							</div>
 						</div>
 					))
 				)}

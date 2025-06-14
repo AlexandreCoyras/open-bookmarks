@@ -13,7 +13,9 @@ const router = createRouter({
 	context: { trpc, queryClient },
 	Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
 		return (
-			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+			<QueryClientProvider client={queryClient}>
+				{children}
+			</QueryClientProvider>
 		);
 	},
 });

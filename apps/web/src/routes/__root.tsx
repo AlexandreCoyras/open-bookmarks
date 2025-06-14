@@ -56,7 +56,10 @@ function RootComponent() {
 				<Toaster richColors />
 			</ThemeProvider>
 			<TanStackRouterDevtools position="bottom-left" />
-			<ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
+			<ReactQueryDevtools
+				position="bottom"
+				buttonPosition="bottom-right"
+			/>
 		</>
 	);
 }
