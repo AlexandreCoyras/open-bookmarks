@@ -1,5 +1,5 @@
 name = "open-bookmarks-web"
-compatibility_date = "2024-01-01"
+compatibility_date = "2025-06-15"
 
 [env.production]
 name = "open-bookmarks-web"
