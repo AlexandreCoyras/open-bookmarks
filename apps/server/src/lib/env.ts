@@ -10,6 +10,11 @@ const envSchema = z.object({
 
 	// API Keys
 	GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
+
+	CLOUDFLARE_API_TOKEN: z.string().min(1, "CLOUDFLARE_API_TOKEN est requis"),
+	CLOUDFLARE_ACCOUNT_ID: z
+		.string()
+		.min(1, "CLOUDFLARE_ACCOUNT_ID est requis"),
 });
 
 export type Env = z.infer<typeof envSchema>;
