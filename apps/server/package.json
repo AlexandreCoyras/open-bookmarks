@@ -15,7 +15,8 @@
 		"db:apply:prod": "wrangler d1 migrations apply DB",
 		"db:list:local": "wrangler d1 migrations list DB --local --env development",
 		"db:list:prod": "wrangler d1 migrations list DB",
-		"deploy": "wrangler deploy"
+		"deploy": "wrangler deploy",
+		"test": "bun test"
 	},
 	"dependencies": {
 		"@ai-sdk/google": "^1.2.3",

@@ -19,7 +19,10 @@ app.use("/*", async (c, next) => {
 	const corsMiddleware = cors({
 		origin: (origin) => {
 			// En développement, accepter tous les origines
-			if (process.env.NODE_ENV === "development") {
+			if (
+				process.env.NODE_ENV === "development" ||
+				process.env.NODE_ENV === "test"
+			) {
 				return origin;
 			}
 
