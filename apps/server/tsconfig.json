@@ -13,8 +13,7 @@
 		"outDir": "./dist",
 		"types": ["bun"],
 		"composite": true,
-		"jsx": "react-jsx",
-		"jsxImportSource": "hono/jsx"
+		"jsx": "react-jsx"
 	},
 	"tsc-alias": {
 		"resolveFullPaths": true

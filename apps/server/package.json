@@ -1,14 +1,14 @@
 {
 	"name": "server",
-	"main": "src/index.ts",
+	"main": "src/index.tsx",
 	"type": "module",
 	"scripts": {
 		"build": "tsc && tsc-alias",
 		"check-types": "tsc --noEmit",
-		"compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+		"compile": "bun build --compile --minify --sourcemap --bytecode src/index.tsx --outfile server",
 		"dev": "wrangler dev --local --env development",
 		"dev:remote": "wrangler dev --env development",
-		"dev:bun": "bun run --hot src/index.ts",
+		"dev:bun": "bun run --hot src/index.tsx",
 		"start": "bun run dist/src/index.js",
 		"db:generate": "drizzle-kit generate",
 		"db:apply:local": "wrangler d1 migrations apply DB --local --env development",
@@ -16,19 +16,23 @@
 		"db:list:local": "wrangler d1 migrations list DB --local --env development",
 		"db:list:prod": "wrangler d1 migrations list DB",
 		"deploy": "wrangler deploy",
-		"test": "bun test"
+		"email": "email dev --dir ./src/emails",
+		"email:build": "email build --dir ./src/emails --packageManager bun"
 	},
 	"dependencies": {
 		"@ai-sdk/google": "^1.2.3",
 		"@hono/trpc-server": "^0.3.4",
+		"@react-email/components": "^0.0.42",
 		"@trpc/client": "^11.0.0",
 		"@trpc/server": "^11.0.0",
 		"ai": "^4.3.16",
 		"better-auth": "^1.2.9",
-		"cloudflare": "^4.3.0",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.38.4",
 		"hono": "^4.7.6",
+		"pg": "^8.14.1",
+		"react-email": "^4.0.16",
+		"resend": "^4.6.0",
 		"zod": "^3.25.16"
 	},
 	"devDependencies": {
@@ -38,6 +42,6 @@
 		"drizzle-kit": "^0.30.5",
 		"tsc-alias": "^1.8.11",
 		"typescript": "^5.8.2",
-		"wrangler": "^4.20.0"
+		"wrangler": "^3.114.9"
 	}
 }

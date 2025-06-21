@@ -36,8 +36,12 @@ export default function SignInForm({
 						});
 						toast.success("Sign in successful");
 					},
-					onError: (error) => {
-						toast.error(error.error.message);
+					onError: (ctx) => {
+						if (ctx.error.status === 403) {
+							toast.info("Please verify your email first.");
+						}
+
+						toast.error(ctx.error.error.message);
 					},
 				},
 			);

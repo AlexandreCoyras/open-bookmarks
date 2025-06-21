@@ -11,7 +11,11 @@ export type CreateContextOptions = {
 export async function createContext({ context }: CreateContextOptions) {
 	const env = envSchema.parse(context.env);
 	const db = createDatabase(context.env.DB);
-	const auth = createAuth(db, context.env.CORS_ORIGIN);
+	const auth = createAuth(
+		db,
+		context.env.CORS_ORIGIN,
+		context.env.RESEND_API_KEY,
+	);
 	const session = await auth.api.getSession({
 		headers: context.req.raw.headers,
 	});

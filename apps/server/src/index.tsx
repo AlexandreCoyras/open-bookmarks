@@ -1,3 +1,5 @@
+import DefaultEmails from "@/emails/default-emails";
+import VercelInviteUserEmail from "@/emails/vercel-email";
 import { google } from "@ai-sdk/google";
 import { trpcServer } from "@hono/trpc-server";
 import { streamText } from "ai";
@@ -5,6 +7,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { stream } from "hono/streaming";
+import { Resend } from "resend";
 import { createContext } from "./lib/context";
 import type { HonoEnv } from "./lib/env";
 import { appRouter } from "./routers/index";
@@ -70,8 +73,41 @@ app.post("/ai", async (c) => {
 	return stream(c, (stream) => stream.pipe(result.toDataStream()));
 });
 
+app.post("/send/email", async (c) => {
+	const resend = new Resend(c.env.RESEND_API_KEY);
+
+	const data = await resend.emails.send({
+		from: "Acme <onboarding@resend.dev>",
+		to: ["maxence.amouroux@epitech.eu"],
+		subject: "Subscribe on my instagram",
+		react: <DefaultEmails firstName={"Michel"} />,
+	});
+
+	return c.json(data);
+});
+
+app.post("/send/email/vercel", async (c) => {
+	const resend = new Resend(c.env.RESEND_API_KEY);
+
+	const data = await resend.emails.send({
+		from: "Acme <onboarding@resend.dev>",
+		to: ["maxence.amouroux@epitech.eu"],
+		subject: "Subscribe on my instagram",
+		react: (
+			<VercelInviteUserEmail
+				username={"Max"}
+				teamName={"MaxTeam"}
+				invitedByUsername={"MaxTeam"}
+				invitedByEmail={"max@gmail.com"}
+			/>
+		),
+	});
+
+	return c.json(data);
+});
+
 app.get("/", (c) => {
-	return c.text("OK");
+	return c.text("cheval");
 });
 
 export default app;

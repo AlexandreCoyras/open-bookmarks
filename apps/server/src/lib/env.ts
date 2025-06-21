@@ -15,6 +15,8 @@ const envSchema = z.object({
 	CLOUDFLARE_ACCOUNT_ID: z
 		.string()
 		.min(1, "CLOUDFLARE_ACCOUNT_ID est requis"),
+
+	RESEND_API_KEY: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -22,6 +24,7 @@ export type Env = z.infer<typeof envSchema>;
 export interface HonoEnv {
 	Bindings: Env & {
 		DB: D1Database;
+		RESEND_API_KEY: string;
 		// Autres bindings possibles
 		// BUCKET?: R2Bucket;
 		// KV?: KVNamespace;
