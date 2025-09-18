@@ -1,0 +1,7 @@
+{
+  "folders": [
+    { "path": ".", "name": "🏠 root" },
+    { "path": "apps/server", "name": "🌐 server" },
+    { "path": "apps/web", "name": "🖥️ web" }
+  ]
+}
