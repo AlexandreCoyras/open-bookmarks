@@ -17,6 +17,7 @@ import "../index.css";
 export interface RouterAppContext {
 	trpc: typeof trpc;
 	queryClient: QueryClient;
+	hideHeader?: boolean;
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
@@ -41,6 +42,10 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 });
 
 function RootComponent() {
+	const hideHeader = useRouterState({
+		select: (s) => s.matches[s.matches.length - 1]?.context.hideHeader,
+	});
+
 	const isFetching = useRouterState({
 		select: (s) => s.isLoading,
 	});
@@ -50,7 +55,7 @@ function RootComponent() {
 			<HeadContent />
 			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 				<div className="grid h-svh grid-rows-[auto_1fr]">
-					<Header />
+					{!hideHeader && <Header />}
 					{isFetching ? <Loader /> : <Outlet />}
 				</div>
 				<Toaster richColors />

@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import type { AnySQLiteColumn } from "drizzle-orm/sqlite-core";
-import { user } from "./auth.js";
+import { user } from "./auth";
 
 export const bookmarkCollection = sqliteTable("bookmark_collection", {
 	id: text("id").primaryKey().notNull().default(sql`(uuid())`),

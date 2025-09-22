@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Send } from "lucide-react";
 import { useEffect, useRef } from "react";
 
-export const Route = createFileRoute("/ai")({
+export const Route = createFileRoute("/_app/ai")({
 	component: RouteComponent,
 });
 

@@ -15,7 +15,7 @@ import { useState } from "react";
 import { trpc } from "@/utils/trpc";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export const Route = createFileRoute("/todos")({
+export const Route = createFileRoute("/_app/todos")({
 	component: TodosRoute,
 });
 
@@ -119,10 +119,10 @@ function TodosRoute() {
 													todo.completed,
 												)
 											}
-											id={`todo-${todo.id}`}
+											id={"todo-${todo.id}"}
 										/>
 										<label
-											htmlFor={`todo-${todo.id}`}
+											htmlFor={"todo-${todo.id}"}
 											className={`${todo.completed ? "line-through" : ""}`}
 										>
 											{todo.text}

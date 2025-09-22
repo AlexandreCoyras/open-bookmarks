@@ -9,6 +9,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { useNavigate } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 
@@ -37,6 +38,27 @@ export default function UserMenu() {
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem>{session.user.email}</DropdownMenuItem>
+				<DropdownMenuItem asChild>
+					<Button
+						variant="link"
+						className="w-full"
+						onClick={async () => {
+							const { data, error } =
+								await authClient.requestPasswordReset({
+									email: session.user.email,
+									redirectTo:
+										"http://localhost:3001/reset-password",
+								});
+							if (error) {
+								toast.error(error.message);
+							} else {
+								toast.success("Reset password email sent");
+							}
+						}}
+					>
+						Reset Password
+					</Button>
+				</DropdownMenuItem>
 				<DropdownMenuItem asChild>
 					<Button
 						variant="destructive"
