@@ -16,7 +16,7 @@ public/sw*
 public/swe-worker*
 
 # drizzle
-drizzle/migrations/meta/
+# drizzle/migrations/meta/ must be tracked for drizzle-kit migrate to work
 
 # next-agents-md
 .next-docs/
