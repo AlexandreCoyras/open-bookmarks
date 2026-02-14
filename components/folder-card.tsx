@@ -46,7 +46,7 @@ export function FolderCard({
 
 	const content = (
 		<Card className="group relative">
-			<CardContent className="flex items-center gap-3 p-3">
+			<CardContent className="flex items-center gap-1.5 sm:gap-3 p-3">
 				<Icon
 					className="size-5 shrink-0"
 					style={{ color: folder.color ?? undefined }}
@@ -61,7 +61,7 @@ export function FolderCard({
 					<div className="flex items-center gap-1 shrink-0 text-muted-foreground">
 						<Globe className="size-3.5" />
 						{folder.viewCount != null && folder.viewCount > 0 && (
-							<span className="flex items-center gap-0.5 text-xs">
+							<span className="items-center gap-0.5 text-xs hidden sm:flex">
 								<Eye className="size-3" />
 								{folder.viewCount}
 							</span>

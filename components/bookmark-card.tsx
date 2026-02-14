@@ -56,10 +56,13 @@ export function BookmarkCard({
 }) {
 	const content = (
 		<Card
-			className={cn('group relative', selected && 'ring-2 ring-primary')}
+			className={cn(
+				'group relative overflow-hidden',
+				selected && 'ring-2 ring-primary',
+			)}
 			onClick={selectionMode ? onToggleSelect : undefined}
 		>
-			<CardContent className="flex items-center gap-3 p-3">
+			<CardContent className="flex items-center gap-3 p-3 min-w-0">
 				{selectionMode && (
 					selected ? (
 						<CheckSquare className="size-5 shrink-0 text-primary" />

@@ -44,7 +44,7 @@ export function SortableBookmark({
 	}
 
 	return (
-		<div ref={setNodeRef} style={style} {...attributes} {...(selectionMode ? {} : listeners)}>
+		<div ref={setNodeRef} style={style} className="min-w-0" {...attributes} {...(selectionMode ? {} : listeners)}>
 			<BookmarkCard
 				bookmark={bookmark}
 				onEdit={onEdit}

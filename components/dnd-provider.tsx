@@ -9,7 +9,7 @@ import {
 	type DragStartEvent,
 	KeyboardSensor,
 	type Modifier,
-	PointerSensor,
+	MouseSensor,
 	pointerWithin,
 	TouchSensor,
 	useSensor,
@@ -135,8 +135,8 @@ export function DndProvider({
 	}
 
 	const sensors = useSensors(
-		useSensor(PointerSensor, {
-			activationConstraint: { distance: 5 },
+		useSensor(MouseSensor, {
+			activationConstraint: { distance: 10 },
 		}),
 		useSensor(TouchSensor, {
 			activationConstraint: { delay: 500, tolerance: 10 },
