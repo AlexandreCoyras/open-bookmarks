@@ -4,6 +4,9 @@ node_modules/
 # next.js
 .next/
 
+# typescript
+*.tsbuildinfo
+
 # env
 .env
 .env.local
