@@ -34,7 +34,7 @@ export function PublicBreadcrumbNav({
 			<BreadcrumbList>
 				<BreadcrumbItem>
 					<BreadcrumbLink asChild>
-						<Link href={`/s/${slug}`}>
+						<Link href="/">
 							<Home className="size-4" />
 						</Link>
 					</BreadcrumbLink>

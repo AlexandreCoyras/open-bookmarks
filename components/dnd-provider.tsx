@@ -16,7 +16,6 @@ import {
 	useSensors,
 } from '@dnd-kit/core'
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { Folder } from 'lucide-react'
 import {
 	createContext,
 	type ReactNode,
@@ -28,6 +27,7 @@ import {
 import { toast } from 'sonner'
 import { BookmarkCard, type BookmarkData } from '@/components/bookmark-card'
 import { Card, CardContent } from '@/components/ui/card'
+import { getFolderIcon } from '@/lib/folder-icons'
 import {
 	useBookmarks,
 	useReorderBookmarks,
@@ -58,6 +58,7 @@ type ActiveDragItem =
 			folderId: string
 			folderName: string
 			folderColor: string | null
+			folderIcon: string | null
 	  }
 
 /**
@@ -153,6 +154,7 @@ export function DndProvider({
 				folderId: activeData.folderId,
 				folderName: activeData.folderName,
 				folderColor: activeData.folderColor,
+				folderIcon: activeData.folderIcon,
 			})
 		} else {
 			const bookmark = localItems.find((b) => b.id === event.active.id)
@@ -262,19 +264,24 @@ export function DndProvider({
 							/>
 						</div>
 					) : activeDragItem?.type === 'folder' ? (
-						<Card className="w-48 opacity-90">
-							<CardContent className="flex items-center gap-3 p-2">
-								<Folder
-									className="size-4 shrink-0"
-									style={{
-										color: activeDragItem.folderColor ?? undefined,
-									}}
-								/>
-								<span className="font-medium text-sm truncate">
-									{activeDragItem.folderName}
-								</span>
-							</CardContent>
-						</Card>
+						(() => {
+							const DragIcon = getFolderIcon(activeDragItem.folderIcon)
+							return (
+								<Card className="w-48 opacity-90">
+									<CardContent className="flex items-center gap-3 p-2">
+										<DragIcon
+											className="size-4 shrink-0"
+											style={{
+												color: activeDragItem.folderColor ?? undefined,
+											}}
+										/>
+										<span className="font-medium text-sm truncate">
+											{activeDragItem.folderName}
+										</span>
+									</CardContent>
+								</Card>
+							)
+						})()
 					) : null}
 				</DragOverlay>
 			</DndContext>

@@ -66,6 +66,7 @@ export function FolderContent({ id }: { id: string }) {
 	async function handleEditFolder(data: {
 		name: string
 		color?: string
+		icon?: string | null
 		parentId?: string
 	}) {
 		await updateFolder.mutateAsync({ id, ...data })
@@ -83,6 +84,7 @@ export function FolderContent({ id }: { id: string }) {
 	async function handleCreateSubfolder(data: {
 		name: string
 		color?: string
+		icon?: string | null
 		parentId?: string
 	}) {
 		await createFolder.mutateAsync({ ...data, parentId: id })

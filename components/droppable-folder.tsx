@@ -32,6 +32,7 @@ export function DroppableFolder({
 			folderId: folder.id,
 			folderName: folder.name,
 			folderColor: folder.color,
+			folderIcon: folder.icon,
 		},
 	})
 

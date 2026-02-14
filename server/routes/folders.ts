@@ -49,16 +49,16 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 		async ({ user, params }) => {
 			const result = await db.execute(sql`
 				WITH RECURSIVE ancestors AS (
-					SELECT id, name, parent_id, color, 0 AS depth
+					SELECT id, name, parent_id, color, icon, 0 AS depth
 					FROM folder
 					WHERE id = ${params.id} AND user_id = ${user.id}
 					UNION ALL
-					SELECT f.id, f.name, f.parent_id, f.color, a.depth + 1
+					SELECT f.id, f.name, f.parent_id, f.color, f.icon, a.depth + 1
 					FROM folder f
 					JOIN ancestors a ON f.id = a.parent_id
 					WHERE f.user_id = ${user.id} AND a.depth < 20
 				)
-				SELECT id, name, parent_id AS "parentId", color FROM ancestors ORDER BY depth DESC
+				SELECT id, name, parent_id AS "parentId", color, icon FROM ancestors ORDER BY depth DESC
 			`)
 
 			return result.rows as {
@@ -66,6 +66,7 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 				name: string
 				parentId: string | null
 				color: string | null
+				icon: string | null
 			}[]
 		},
 		{
@@ -81,6 +82,7 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 				.values({
 					name: body.name,
 					color: body.color,
+					icon: body.icon,
 					parentId: body.parentId,
 					userId: user.id,
 					position: body.position ?? 0,
@@ -94,6 +96,7 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 			body: t.Object({
 				name: t.String(),
 				color: t.Optional(t.String()),
+				icon: t.Optional(t.String()),
 				parentId: t.Optional(t.String()),
 				position: t.Optional(t.Number()),
 			}),
@@ -118,6 +121,7 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 			body: t.Object({
 				name: t.Optional(t.String()),
 				color: t.Optional(t.String()),
+				icon: t.Optional(t.Nullable(t.String())),
 				parentId: t.Optional(t.Nullable(t.String())),
 				position: t.Optional(t.Number()),
 				publicSlug: t.Optional(t.Nullable(t.String())),

@@ -47,10 +47,14 @@ export function useCreateFolder() {
 		mutationFn: async (body: {
 			name: string
 			color?: string
+			icon?: string | null
 			parentId?: string
 			position?: number
 		}) => {
-			const { data, error } = await api.api.folders.post(body)
+			const { data, error } = await api.api.folders.post({
+				...body,
+				icon: body.icon ?? undefined,
+			})
 			if (error) throw error
 			return data
 		},
@@ -73,6 +77,7 @@ export function useUpdateFolder() {
 			id: string
 			name?: string
 			color?: string
+			icon?: string | null
 			parentId?: string | null
 			position?: number
 			publicSlug?: string | null

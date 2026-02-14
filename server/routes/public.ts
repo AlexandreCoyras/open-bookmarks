@@ -12,6 +12,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
 					id: folder.id,
 					name: folder.name,
 					color: folder.color,
+					icon: folder.icon,
 					parentId: folder.parentId,
 					publicSlug: folder.publicSlug,
 					owner: {
@@ -48,6 +49,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
 					id: folder.id,
 					name: folder.name,
 					color: folder.color,
+					icon: folder.icon,
 					parentId: folder.parentId,
 					position: folder.position,
 				})
@@ -116,16 +118,16 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
 
 			const result = await db.execute(sql`
 				WITH RECURSIVE ancestors AS (
-					SELECT id, name, parent_id, color, 0 AS depth
+					SELECT id, name, parent_id, color, icon, 0 AS depth
 					FROM folder
 					WHERE id = ${query.folderId} AND user_id = ${root.userId}
 					UNION ALL
-					SELECT f.id, f.name, f.parent_id, f.color, a.depth + 1
+					SELECT f.id, f.name, f.parent_id, f.color, f.icon, a.depth + 1
 					FROM folder f
 					JOIN ancestors a ON f.id = a.parent_id
 					WHERE f.user_id = ${root.userId} AND a.depth < 20
 				)
-				SELECT id, name, parent_id AS "parentId", color FROM ancestors ORDER BY depth DESC
+				SELECT id, name, parent_id AS "parentId", color, icon FROM ancestors ORDER BY depth DESC
 			`)
 
 			return result.rows as {
@@ -133,6 +135,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
 				name: string
 				parentId: string | null
 				color: string | null
+				icon: string | null
 			}[]
 		},
 		{

@@ -65,6 +65,7 @@ export const folder = pgTable(
 			.$defaultFn(() => crypto.randomUUID()),
 		name: text('name').notNull(),
 		color: text('color'),
+		icon: text('icon'),
 		parentId: text('parent_id'),
 		userId: text('user_id')
 			.notNull()

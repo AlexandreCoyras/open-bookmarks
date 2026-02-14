@@ -1,6 +1,6 @@
 'use client'
 
-import { Folder, Globe, MoreVertical, Pencil, Trash2 } from 'lucide-react'
+import { Globe, MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -16,11 +16,13 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { getFolderIcon } from '@/lib/folder-icons'
 
 export type FolderData = {
 	id: string
 	name: string
 	color: string | null
+	icon: string | null
 	parentId: string | null
 	position: number
 	publicSlug?: string | null
@@ -39,10 +41,12 @@ export function FolderCard({
 	readOnly?: boolean
 	href?: string
 }) {
+	const Icon = getFolderIcon(folder.icon)
+
 	const content = (
 		<Card className="group relative">
 			<CardContent className="flex items-center gap-3 p-3">
-				<Folder
+				<Icon
 					className="size-5 shrink-0"
 					style={{ color: folder.color ?? undefined }}
 				/>

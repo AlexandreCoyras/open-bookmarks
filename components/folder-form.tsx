@@ -2,6 +2,7 @@
 
 import { type FormEvent, useEffect, useState } from 'react'
 import type { FolderData } from '@/components/folder-card'
+import { IconPicker } from '@/components/icon-picker'
 import { Button } from '@/components/ui/button'
 import {
 	Dialog,
@@ -25,7 +26,12 @@ const FOLDER_COLORS = [
 type FolderFormProps = {
 	open: boolean
 	onOpenChange: (open: boolean) => void
-	onSubmit: (data: { name: string; color?: string; parentId?: string }) => void
+	onSubmit: (data: {
+		name: string
+		color?: string
+		icon?: string | null
+		parentId?: string
+	}) => void
 	defaultValues?: Partial<FolderData>
 	loading?: boolean
 }
@@ -39,11 +45,13 @@ export function FolderForm({
 }: FolderFormProps) {
 	const [name, setName] = useState('')
 	const [color, setColor] = useState<string | null>(null)
+	const [icon, setIcon] = useState<string | null>(null)
 
 	useEffect(() => {
 		if (open) {
 			setName(defaultValues?.name ?? '')
 			setColor(defaultValues?.color ?? null)
+			setIcon(defaultValues?.icon ?? null)
 		}
 	}, [open, defaultValues])
 
@@ -52,6 +60,7 @@ export function FolderForm({
 		onSubmit({
 			name,
 			color: color ?? undefined,
+			icon,
 			parentId: defaultValues?.parentId ?? undefined,
 		})
 	}
@@ -95,6 +104,7 @@ export function FolderForm({
 							))}
 						</div>
 					</div>
+					<IconPicker value={icon} onChange={setIcon} />
 					<div className="flex justify-end gap-2">
 						<Button
 							type="button"

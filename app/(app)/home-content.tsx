@@ -35,7 +35,11 @@ export function HomeContent() {
 		toast.success('Favori ajoute')
 	}
 
-	async function handleCreateFolder(data: { name: string; color?: string }) {
+	async function handleCreateFolder(data: {
+		name: string
+		color?: string
+		icon?: string | null
+	}) {
 		await createFolder.mutateAsync(data)
 		setFolderFormOpen(false)
 		toast.success('Dossier cree')
