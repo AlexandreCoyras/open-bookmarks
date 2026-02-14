@@ -13,7 +13,15 @@
       "Bash(bun lint:*)",
       "Bash(bun check:*)",
       "Bash(bun build:*)",
-      "Bash(bun run build:*)"
+      "Bash(bun run build:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(bunx shadcn@latest add:*)",
+      "Bash(bun db:generate:*)",
+      "Bash(bun db:migrate:*)",
+      "Bash(bunx tsc:*)"
     ]
   }
 }
