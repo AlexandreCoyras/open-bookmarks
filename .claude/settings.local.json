@@ -23,7 +23,8 @@
       "Bash(bun db:migrate:*)",
       "Bash(bunx tsc:*)",
       "Bash(bun run lint:*)",
-      "Bash(bun pm:*)"
+      "Bash(bun pm:*)",
+      "Bash(cat:*)"
     ]
   }
 }

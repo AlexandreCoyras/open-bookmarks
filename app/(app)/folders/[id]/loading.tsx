@@ -1,4 +1,4 @@
-import { FolderPlus, Pencil, Plus, Trash2 } from 'lucide-react'
+import { FolderPlus, Globe, Pencil, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -18,6 +18,13 @@ export default function FolderLoading() {
 					<Button size="sm" disabled>
 						<Plus className="mr-1 size-4" />
 						Ajouter un favori
+					</Button>
+					<Button
+						size="icon-sm"
+						variant="ghost"
+						disabled
+					>
+						<Globe className="size-4" />
 					</Button>
 					<Button size="icon-sm" variant="ghost" disabled>
 						<Pencil className="size-4" />
