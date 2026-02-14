@@ -75,6 +75,7 @@ export function useUpdateFolder() {
 			color?: string
 			parentId?: string | null
 			position?: number
+			publicSlug?: string | null
 		}) => {
 			const { data, error } = await api.api.folders({ id }).patch(body)
 			if (error) throw error

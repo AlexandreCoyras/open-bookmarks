@@ -70,6 +70,7 @@ export const folder = pgTable(
 			.notNull()
 			.references(() => user.id, { onDelete: 'cascade' }),
 		position: integer('position').notNull().default(0),
+		publicSlug: text('public_slug').unique(),
 		createdAt: timestamp('created_at').notNull().defaultNow(),
 		updatedAt: timestamp('updated_at')
 			.notNull()

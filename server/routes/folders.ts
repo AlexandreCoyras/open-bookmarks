@@ -120,6 +120,7 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 				color: t.Optional(t.String()),
 				parentId: t.Optional(t.Nullable(t.String())),
 				position: t.Optional(t.Number()),
+				publicSlug: t.Optional(t.Nullable(t.String())),
 			}),
 		},
 	)

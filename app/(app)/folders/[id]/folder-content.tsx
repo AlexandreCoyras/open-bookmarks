@@ -10,6 +10,7 @@ import { BreadcrumbNav } from '@/components/breadcrumb-nav'
 import { DndProvider } from '@/components/dnd-provider'
 import { FolderForm } from '@/components/folder-form'
 import { FolderList } from '@/components/folder-list'
+import { ShareFolderDialog } from '@/components/share-folder-dialog'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -97,6 +98,7 @@ export function FolderContent({ id }: { id: string }) {
 						Sous-dossier
 					</Button>
 					<AddBookmarkButton folderId={id} />
+					<ShareFolderDialog folderId={id} publicSlug={folder.publicSlug} />
 					<Button
 						size="icon-sm"
 						variant="ghost"

@@ -15,6 +15,13 @@
       "when": 1771073188333,
       "tag": "0001_green_abomination",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771091718401,
+      "tag": "0002_grey_obadiah_stane",
+      "breakpoints": true
     }
   ]
 }
