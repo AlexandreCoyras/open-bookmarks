@@ -26,7 +26,8 @@
       "Bash(bun pm:*)",
       "Bash(cat:*)",
       "Bash(ffmpeg:*)",
-      "Bash(magick:*)"
+      "Bash(magick:*)",
+      "Bash(grep:*)"
     ]
   }
 }

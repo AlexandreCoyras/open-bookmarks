@@ -7,6 +7,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 			<AppHeader />
 			<OfflineBanner />
 			<main className="p-4">{children}</main>
+			<footer className="fixed bottom-2 right-3 text-xs text-muted-foreground">
+				Made by{' '}
+				<a
+					href="https://github.com/AlexandreCoyras"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="underline hover:text-foreground transition-colors"
+				>
+					AlexandreCoyras
+				</a>
+			</footer>
 		</div>
 	)
 }

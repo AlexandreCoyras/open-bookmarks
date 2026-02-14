@@ -9,19 +9,19 @@ Open Bookmarks — application web PWA pour sauvegarder et organiser ses favoris
 ## Tech Stack
 
 - **Runtime/PM:** Bun (pas Node.js, pas npm/yarn/pnpm)
-- **Frontend:** Next.js (App Router), React Query (`@tanstack/react-query`), dnd-kit (`@dnd-kit/core`, `@dnd-kit/sortable`), shadcn/ui
-- **Backend:** Elysia avec adapter Next.js (`@elysiajs/nextjs`) — les routes API vivent dans `app/api/[...slugs]/route.ts`
+- **Frontend:** Next.js 16 (App Router), React Query (`@tanstack/react-query`), dnd-kit (`@dnd-kit/core`, `@dnd-kit/sortable`), shadcn/ui, Tailwind CSS v4
+- **Backend:** Elysia avec adapter Next.js (`@elysiajs/nextjs`) — les routes API vivent dans `app/api/[[...slugs]]/route.ts`
 - **Type safety client-serveur:** Eden (`@elysiajs/eden`) — client RPC dont les types sont inférés depuis le schéma Elysia
 - **Base de données:** PostgreSQL (Neon), Drizzle ORM — schéma dans `drizzle/schema.ts`
-- **Auth:** Better Auth — sessions et comptes stockés en PostgreSQL via Drizzle
+- **Auth:** Better Auth — email/password + GitHub OAuth, sessions en PostgreSQL via Drizzle
 - **Hosting:** Vercel (front + API), Neon (DB)
-- **Linter/Formatter:** Biome (pas ESLint, pas Prettier)
-- **PWA:** Service worker pour offline, manifest pour installation
+- **Linter/Formatter:** Biome (pas ESLint, pas Prettier) — tabs, single quotes, no semicolons
+- **PWA:** Serwist (service worker) + IndexedDB persistence (idb-keyval)
 
 ## Commands
 
 ```bash
-bun dev              # Dev server
+bun dev              # Dev server (Turbopack)
 bun build            # Production build
 bun lint             # Lint (Biome)
 bun format           # Format (Biome)
@@ -34,14 +34,88 @@ bun test             # Tests
 
 ## Architecture
 
+### Répertoires
+
 - `app/` — Next.js App Router (layouts, pages, route handlers)
-  - `app/api/[...slugs]/route.ts` — point d'entrée unique vers Elysia
+  - `app/api/[[...slugs]]/route.ts` — catch-all route handler → Elysia
   - `app/(auth)/` — routes publiques (login, register)
-  - `app/(app)/` — routes protégées
+  - `app/(app)/` — routes protégées (home, folders/[id])
+  - `app/(public)/s/[slug]/` — vues publiques de dossiers partagés
+  - `app/sw.ts` — source du service worker (compilé par Serwist)
 - `server/` — instance Elysia, routes API, middlewares
-- `lib/` — code partagé (client Eden, config auth, utils)
+  - `server/app.ts` — composition des routes avec prefix `/api`
+  - `server/auth-middleware.ts` — plugin auth + macro `auth: true`
+  - `server/routes/` — bookmarks, folders, import, public
+- `lib/` — code partagé
+  - `lib/eden.ts` — client Eden typé (inféré depuis `server/app.ts`)
+  - `lib/auth.ts` / `auth-client.ts` / `auth-server.ts` — config Better Auth
+  - `lib/db.ts` — client Drizzle (Neon HTTP driver)
+  - `lib/hooks/` — React Query hooks (use-bookmarks, use-folders, use-import, use-public-folders, use-online-status)
+  - `lib/get-query-client.ts` — factory React Query (offlineFirst, 24h gcTime)
+  - `lib/query-persister.ts` — persistance IndexedDB via idb-keyval
+  - `lib/import/parse-bookmarks-html.ts` — parser HTML Netscape (Chrome/Firefox)
 - `drizzle/` — schéma DB et migrations
-- `components/` — composants React
+- `components/` — composants React (UI feature components + `ui/` shadcn primitives)
+
+### Base de données
+
+Tables principales : `user`, `session`, `account`, `verification` (Better Auth) + `folder`, `bookmark`.
+
+- **folder** : hiérarchie imbriquée via `parentId` (self-reference), `position` pour le tri, `publicSlug` (unique) pour le partage public, `color` (hex) pour l'icône
+- **bookmark** : lié à `folder` via `folderId` (SET NULL on delete), `position` pour le tri, `favicon` (URL Google favicons API)
+- Index composites : `(userId, parentId)` sur folders, `(userId, folderId)` sur bookmarks
+- Requêtes récursives (CTEs PostgreSQL) pour breadcrumbs et suppression en cascade de dossiers
+
+### Routes API (Elysia)
+
+Toutes préfixées `/api`. Les routes publiques (`/api/public/*`) n'ont pas d'auth. Les autres utilisent le macro `auth: true`.
+
+- `GET/POST /bookmarks`, `PATCH/DELETE /bookmarks/:id`, `PUT /bookmarks/reorder`
+- `GET/POST /folders`, `GET/PATCH/DELETE /folders/:id`, `GET /folders/:id/breadcrumb`, `PUT /folders/reorder`
+- `POST /import/bookmarks` — import HTML (chunked inserts, 500/batch)
+- `GET /public/folders/:slug` + subfolders, bookmarks, breadcrumb
+
+### Auth Flow
+
+1. `middleware.ts` vérifie le cookie `better-auth.session_token` → redirige vers `/login` si absent
+2. Côté serveur API : macro `auth: true` résout la session depuis les headers, injecte `user`/`session` dans le contexte
+3. Côté client : `useSession()`, `signIn()`, `signOut()`, `signUp()` depuis `lib/auth-client.ts`
+
+### Data Fetching & Offline
+
+- **Eden + React Query** : toutes les requêtes passent par le client Eden typé + hooks custom dans `lib/hooks/`
+- **Query keys** : convention `['resource', id ?? 'root']`
+- **Mutations optimistes** : `onMutate` met à jour le cache immédiatement, `onError` rollback, `onSettled` invalidation
+- **Server-side prefetch** : dans les `page.tsx`, prefetch Drizzle direct → `HydrationBoundary` + `dehydrate()`
+- **Persistence** : React Query → IndexedDB (idb-keyval, throttle 1s), seules les queries réussies sont persistées
+- **Service Worker** : NetworkFirst pour les APIs (timeout 10s, cache 24h, max 128 entrées), precache pour les assets statiques
+- **Offline banner** : `useOnlineStatus()` hook basé sur `useSyncExternalStore`
+
+### Drag-and-Drop (dnd-kit)
+
+`DndProvider` centralise la logique dans `components/dnd-provider.tsx` :
+- Bookmark ↔ Bookmark (réordonnement), Bookmark → Folder/Breadcrumb (déplacement), Folder → Folder
+- État local synchronisé avec le cache React Query, mutations serveur après drop
+- Touch support (250ms delay), keyboard support via `sortableKeyboardCoordinates`
+
+### Partage public
+
+- Toggle dans `ShareFolderDialog` → génère un `publicSlug` (10 chars, crypto.randomUUID)
+- Routes publiques : `/s/{slug}` avec navigation imbriquée, lecture seule, info du propriétaire
+- Hooks dédiés : `usePublicFolder()`, `usePublicBookmarks()`, `usePublicSubfolders()`
+
+## Environment Variables
+
+```bash
+DATABASE_URL=            # Neon PostgreSQL (avec ?sslmode=require)
+BETTER_AUTH_SECRET=      # Min 32 chars, encryption des sessions
+BETTER_AUTH_URL=         # URL de l'app (http://localhost:3000 en dev)
+NEXT_PUBLIC_APP_URL=     # URL publique (même valeur que BETTER_AUTH_URL)
+GITHUB_CLIENT_ID=        # (optionnel) OAuth GitHub
+GITHUB_CLIENT_SECRET=    # (optionnel) OAuth GitHub
+```
+
+Fichier local : `.env.local` (gitignored). Pour les migrations : `bun --env-file .env.local drizzle-kit migrate`.
 
 ## Conventions
 
@@ -50,7 +124,9 @@ bun test             # Tests
 - Data fetching côté client : Eden + React Query (pas de `fetch` brut)
 - Utiliser Biome pour le formatage et le linting (pas ESLint/Prettier)
 - Ne pas ajouter "Co-Authored-By" dans les messages de commit
-
+- Composants UI : shadcn/ui (style New York, couleur neutral, icônes Lucide)
+- Styling : Tailwind CSS v4 via PostCSS, utilitaire `cn()` pour les classes conditionnelles
+- Langue de l'UI : français (`lang="fr"` dans le root layout)
 
 Use Context7 to get the latest docs if needed
 
