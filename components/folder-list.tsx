@@ -97,8 +97,8 @@ export function FolderList({ parentId }: { parentId?: string }) {
 					<AlertDialogHeader>
 						<AlertDialogTitle>Supprimer ce dossier ?</AlertDialogTitle>
 						<AlertDialogDescription>
-							Les sous-dossiers seront egalement supprimes. Les favoris contenus
-							seront deplaces a la racine.
+							Les sous-dossiers et tous les favoris contenus seront
+							definitivement supprimes.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>

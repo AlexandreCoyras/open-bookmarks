@@ -112,8 +112,7 @@ async function insertInChunks<T extends Record<string, unknown>>(
 ) {
 	for (let i = 0; i < values.length; i += CHUNK_SIZE) {
 		const chunk = values.slice(i, i + CHUNK_SIZE)
-		// biome-ignore lint/suspicious/noExplicitAny: Drizzle insert typing
-		await db.insert(table).values(chunk as any)
+		await db.insert(table).values(chunk)
 	}
 }
 
@@ -144,7 +143,11 @@ export const importRoutes = new Elysia({ prefix: '/import' })
 
 			tree.name = `Import Chrome - ${dateStr}`
 
-			const { folders, bookmarks } = flattenTree(tree, user.id, null)
+			const { folders, bookmarks } = flattenTree(
+				tree,
+				user.id,
+				body.folderId ?? null,
+			)
 
 			await insertInChunks(folder, folders)
 			await insertInChunks(bookmark, bookmarks)
@@ -158,6 +161,7 @@ export const importRoutes = new Elysia({ prefix: '/import' })
 			auth: true,
 			body: t.Object({
 				html: t.String({ maxLength: 10 * 1024 * 1024 }),
+				folderId: t.Optional(t.String()),
 			}),
 		},
 	)

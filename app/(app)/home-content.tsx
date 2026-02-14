@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { BookmarkForm } from '@/components/bookmark-form'
 import { BookmarkList } from '@/components/bookmark-list'
+import { BookmarksAreaContextMenu } from '@/components/bookmarks-area-context-menu'
 import { DndProvider } from '@/components/dnd-provider'
 import { FolderForm } from '@/components/folder-form'
 import { FolderList } from '@/components/folder-list'
@@ -41,7 +42,7 @@ export function HomeContent() {
 	}
 
 	async function handleImport(html: string) {
-		const result = await importBookmarks.mutateAsync(html)
+		const result = await importBookmarks.mutateAsync({ html })
 		setImportDialogOpen(false)
 		toast.success(
 			`${result.bookmarksCreated} favoris et ${result.foldersCreated} dossiers importes`,
@@ -76,13 +77,21 @@ export function HomeContent() {
 				</div>
 			</div>
 
-			<DndProvider>
-				<FolderList />
+			<BookmarksAreaContextMenu
+				onNewFolder={() => setFolderFormOpen(true)}
+				onAddBookmark={() => setBookmarkFormOpen(true)}
+				onImport={() => setImportDialogOpen(true)}
+			>
+				<div className="min-h-[calc(100vh-12rem)] space-y-6">
+					<DndProvider>
+						<FolderList />
 
-				<Separator className="my-6" />
+						<Separator className="my-6" />
 
-				<BookmarkList />
-			</DndProvider>
+						<BookmarkList />
+					</DndProvider>
+				</div>
+			</BookmarksAreaContextMenu>
 
 			<BookmarkForm
 				open={bookmarkFormOpen}

@@ -84,6 +84,7 @@ export function useUpdateFolder() {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['folders'] })
 			queryClient.invalidateQueries({ queryKey: ['folder'] })
+			queryClient.invalidateQueries({ queryKey: ['breadcrumb'] })
 		},
 	})
 }

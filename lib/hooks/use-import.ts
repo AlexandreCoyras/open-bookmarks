@@ -5,9 +5,16 @@ export function useImportBookmarks() {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: async (html: string) => {
+		mutationFn: async ({
+			html,
+			folderId,
+		}: {
+			html: string
+			folderId?: string
+		}) => {
 			const { data, error } = await api.api.import.bookmarks.post({
 				html,
+				folderId,
 			})
 			if (error) throw error
 			return data

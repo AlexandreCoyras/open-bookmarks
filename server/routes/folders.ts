@@ -127,12 +127,35 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 	.delete(
 		'/:id',
 		async ({ user, params, status }) => {
-			const [deleted] = await db
-				.delete(folder)
-				.where(and(eq(folder.id, params.id), eq(folder.userId, user.id)))
-				.returning()
+			// Collect the target folder + all descendant folders recursively
+			const descendants = await db.execute(sql`
+				WITH RECURSIVE tree AS (
+					SELECT id FROM folder
+					WHERE id = ${params.id} AND user_id = ${user.id}
+					UNION ALL
+					SELECT f.id FROM folder f
+					JOIN tree t ON f.parent_id = t.id
+					WHERE f.user_id = ${user.id}
+				)
+				SELECT id FROM tree
+			`)
 
-			if (!deleted) return status(404)
+			const folderIds = descendants.rows.map((r) => (r as { id: string }).id)
+			if (folderIds.length === 0) return status(404)
+
+			// Delete all bookmarks in those folders, then the folders themselves
+			await db.execute(sql`
+				DELETE FROM bookmark WHERE folder_id IN (${sql.join(
+					folderIds.map((id) => sql`${id}`),
+					sql`, `,
+				)})
+			`)
+			await db.execute(sql`
+				DELETE FROM folder WHERE id IN (${sql.join(
+					folderIds.map((id) => sql`${id}`),
+					sql`, `,
+				)}) AND user_id = ${user.id}
+			`)
 
 			return { success: true }
 		},

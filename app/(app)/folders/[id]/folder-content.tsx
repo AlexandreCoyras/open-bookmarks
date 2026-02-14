@@ -1,15 +1,17 @@
 'use client'
 
-import { FolderPlus, Pencil, Trash2 } from 'lucide-react'
+import { FolderPlus, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { AddBookmarkButton } from '@/components/add-bookmark-button'
+import { BookmarkForm } from '@/components/bookmark-form'
 import { BookmarkList } from '@/components/bookmark-list'
+import { BookmarksAreaContextMenu } from '@/components/bookmarks-area-context-menu'
 import { BreadcrumbNav } from '@/components/breadcrumb-nav'
 import { DndProvider } from '@/components/dnd-provider'
 import { FolderForm } from '@/components/folder-form'
 import { FolderList } from '@/components/folder-list'
+import { ImportDialog } from '@/components/import-dialog'
 import { ShareFolderDialog } from '@/components/share-folder-dialog'
 import {
 	AlertDialog,
@@ -24,12 +26,14 @@ import {
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCreateBookmark } from '@/lib/hooks/use-bookmarks'
 import {
 	useCreateFolder,
 	useDeleteFolder,
 	useFolder,
 	useUpdateFolder,
 } from '@/lib/hooks/use-folders'
+import { useImportBookmarks } from '@/lib/hooks/use-import'
 
 export function FolderContent({ id }: { id: string }) {
 	const router = useRouter()
@@ -37,10 +41,14 @@ export function FolderContent({ id }: { id: string }) {
 	const updateFolder = useUpdateFolder()
 	const deleteFolder = useDeleteFolder()
 	const createFolder = useCreateFolder()
+	const createBookmark = useCreateBookmark()
+	const importBookmarks = useImportBookmarks()
 
 	const [editOpen, setEditOpen] = useState(false)
 	const [deleteOpen, setDeleteOpen] = useState(false)
 	const [newFolderOpen, setNewFolderOpen] = useState(false)
+	const [bookmarkFormOpen, setBookmarkFormOpen] = useState(false)
+	const [importDialogOpen, setImportDialogOpen] = useState(false)
 
 	if (isLoading) {
 		return (
@@ -82,47 +90,90 @@ export function FolderContent({ id }: { id: string }) {
 		toast.success('Sous-dossier cree')
 	}
 
+	async function handleCreateBookmark(data: {
+		url: string
+		title: string
+		description?: string
+		favicon?: string
+		folderId?: string
+	}) {
+		await createBookmark.mutateAsync(data)
+		setBookmarkFormOpen(false)
+		toast.success('Favori ajoute')
+	}
+
+	async function handleImport(html: string) {
+		const result = await importBookmarks.mutateAsync({ html, folderId: id })
+		setImportDialogOpen(false)
+		toast.success(
+			`${result.bookmarksCreated} favoris et ${result.foldersCreated} dossiers importes`,
+		)
+	}
+
 	return (
 		<div className="space-y-6">
-			<BreadcrumbNav currentName={folder.name} folderId={id} />
+			<BookmarksAreaContextMenu
+				onNewFolder={() => setNewFolderOpen(true)}
+				onAddBookmark={() => setBookmarkFormOpen(true)}
+				onImport={() => setImportDialogOpen(true)}
+				folderLabel="Sous-dossier"
+			>
+				<div className="min-h-[calc(100vh-12rem)] space-y-6">
+					<DndProvider folderId={id} parentFolderId={folder.parentId}>
+						<BreadcrumbNav currentName={folder.name} folderId={id} />
 
-			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-				<h2 className="font-semibold text-xl">{folder.name}</h2>
-				<div className="flex gap-2">
-					<Button
-						size="sm"
-						variant="outline"
-						onClick={() => setNewFolderOpen(true)}
-					>
-						<FolderPlus className="mr-1 size-4" />
-						Sous-dossier
-					</Button>
-					<AddBookmarkButton folderId={id} />
-					<ShareFolderDialog folderId={id} publicSlug={folder.publicSlug} />
-					<Button
-						size="icon-sm"
-						variant="ghost"
-						onClick={() => setEditOpen(true)}
-					>
-						<Pencil className="size-4" />
-					</Button>
-					<Button
-						size="icon-sm"
-						variant="ghost"
-						onClick={() => setDeleteOpen(true)}
-					>
-						<Trash2 className="size-4" />
-					</Button>
+						<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+							<h2 className="font-semibold text-xl">{folder.name}</h2>
+							<div className="flex gap-2">
+								<Button
+									size="sm"
+									variant="outline"
+									onClick={() => setNewFolderOpen(true)}
+								>
+									<FolderPlus className="mr-1 size-4" />
+									Sous-dossier
+								</Button>
+								<Button size="sm" onClick={() => setBookmarkFormOpen(true)}>
+									<Plus className="mr-1 size-4" />
+									Ajouter un favori
+								</Button>
+								<ShareFolderDialog
+									folderId={id}
+									publicSlug={folder.publicSlug}
+								/>
+								<Button
+									size="icon-sm"
+									variant="ghost"
+									onClick={() => setEditOpen(true)}
+								>
+									<Pencil className="size-4" />
+								</Button>
+								<Button
+									size="icon-sm"
+									variant="ghost"
+									onClick={() => setDeleteOpen(true)}
+								>
+									<Trash2 className="size-4" />
+								</Button>
+							</div>
+						</div>
+
+						<FolderList parentId={id} />
+
+						<Separator className="my-6" />
+
+						<BookmarkList />
+					</DndProvider>
 				</div>
-			</div>
+			</BookmarksAreaContextMenu>
 
-			<DndProvider folderId={id} parentFolderId={folder.parentId}>
-				<FolderList parentId={id} />
-
-				<Separator className="my-6" />
-
-				<BookmarkList />
-			</DndProvider>
+			<BookmarkForm
+				open={bookmarkFormOpen}
+				onOpenChange={setBookmarkFormOpen}
+				onSubmit={handleCreateBookmark}
+				defaultValues={{ folderId: id } as never}
+				loading={createBookmark.isPending}
+			/>
 
 			<FolderForm
 				open={editOpen}
@@ -140,13 +191,20 @@ export function FolderContent({ id }: { id: string }) {
 				loading={createFolder.isPending}
 			/>
 
+			<ImportDialog
+				open={importDialogOpen}
+				onOpenChange={setImportDialogOpen}
+				onImport={handleImport}
+				loading={importBookmarks.isPending}
+			/>
+
 			<AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Supprimer ce dossier ?</AlertDialogTitle>
 						<AlertDialogDescription>
-							Les sous-dossiers seront egalement supprimes. Les favoris contenus
-							seront deplaces a la racine.
+							Les sous-dossiers et tous les favoris contenus seront
+							definitivement supprimes.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>

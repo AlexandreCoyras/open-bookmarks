@@ -19,11 +19,7 @@ export default function FolderLoading() {
 						<Plus className="mr-1 size-4" />
 						Ajouter un favori
 					</Button>
-					<Button
-						size="icon-sm"
-						variant="ghost"
-						disabled
-					>
+					<Button size="icon-sm" variant="ghost" disabled>
 						<Globe className="size-4" />
 					</Button>
 					<Button size="icon-sm" variant="ghost" disabled>

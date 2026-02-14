@@ -2,6 +2,7 @@
 
 import { Home } from 'lucide-react'
 import Link from 'next/link'
+import { DroppableBreadcrumbItem } from '@/components/droppable-breadcrumb-item'
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -28,19 +29,23 @@ export function BreadcrumbNav({
 		<Breadcrumb>
 			<BreadcrumbList>
 				<BreadcrumbItem>
-					<BreadcrumbLink asChild>
-						<Link href="/">
-							<Home className="size-4" />
-						</Link>
-					</BreadcrumbLink>
+					<DroppableBreadcrumbItem folderId={null}>
+						<BreadcrumbLink asChild>
+							<Link href="/">
+								<Home className="size-4" />
+							</Link>
+						</BreadcrumbLink>
+					</DroppableBreadcrumbItem>
 				</BreadcrumbItem>
 				<BreadcrumbSeparator />
 				{parents?.map((parent) => (
 					<span key={parent.id} className="contents">
 						<BreadcrumbItem>
-							<BreadcrumbLink asChild>
-								<Link href={`/folders/${parent.id}`}>{parent.name}</Link>
-							</BreadcrumbLink>
+							<DroppableBreadcrumbItem folderId={parent.id}>
+								<BreadcrumbLink asChild>
+									<Link href={`/folders/${parent.id}`}>{parent.name}</Link>
+								</BreadcrumbLink>
+							</DroppableBreadcrumbItem>
 						</BreadcrumbItem>
 						<BreadcrumbSeparator />
 					</span>
