@@ -61,7 +61,7 @@ export function FolderCard({
 							<Button
 								variant="ghost"
 								size="icon-xs"
-								className="opacity-0 group-hover:opacity-100 shrink-0 relative z-10"
+								className="sm:opacity-0 sm:group-hover:opacity-100 shrink-0 relative z-10"
 							>
 								<MoreVertical className="size-4" />
 							</Button>

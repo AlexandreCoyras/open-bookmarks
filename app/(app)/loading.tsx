@@ -5,21 +5,21 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export default function HomeLoading() {
 	return (
-		<div className="space-y-6">
+		<div className="space-y-4 sm:space-y-6">
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 				<h2 className="font-semibold text-xl">Mes favoris</h2>
 				<div className="flex gap-2">
 					<Button size="sm" variant="outline" disabled>
-						<Upload className="mr-1 size-4" />
-						Importer
+						<Upload className="size-4" />
+						<span className="hidden sm:inline">Importer</span>
 					</Button>
 					<Button size="sm" variant="outline" disabled>
-						<FolderPlus className="mr-1 size-4" />
-						Nouveau dossier
+						<FolderPlus className="size-4" />
+						<span className="hidden sm:inline">Nouveau dossier</span>
 					</Button>
 					<Button size="sm" disabled>
-						<Plus className="mr-1 size-4" />
-						Ajouter un favori
+						<Plus className="size-4" />
+						<span className="hidden sm:inline">Ajouter un favori</span>
 					</Button>
 				</div>
 			</div>

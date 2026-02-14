@@ -111,14 +111,14 @@ export function FolderContent({ id }: { id: string }) {
 	}
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-4 sm:space-y-6">
 			<BookmarksAreaContextMenu
 				onNewFolder={() => setNewFolderOpen(true)}
 				onAddBookmark={() => setBookmarkFormOpen(true)}
 				onImport={() => setImportDialogOpen(true)}
 				folderLabel="Sous-dossier"
 			>
-				<div className="min-h-[calc(100vh-12rem)] space-y-6">
+				<div className="min-h-[calc(100vh-12rem)] space-y-4 sm:space-y-6">
 					<DndProvider folderId={id} parentFolderId={folder.parentId}>
 						<BreadcrumbNav currentName={folder.name} folderId={id} />
 
@@ -130,12 +130,12 @@ export function FolderContent({ id }: { id: string }) {
 									variant="outline"
 									onClick={() => setNewFolderOpen(true)}
 								>
-									<FolderPlus className="mr-1 size-4" />
-									Sous-dossier
+									<FolderPlus className="size-4" />
+									<span className="hidden sm:inline">Sous-dossier</span>
 								</Button>
 								<Button size="sm" onClick={() => setBookmarkFormOpen(true)}>
-									<Plus className="mr-1 size-4" />
-									Ajouter un favori
+									<Plus className="size-4" />
+									<span className="hidden sm:inline">Ajouter un favori</span>
 								</Button>
 								<ShareFolderDialog
 									folderId={id}

@@ -27,9 +27,11 @@ export function AppHeader() {
 	}
 
 	return (
-		<header className="border-b px-4 py-3 h-[60px]">
+		<header className="border-b px-3 py-3 h-[60px] sm:px-4">
 			<div className="flex items-center justify-between">
-				<Link href="/" className="font-semibold text-lg">Open Bookmarks</Link>
+				<Link href="/" className="font-semibold text-lg">
+					Open Bookmarks
+				</Link>
 				{isPending ? (
 					<Skeleton className="size-9 rounded-full" />
 				) : user ? (

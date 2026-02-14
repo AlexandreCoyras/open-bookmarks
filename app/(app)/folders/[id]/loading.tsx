@@ -5,19 +5,19 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export default function FolderLoading() {
 	return (
-		<div className="space-y-6">
+		<div className="space-y-4 sm:space-y-6">
 			<Skeleton className="h-5 w-48" />
 
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 				<Skeleton className="h-7 w-40" />
 				<div className="flex gap-2">
 					<Button size="sm" variant="outline" disabled>
-						<FolderPlus className="mr-1 size-4" />
-						Sous-dossier
+						<FolderPlus className="size-4" />
+						<span className="hidden sm:inline">Sous-dossier</span>
 					</Button>
 					<Button size="sm" disabled>
-						<Plus className="mr-1 size-4" />
-						Ajouter un favori
+						<Plus className="size-4" />
+						<span className="hidden sm:inline">Ajouter un favori</span>
 					</Button>
 					<Button size="icon-sm" variant="ghost" disabled>
 						<Globe className="size-4" />
