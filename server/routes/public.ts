@@ -15,6 +15,7 @@ export const publicRoutes = new Elysia({ prefix: '/public' })
 					icon: folder.icon,
 					parentId: folder.parentId,
 					publicSlug: folder.publicSlug,
+					viewCount: folder.viewCount,
 					owner: {
 						name: user.name,
 						image: user.image,

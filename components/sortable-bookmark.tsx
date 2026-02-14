@@ -10,11 +10,17 @@ export function SortableBookmark({
 	onEdit,
 	onDelete,
 	onRemoveFromFolder,
+	selectionMode,
+	selected,
+	onToggleSelect,
 }: {
 	bookmark: BookmarkData
 	onEdit: () => void
 	onDelete: () => void
 	onRemoveFromFolder?: () => void
+	selectionMode?: boolean
+	selected?: boolean
+	onToggleSelect?: () => void
 }) {
 	const { isDragging: isAnyDragging } = useDndItems()
 	const {
@@ -27,6 +33,7 @@ export function SortableBookmark({
 	} = useSortable({
 		id: bookmark.id,
 		data: { type: 'bookmark', bookmarkId: bookmark.id },
+		disabled: selectionMode,
 	})
 
 	const style = {
@@ -37,12 +44,15 @@ export function SortableBookmark({
 	}
 
 	return (
-		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+		<div ref={setNodeRef} style={style} {...attributes} {...(selectionMode ? {} : listeners)}>
 			<BookmarkCard
 				bookmark={bookmark}
 				onEdit={onEdit}
 				onDelete={onDelete}
 				onRemoveFromFolder={onRemoveFromFolder}
+				selectionMode={selectionMode}
+				selected={selected}
+				onToggleSelect={onToggleSelect}
 			/>
 		</div>
 	)

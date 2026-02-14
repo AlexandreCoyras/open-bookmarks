@@ -28,7 +28,15 @@
       "Bash(ffmpeg:*)",
       "Bash(magick:*)",
       "Bash(grep:*)",
-      "Bash(bunx next build:*)"
+      "Bash(bunx next build:*)",
+      "Bash(wc:*)",
+      "Bash(bun --env-file .env.local db:generate:*)",
+      "Bash(bun --env-file .env.local db:migrate:*)",
+      "Bash(bunx biome check:*)",
+      "Bash(bun list:*)",
+      "Bash(bunx biome:*)",
+      "Bash(NODE_ENV=development npm run build:*)",
+      "Bash(bun remove:*)"
     ]
   }
 }

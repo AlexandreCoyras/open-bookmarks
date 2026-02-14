@@ -100,6 +100,54 @@ export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 			params: t.Object({ id: t.String() }),
 		},
 	)
+	.post(
+		'/bulk-delete',
+		async ({ user, body }) => {
+			if (body.ids.length === 0) return { success: true, deleted: 0 }
+
+			const deleted = await Promise.all(
+				body.ids.map((id) =>
+					db
+						.delete(bookmark)
+						.where(and(eq(bookmark.id, id), eq(bookmark.userId, user.id)))
+						.returning(),
+				),
+			)
+
+			return { success: true, deleted: deleted.flat().length }
+		},
+		{
+			auth: true,
+			body: t.Object({
+				ids: t.Array(t.String()),
+			}),
+		},
+	)
+	.post(
+		'/bulk-move',
+		async ({ user, body }) => {
+			if (body.ids.length === 0) return { success: true, moved: 0 }
+
+			const moved = await Promise.all(
+				body.ids.map((id) =>
+					db
+						.update(bookmark)
+						.set({ folderId: body.folderId })
+						.where(and(eq(bookmark.id, id), eq(bookmark.userId, user.id)))
+						.returning(),
+				),
+			)
+
+			return { success: true, moved: moved.flat().length }
+		},
+		{
+			auth: true,
+			body: t.Object({
+				ids: t.Array(t.String()),
+				folderId: t.Nullable(t.String()),
+			}),
+		},
+	)
 	.put(
 		'/reorder',
 		async ({ user, body }) => {

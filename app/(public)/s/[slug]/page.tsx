@@ -1,8 +1,9 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import { and, asc, eq } from 'drizzle-orm'
+import { and, asc, eq, sql } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { PublicFolderContent } from '@/app/(public)/s/[slug]/public-folder-content'
 import { bookmark, folder, user } from '@/drizzle/schema'
+import { getSession } from '@/lib/auth-server'
 import { db } from '@/lib/db'
 import { getQueryClient } from '@/lib/get-query-client'
 
@@ -14,29 +15,54 @@ export default async function PublicFolderPage({
 	const { slug } = await params
 	const queryClient = getQueryClient()
 
-	const [publicFolder] = await db
+	// Get folder data first
+	const [found] = await db
 		.select({
 			id: folder.id,
 			name: folder.name,
 			color: folder.color,
 			parentId: folder.parentId,
 			publicSlug: folder.publicSlug,
-			owner: {
-				name: user.name,
-				image: user.image,
-			},
+			viewCount: folder.viewCount,
+			userId: folder.userId,
 		})
 		.from(folder)
-		.innerJoin(user, eq(folder.userId, user.id))
 		.where(eq(folder.publicSlug, slug))
+
+	if (!found) notFound()
+
+	// Only increment view count if visitor is not the owner
+	const session = await getSession()
+	const isOwner = session?.user?.id === found.userId
+
+	let viewCount = found.viewCount
+	if (!isOwner) {
+		const [updated] = await db
+			.update(folder)
+			.set({ viewCount: sql`${folder.viewCount} + 1` })
+			.where(eq(folder.publicSlug, slug))
+			.returning({ viewCount: folder.viewCount })
+		viewCount = updated.viewCount
+	}
+
+	const [owner] = await db
+		.select({ name: user.name, image: user.image })
+		.from(user)
+		.where(eq(user.id, found.userId))
+
+	const publicFolder = {
+		id: found.id,
+		name: found.name,
+		color: found.color,
+		parentId: found.parentId,
+		publicSlug: found.publicSlug,
+		viewCount,
+		owner: owner!,
+	}
 
 	if (!publicFolder) notFound()
 
-	const rootUserId = await db
-		.select({ userId: folder.userId })
-		.from(folder)
-		.where(eq(folder.publicSlug, slug))
-		.then((rows) => rows[0]?.userId)
+	const rootUserId = found.userId
 
 	await Promise.all([
 		queryClient.prefetchQuery({

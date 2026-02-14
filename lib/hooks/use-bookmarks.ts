@@ -129,6 +129,94 @@ export function useDeleteBookmark() {
 	})
 }
 
+export function useBulkDeleteBookmarks() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: async (ids: string[]) => {
+			const { data, error } = await api.api.bookmarks['bulk-delete'].post({
+				ids,
+			})
+			if (error) throw error
+			return data
+		},
+		onMutate: async (ids) => {
+			await queryClient.cancelQueries({ queryKey: ['bookmarks'] })
+
+			const previousData = queryClient.getQueriesData<Array<{ id: string }>>({
+				queryKey: ['bookmarks'],
+			})
+
+			const idSet = new Set(ids)
+			queryClient.setQueriesData<Array<{ id: string }>>(
+				{ queryKey: ['bookmarks'] },
+				(old) => {
+					if (!Array.isArray(old)) return old
+					return old.filter((b) => !idSet.has(b.id))
+				},
+			)
+
+			return { previousData }
+		},
+		onError: (_err, _variables, context) => {
+			if (context?.previousData) {
+				for (const [queryKey, data] of context.previousData) {
+					queryClient.setQueryData(queryKey, data)
+				}
+			}
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ['bookmarks'] })
+		},
+	})
+}
+
+export function useBulkMoveBookmarks() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: async ({
+			ids,
+			folderId,
+		}: { ids: string[]; folderId: string | null }) => {
+			const { data, error } = await api.api.bookmarks['bulk-move'].post({
+				ids,
+				folderId,
+			})
+			if (error) throw error
+			return data
+		},
+		onMutate: async ({ ids }) => {
+			await queryClient.cancelQueries({ queryKey: ['bookmarks'] })
+
+			const previousData = queryClient.getQueriesData<Array<{ id: string }>>({
+				queryKey: ['bookmarks'],
+			})
+
+			const idSet = new Set(ids)
+			queryClient.setQueriesData<Array<{ id: string }>>(
+				{ queryKey: ['bookmarks'] },
+				(old) => {
+					if (!Array.isArray(old)) return old
+					return old.filter((b) => !idSet.has(b.id))
+				},
+			)
+
+			return { previousData }
+		},
+		onError: (_err, _variables, context) => {
+			if (context?.previousData) {
+				for (const [queryKey, data] of context.previousData) {
+					queryClient.setQueryData(queryKey, data)
+				}
+			}
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ['bookmarks'] })
+		},
+	})
+}
+
 export function useReorderBookmarks() {
 	const queryClient = useQueryClient()
 

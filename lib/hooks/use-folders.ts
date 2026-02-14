@@ -40,6 +40,21 @@ export function useBreadcrumb(folderId: string) {
 	})
 }
 
+export function useCheckSlug(slug: string, folderId?: string) {
+	return useQuery({
+		queryKey: ['check-slug', slug],
+		queryFn: async () => {
+			const { data, error } = await api.api.folders['check-slug'].get({
+				query: { slug, folderId },
+			})
+			if (error) throw error
+			return data
+		},
+		enabled: slug.length >= 3,
+		staleTime: 10_000,
+	})
+}
+
 export function useCreateFolder() {
 	const queryClient = useQueryClient()
 

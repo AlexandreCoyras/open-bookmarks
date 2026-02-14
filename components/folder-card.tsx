@@ -1,6 +1,6 @@
 'use client'
 
-import { Globe, MoreVertical, Pencil, Trash2 } from 'lucide-react'
+import { Eye, Globe, MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -26,6 +26,7 @@ export type FolderData = {
 	parentId: string | null
 	position: number
 	publicSlug?: string | null
+	viewCount?: number
 }
 
 export function FolderCard({
@@ -57,7 +58,15 @@ export function FolderCard({
 					{folder.name}
 				</Link>
 				{folder.publicSlug && !readOnly && (
-					<Globe className="size-3.5 shrink-0 text-muted-foreground" />
+					<div className="flex items-center gap-1 shrink-0 text-muted-foreground">
+						<Globe className="size-3.5" />
+						{folder.viewCount != null && folder.viewCount > 0 && (
+							<span className="flex items-center gap-0.5 text-xs">
+								<Eye className="size-3" />
+								{folder.viewCount}
+							</span>
+						)}
+					</div>
 				)}
 				{!readOnly && onEdit && onDelete && (
 					<DropdownMenu>

@@ -1,6 +1,6 @@
 'use client'
 
-import { User } from 'lucide-react'
+import { Eye, User } from 'lucide-react'
 import { BookmarkCard, type BookmarkData } from '@/components/bookmark-card'
 import { FolderCard, type FolderData } from '@/components/folder-card'
 import { PublicBreadcrumbNav } from '@/components/public-breadcrumb-nav'
@@ -69,6 +69,16 @@ export function PublicFolderContent({
 				<span className="text-sm text-muted-foreground">
 					{publicFolder.owner.name}
 				</span>
+				{'viewCount' in publicFolder && (
+					<>
+						<span className="text-muted-foreground/50">·</span>
+						<span className="flex items-center gap-1 text-muted-foreground text-sm">
+							<Eye className="size-3.5" />
+							{publicFolder.viewCount as number}{' '}
+							{(publicFolder.viewCount as number) <= 1 ? 'vue' : 'vues'}
+						</span>
+					</>
+				)}
 			</div>
 
 			{subfolders && (subfolders as FolderData[]).length > 0 && (

@@ -142,6 +142,7 @@ export function FolderContent({ id }: { id: string }) {
 								<ShareFolderDialog
 									folderId={id}
 									publicSlug={folder.publicSlug}
+									viewCount={folder.viewCount}
 								/>
 								<Button
 									size="icon-sm"

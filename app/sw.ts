@@ -1,4 +1,4 @@
-import { defaultCache } from '@serwist/next/worker'
+import { defaultCache } from '@serwist/turbopack/worker'
 import {
 	ExpirationPlugin,
 	NetworkFirst,
@@ -36,6 +36,16 @@ const serwist = new Serwist({
 	clientsClaim: true,
 	navigationPreload: true,
 	runtimeCaching,
+	fallbacks: {
+		entries: [
+			{
+				url: '/~offline',
+				matcher({ request }) {
+					return request.destination === 'document'
+				},
+			},
+		],
+	},
 })
 
 serwist.addEventListeners()

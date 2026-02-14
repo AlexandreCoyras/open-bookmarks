@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull, sql } from 'drizzle-orm'
+import { and, asc, eq, isNull, ne, sql } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { folder } from '@/drizzle/schema'
 import { db } from '@/lib/db'
@@ -9,6 +9,14 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 	.get(
 		'/',
 		async ({ user, query }) => {
+			if (query.all === 'true') {
+				return db
+					.select()
+					.from(folder)
+					.where(eq(folder.userId, user.id))
+					.orderBy(asc(folder.position))
+			}
+
 			const parentId = query.parentId
 			const condition = parentId
 				? and(eq(folder.userId, user.id), eq(folder.parentId, parentId))
@@ -24,6 +32,32 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 			auth: true,
 			query: t.Object({
 				parentId: t.Optional(t.String()),
+				all: t.Optional(t.String()),
+			}),
+		},
+	)
+	.get(
+		'/check-slug',
+		async ({ user, query }) => {
+			const slug = query.slug.toLowerCase().trim()
+			const conditions = [eq(folder.publicSlug, slug)]
+			if (query.folderId) {
+				conditions.push(ne(folder.id, query.folderId))
+			}
+
+			const [existing] = await db
+				.select({ id: folder.id })
+				.from(folder)
+				.where(and(...conditions))
+				.limit(1)
+
+			return { available: !existing }
+		},
+		{
+			auth: true,
+			query: t.Object({
+				slug: t.String(),
+				folderId: t.Optional(t.String()),
 			}),
 		},
 	)
@@ -105,6 +139,31 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 	.patch(
 		'/:id',
 		async ({ user, params, body, status }) => {
+			if (body.publicSlug !== undefined && body.publicSlug !== null) {
+				const slug = body.publicSlug.toLowerCase().trim()
+				const slugRegex = /^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/
+				if (!slugRegex.test(slug)) {
+					return status(422)
+				}
+
+				const [existing] = await db
+					.select({ id: folder.id })
+					.from(folder)
+					.where(
+						and(
+							eq(folder.publicSlug, slug),
+							ne(folder.id, params.id),
+						),
+					)
+					.limit(1)
+
+				if (existing) {
+					return status(409)
+				}
+
+				body.publicSlug = slug
+			}
+
 			const [updated] = await db
 				.update(folder)
 				.set(body)

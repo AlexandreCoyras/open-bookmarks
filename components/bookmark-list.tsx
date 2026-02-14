@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { CheckSquare } from 'lucide-react'
+import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 import type { BookmarkData } from '@/components/bookmark-card'
 import { BookmarkForm } from '@/components/bookmark-form'
 import { DndBookmarkList } from '@/components/dnd-bookmark-list'
 import { useDndItems } from '@/components/dnd-provider'
+import { SelectionBar } from '@/components/selection-bar'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,6 +18,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDeleteBookmark, useUpdateBookmark } from '@/lib/hooks/use-bookmarks'
 
@@ -30,6 +33,26 @@ export function BookmarkList() {
 		null,
 	)
 	const [deletingId, setDeletingId] = useState<string | null>(null)
+
+	const [selectionMode, setSelectionMode] = useState(false)
+	const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+
+	const toggleSelect = useCallback((id: string) => {
+		setSelectedIds((prev) => {
+			const next = new Set(prev)
+			if (next.has(id)) {
+				next.delete(id)
+			} else {
+				next.add(id)
+			}
+			return next
+		})
+	}, [])
+
+	const clearSelection = useCallback(() => {
+		setSelectionMode(false)
+		setSelectedIds(new Set())
+	}, [])
 
 	function handleEdit(bookmark: BookmarkData) {
 		setEditingBookmark(bookmark)
@@ -86,16 +109,48 @@ export function BookmarkList() {
 
 	return (
 		<>
+			{items.length > 0 && (
+				<div className="flex items-center justify-end mb-2">
+					<Button
+						size="sm"
+						variant={selectionMode ? 'secondary' : 'ghost'}
+						onClick={() => {
+							if (selectionMode) {
+								clearSelection()
+							} else {
+								setSelectionMode(true)
+							}
+						}}
+					>
+						<CheckSquare className="size-4" />
+						<span className="hidden sm:inline">
+							{selectionMode ? 'Annuler' : 'Sélectionner'}
+						</span>
+					</Button>
+				</div>
+			)}
+
 			{items.length > 0 ? (
 				<DndBookmarkList
 					onEdit={handleEdit}
 					onDelete={(id) => setDeletingId(id)}
 					onRemoveFromFolder={folderId ? handleRemoveFromFolder : undefined}
+					selectionMode={selectionMode}
+					selectedIds={selectedIds}
+					onToggleSelect={toggleSelect}
 				/>
 			) : (
 				<p className="text-sm text-muted-foreground py-4 text-center">
 					Aucun favori pour le moment.
 				</p>
+			)}
+
+			{selectionMode && (
+				<SelectionBar
+					selectedIds={selectedIds}
+					onClear={clearSelection}
+					currentFolderId={folderId}
+				/>
 			)}
 
 			<BookmarkForm

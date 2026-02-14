@@ -2,6 +2,7 @@
 
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import type { ReactNode } from 'react'
+import { RegisterSW } from '@/components/register-sw'
 import { Toaster } from '@/components/ui/sonner'
 import { getQueryClient } from '@/lib/get-query-client'
 import { queryPersister } from '@/lib/query-persister'
@@ -22,6 +23,7 @@ export function Providers({ children }: { children: ReactNode }) {
 		>
 			{children}
 			<Toaster />
+			<RegisterSW />
 		</PersistQueryClientProvider>
 	)
 }

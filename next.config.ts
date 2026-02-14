@@ -1,13 +1,8 @@
-import withSerwist from '@serwist/next'
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-	serverExternalPackages: ['elysia', '@elysiajs/eden'],
+	serverExternalPackages: ['elysia', '@elysiajs/eden', 'esbuild-wasm'],
 	turbopack: {},
 }
 
-export default withSerwist({
-	swSrc: 'app/sw.ts',
-	swDest: 'public/sw.js',
-	disable: process.env.NODE_ENV !== 'production',
-})(nextConfig)
+export default nextConfig

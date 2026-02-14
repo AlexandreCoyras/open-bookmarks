@@ -2,13 +2,16 @@
 
 import {
 	ArrowUpFromLine,
+	CheckSquare,
 	ExternalLink,
 	MoreVertical,
 	Pencil,
+	Square,
 	Trash2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -38,16 +41,32 @@ export function BookmarkCard({
 	onDelete,
 	onRemoveFromFolder,
 	readOnly,
+	selectionMode,
+	selected,
+	onToggleSelect,
 }: {
 	bookmark: BookmarkData
 	onEdit?: () => void
 	onDelete?: () => void
 	onRemoveFromFolder?: () => void
 	readOnly?: boolean
+	selectionMode?: boolean
+	selected?: boolean
+	onToggleSelect?: () => void
 }) {
 	const content = (
-		<Card className="group relative">
+		<Card
+			className={cn('group relative', selected && 'ring-2 ring-primary')}
+			onClick={selectionMode ? onToggleSelect : undefined}
+		>
 			<CardContent className="flex items-center gap-3 p-3">
+				{selectionMode && (
+					selected ? (
+						<CheckSquare className="size-5 shrink-0 text-primary" />
+					) : (
+						<Square className="size-5 shrink-0 text-muted-foreground" />
+					)
+				)}
 				{bookmark.favicon ? (
 					// biome-ignore lint/performance/noImgElement: external favicon domains
 					<img
@@ -60,10 +79,16 @@ export function BookmarkCard({
 				)}
 				<div className="min-w-0 flex-1">
 					<a
-						href={bookmark.url}
+						href={selectionMode ? undefined : bookmark.url}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="font-medium text-sm hover:underline truncate block after:absolute after:inset-0"
+						className={cn(
+							'font-medium text-sm truncate block',
+							selectionMode
+								? 'cursor-pointer'
+								: 'hover:underline after:absolute after:inset-0',
+						)}
+						onClick={selectionMode ? (e) => e.preventDefault() : undefined}
 					>
 						{bookmark.title}
 					</a>
@@ -76,7 +101,7 @@ export function BookmarkCard({
 						{bookmark.url}
 					</p>
 				</div>
-				{!readOnly && onEdit && onDelete && (
+				{!readOnly && !selectionMode && onEdit && onDelete && (
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
