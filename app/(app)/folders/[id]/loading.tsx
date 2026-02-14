@@ -1,3 +1,6 @@
+import { FolderPlus, Pencil, Plus, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function FolderLoading() {
@@ -8,10 +11,20 @@ export default function FolderLoading() {
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 				<Skeleton className="h-7 w-40" />
 				<div className="flex gap-2">
-					<Skeleton className="h-8 w-32" />
-					<Skeleton className="h-8 w-40" />
-					<Skeleton className="h-8 w-8" />
-					<Skeleton className="h-8 w-8" />
+					<Button size="sm" variant="outline" disabled>
+						<FolderPlus className="mr-1 size-4" />
+						Sous-dossier
+					</Button>
+					<Button size="sm" disabled>
+						<Plus className="mr-1 size-4" />
+						Ajouter un favori
+					</Button>
+					<Button size="icon-sm" variant="ghost" disabled>
+						<Pencil className="size-4" />
+					</Button>
+					<Button size="icon-sm" variant="ghost" disabled>
+						<Trash2 className="size-4" />
+					</Button>
 				</div>
 			</div>
 
@@ -21,7 +34,7 @@ export default function FolderLoading() {
 				))}
 			</div>
 
-			<Skeleton className="h-px w-full" />
+			<Separator className="my-6" />
 
 			<div className="grid gap-2">
 				{['a', 'b', 'c'].map((key) => (

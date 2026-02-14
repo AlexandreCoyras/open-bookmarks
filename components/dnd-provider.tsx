@@ -18,6 +18,7 @@ import {
 	type ReactNode,
 	useContext,
 	useEffect,
+	useId,
 	useState,
 } from 'react'
 import { toast } from 'sonner'
@@ -47,6 +48,7 @@ export function DndProvider({
 	folderId?: string
 	parentFolderId?: string | null
 }) {
+	const dndId = useId()
 	const { data: bookmarks } = useBookmarks(folderId)
 	const serverItems = (bookmarks ?? []) as BookmarkData[]
 
@@ -151,6 +153,7 @@ export function DndProvider({
 	return (
 		<DndBookmarkContext.Provider value={{ items: localItems }}>
 			<DndContext
+				id={dndId}
 				sensors={sensors}
 				collisionDetection={collisionDetection}
 				onDragStart={handleDragStart}

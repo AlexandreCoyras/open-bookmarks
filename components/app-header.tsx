@@ -12,11 +12,12 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton'
 import { signOut, useSession } from '@/lib/auth-client'
 
 export function AppHeader() {
 	const router = useRouter()
-	const { data: session } = useSession()
+	const { data: session, isPending } = useSession()
 	const user = session?.user
 
 	async function handleSignOut() {
@@ -25,10 +26,12 @@ export function AppHeader() {
 	}
 
 	return (
-		<header className="border-b px-4 py-3">
+		<header className="border-b px-4 py-3 h-[60px]">
 			<div className="flex items-center justify-between">
 				<h1 className="font-semibold text-lg">Open Bookmarks</h1>
-				{user && (
+				{isPending ? (
+					<Skeleton className="size-9 rounded-full" />
+				) : user ? (
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" size="icon" className="rounded-full">
@@ -52,7 +55,7 @@ export function AppHeader() {
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
-				)}
+				) : null}
 			</div>
 		</header>
 	)

@@ -20,13 +20,13 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Lint & format check
-        run: bun check
+        run: bun run check
 
       - name: Type check
         run: bunx tsc --noEmit
 
       - name: Build
-        run: bun build
+        run: bun run build
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
