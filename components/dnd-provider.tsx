@@ -31,6 +31,8 @@ import {
 
 type DndBookmarkContextValue = {
 	items: BookmarkData[]
+	folderId?: string
+	parentFolderId?: string | null
 }
 
 const DndBookmarkContext = createContext<DndBookmarkContextValue>({ items: [] })
@@ -64,7 +66,7 @@ export function DndProvider({
 		setLocalItems((bookmarks ?? []) as BookmarkData[])
 	}, [bookmarks])
 
-	// Pointer-based detection for droppable targets (folders/root),
+	// Pointer-based detection for droppable targets (folders),
 	// closestCenter for sortable items (bookmark reorder)
 	const collisionDetection: CollisionDetection = (args) => {
 		const pointerCollisions = pointerWithin(args)
@@ -93,23 +95,6 @@ export function DndProvider({
 		if (!over) return
 
 		const overData = over.data.current
-		if (overData?.type === 'root') {
-			try {
-				await updateBookmark.mutateAsync({
-					id: active.id as string,
-					folderId: parentFolderId ?? null,
-				})
-				toast.success(
-					parentFolderId
-						? 'Favori deplace dans le dossier parent'
-						: 'Favori deplace a la racine',
-				)
-			} catch {
-				toast.error('Erreur lors du deplacement')
-			}
-			return
-		}
-
 		if (overData?.type === 'folder') {
 			try {
 				await updateBookmark.mutateAsync({
@@ -151,7 +136,9 @@ export function DndProvider({
 	}
 
 	return (
-		<DndBookmarkContext.Provider value={{ items: localItems }}>
+		<DndBookmarkContext.Provider
+			value={{ items: localItems, folderId, parentFolderId }}
+		>
 			<DndContext
 				id={dndId}
 				sensors={sensors}

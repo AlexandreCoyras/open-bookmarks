@@ -8,10 +8,12 @@ export function SortableBookmark({
 	bookmark,
 	onEdit,
 	onDelete,
+	onRemoveFromFolder,
 }: {
 	bookmark: BookmarkData
 	onEdit: () => void
 	onDelete: () => void
+	onRemoveFromFolder?: () => void
 }) {
 	const {
 		attributes,
@@ -30,7 +32,12 @@ export function SortableBookmark({
 
 	return (
 		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-			<BookmarkCard bookmark={bookmark} onEdit={onEdit} onDelete={onDelete} />
+			<BookmarkCard
+				bookmark={bookmark}
+				onEdit={onEdit}
+				onDelete={onDelete}
+				onRemoveFromFolder={onRemoveFromFolder}
+			/>
 		</div>
 	)
 }

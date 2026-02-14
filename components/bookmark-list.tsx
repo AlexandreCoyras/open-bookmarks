@@ -20,7 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useDeleteBookmark, useUpdateBookmark } from '@/lib/hooks/use-bookmarks'
 
 export function BookmarkList() {
-	const { items } = useDndItems()
+	const { items, folderId, parentFolderId } = useDndItems()
 	const isLoading = false
 	const updateBookmark = useUpdateBookmark()
 	const deleteBookmark = useDeleteBookmark()
@@ -58,6 +58,22 @@ export function BookmarkList() {
 		toast.success('Favori supprime')
 	}
 
+	async function handleRemoveFromFolder(id: string) {
+		try {
+			await updateBookmark.mutateAsync({
+				id,
+				folderId: parentFolderId ?? null,
+			})
+			toast.success(
+				parentFolderId
+					? 'Favori deplace dans le dossier parent'
+					: 'Favori deplace a la racine',
+			)
+		} catch {
+			toast.error('Erreur lors du deplacement')
+		}
+	}
+
 	if (isLoading) {
 		return (
 			<div className="grid gap-2">
@@ -74,6 +90,7 @@ export function BookmarkList() {
 				<DndBookmarkList
 					onEdit={handleEdit}
 					onDelete={(id) => setDeletingId(id)}
+					onRemoveFromFolder={folderId ? handleRemoveFromFolder : undefined}
 				/>
 			) : (
 				<p className="text-sm text-muted-foreground py-4 text-center">

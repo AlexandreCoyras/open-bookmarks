@@ -8,9 +8,11 @@ import { SortableBookmark } from '@/components/sortable-bookmark'
 export function DndBookmarkList({
 	onEdit,
 	onDelete,
+	onRemoveFromFolder,
 }: {
 	onEdit: (bookmark: BookmarkData) => void
 	onDelete: (id: string) => void
+	onRemoveFromFolder?: (id: string) => void
 }) {
 	const { items } = useDndItems()
 
@@ -28,6 +30,11 @@ export function DndBookmarkList({
 						bookmark={bookmark}
 						onEdit={() => onEdit(bookmark)}
 						onDelete={() => onDelete(bookmark.id)}
+						onRemoveFromFolder={
+							onRemoveFromFolder
+								? () => onRemoveFromFolder(bookmark.id)
+								: undefined
+						}
 					/>
 				))}
 			</div>

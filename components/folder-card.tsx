@@ -64,7 +64,10 @@ export function FolderCard({
 									<Pencil className="mr-2 size-4" />
 									Modifier
 								</DropdownMenuItem>
-								<DropdownMenuItem onClick={onDelete} className="text-destructive">
+								<DropdownMenuItem
+									onClick={onDelete}
+									className="text-destructive"
+								>
 									<Trash2 className="mr-2 size-4" />
 									Supprimer
 								</DropdownMenuItem>

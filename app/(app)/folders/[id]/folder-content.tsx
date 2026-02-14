@@ -8,7 +8,6 @@ import { AddBookmarkButton } from '@/components/add-bookmark-button'
 import { BookmarkList } from '@/components/bookmark-list'
 import { BreadcrumbNav } from '@/components/breadcrumb-nav'
 import { DndProvider } from '@/components/dnd-provider'
-import { DroppableRoot } from '@/components/droppable-root'
 import { FolderForm } from '@/components/folder-form'
 import { FolderList } from '@/components/folder-list'
 import {
@@ -116,8 +115,6 @@ export function FolderContent({ id }: { id: string }) {
 			</div>
 
 			<DndProvider folderId={id} parentFolderId={folder.parentId}>
-				<DroppableRoot />
-
 				<FolderList parentId={id} />
 
 				<Separator className="my-6" />

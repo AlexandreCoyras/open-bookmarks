@@ -1,6 +1,6 @@
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { and, asc, eq, isNull } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { HomeContent } from '@/app/(app)/home-content'
 import { bookmark, folder } from '@/drizzle/schema'
 import { getSession } from '@/lib/auth-server'

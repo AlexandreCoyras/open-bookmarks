@@ -1,6 +1,12 @@
 'use client'
 
-import { ExternalLink, MoreVertical, Pencil, Trash2 } from 'lucide-react'
+import {
+	ArrowUpFromLine,
+	ExternalLink,
+	MoreVertical,
+	Pencil,
+	Trash2,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -30,10 +36,12 @@ export function BookmarkCard({
 	bookmark,
 	onEdit,
 	onDelete,
+	onRemoveFromFolder,
 }: {
 	bookmark: BookmarkData
 	onEdit: () => void
 	onDelete: () => void
+	onRemoveFromFolder?: () => void
 }) {
 	return (
 		<ContextMenu>
@@ -83,7 +91,16 @@ export function BookmarkCard({
 									<Pencil className="mr-2 size-4" />
 									Modifier
 								</DropdownMenuItem>
-								<DropdownMenuItem onClick={onDelete} className="text-destructive">
+								{onRemoveFromFolder && (
+									<DropdownMenuItem onClick={onRemoveFromFolder}>
+										<ArrowUpFromLine className="mr-2 size-4" />
+										Retirer du dossier
+									</DropdownMenuItem>
+								)}
+								<DropdownMenuItem
+									onClick={onDelete}
+									className="text-destructive"
+								>
 									<Trash2 className="mr-2 size-4" />
 									Supprimer
 								</DropdownMenuItem>
@@ -97,6 +114,12 @@ export function BookmarkCard({
 					<Pencil className="mr-2 size-4" />
 					Modifier
 				</ContextMenuItem>
+				{onRemoveFromFolder && (
+					<ContextMenuItem onClick={onRemoveFromFolder}>
+						<ArrowUpFromLine className="mr-2 size-4" />
+						Retirer du dossier
+					</ContextMenuItem>
+				)}
 				<ContextMenuItem onClick={onDelete} className="text-destructive">
 					<Trash2 className="mr-2 size-4" />
 					Supprimer
