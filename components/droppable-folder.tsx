@@ -37,6 +37,7 @@ export function DroppableFolder({
 
 	const style = {
 		opacity: isDragging ? 0.4 : isAnyDragging ? 0.6 : 1,
+		touchAction: 'none' as const,
 	}
 
 	return (

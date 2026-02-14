@@ -7,13 +7,15 @@ import {
 	type DragEndEvent,
 	DragOverlay,
 	type DragStartEvent,
+	KeyboardSensor,
 	type Modifier,
 	PointerSensor,
 	pointerWithin,
+	TouchSensor,
 	useSensor,
 	useSensors,
 } from '@dnd-kit/core'
-import { arrayMove } from '@dnd-kit/sortable'
+import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { Folder } from 'lucide-react'
 import {
 	createContext,
@@ -66,15 +68,28 @@ const snapCenterToCursor: Modifier = ({
 	draggingNodeRect,
 	transform,
 }) => {
-	if (draggingNodeRect && activatorEvent && 'clientX' in activatorEvent) {
-		const event = activatorEvent as PointerEvent
-		const offsetX = event.clientX - draggingNodeRect.left
-		const offsetY = event.clientY - draggingNodeRect.top
+	if (draggingNodeRect && activatorEvent) {
+		let clientX: number | undefined
+		let clientY: number | undefined
 
-		return {
-			...transform,
-			x: transform.x + offsetX - draggingNodeRect.width / 2,
-			y: transform.y + offsetY - draggingNodeRect.height / 2,
+		if ('clientX' in activatorEvent) {
+			clientX = (activatorEvent as PointerEvent).clientX
+			clientY = (activatorEvent as PointerEvent).clientY
+		} else if ('touches' in activatorEvent) {
+			const touch = (activatorEvent as TouchEvent).touches[0]
+			clientX = touch?.clientX
+			clientY = touch?.clientY
+		}
+
+		if (clientX != null && clientY != null) {
+			const offsetX = clientX - draggingNodeRect.left
+			const offsetY = clientY - draggingNodeRect.top
+
+			return {
+				...transform,
+				x: transform.x + offsetX - draggingNodeRect.width / 2,
+				y: transform.y + offsetY - draggingNodeRect.height / 2,
+			}
 		}
 	}
 
@@ -121,6 +136,12 @@ export function DndProvider({
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
 			activationConstraint: { distance: 5 },
+		}),
+		useSensor(TouchSensor, {
+			activationConstraint: { delay: 250, tolerance: 5 },
+		}),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
 		}),
 	)
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { LogOut, User } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -28,7 +29,7 @@ export function AppHeader() {
 	return (
 		<header className="border-b px-4 py-3 h-[60px]">
 			<div className="flex items-center justify-between">
-				<h1 className="font-semibold text-lg">Open Bookmarks</h1>
+				<Link href="/" className="font-semibold text-lg">Open Bookmarks</Link>
 				{isPending ? (
 					<Skeleton className="size-9 rounded-full" />
 				) : user ? (
