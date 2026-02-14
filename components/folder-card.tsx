@@ -40,7 +40,7 @@ export function FolderCard({
 	href?: string
 }) {
 	const content = (
-		<Card className="group">
+		<Card className="group relative">
 			<CardContent className="flex items-center gap-3 p-3">
 				<Folder
 					className="size-5 shrink-0"
@@ -48,7 +48,7 @@ export function FolderCard({
 				/>
 				<Link
 					href={href ?? `/folders/${folder.id}`}
-					className="flex-1 font-medium text-sm hover:underline truncate"
+					className="flex-1 font-medium text-sm hover:underline truncate after:absolute after:inset-0"
 				>
 					{folder.name}
 				</Link>
@@ -61,7 +61,7 @@ export function FolderCard({
 							<Button
 								variant="ghost"
 								size="icon-xs"
-								className="opacity-0 group-hover:opacity-100 shrink-0"
+								className="opacity-0 group-hover:opacity-100 shrink-0 relative z-10"
 							>
 								<MoreVertical className="size-4" />
 							</Button>

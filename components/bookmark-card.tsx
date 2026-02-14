@@ -46,7 +46,7 @@ export function BookmarkCard({
 	readOnly?: boolean
 }) {
 	const content = (
-		<Card className="group">
+		<Card className="group relative">
 			<CardContent className="flex items-center gap-3 p-3">
 				{bookmark.favicon ? (
 					// biome-ignore lint/performance/noImgElement: external favicon domains
@@ -63,7 +63,7 @@ export function BookmarkCard({
 						href={bookmark.url}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="font-medium text-sm hover:underline truncate block"
+						className="font-medium text-sm hover:underline truncate block after:absolute after:inset-0"
 					>
 						{bookmark.title}
 					</a>
@@ -82,7 +82,7 @@ export function BookmarkCard({
 							<Button
 								variant="ghost"
 								size="icon-xs"
-								className="opacity-0 group-hover:opacity-100 shrink-0"
+								className="opacity-0 group-hover:opacity-100 shrink-0 relative z-10"
 							>
 								<MoreVertical className="size-4" />
 							</Button>
