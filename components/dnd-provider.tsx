@@ -139,7 +139,7 @@ export function DndProvider({
 			activationConstraint: { distance: 5 },
 		}),
 		useSensor(TouchSensor, {
-			activationConstraint: { delay: 250, tolerance: 5 },
+			activationConstraint: { delay: 500, tolerance: 10 },
 		}),
 		useSensor(KeyboardSensor, {
 			coordinateGetter: sortableKeyboardCoordinates,
