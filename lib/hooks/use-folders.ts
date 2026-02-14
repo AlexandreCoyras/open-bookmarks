@@ -81,7 +81,33 @@ export function useUpdateFolder() {
 			if (error) throw error
 			return data
 		},
-		onSuccess: () => {
+		onMutate: async (variables) => {
+			if (variables.parentId === undefined) return
+
+			await queryClient.cancelQueries({ queryKey: ['folders'] })
+
+			const previousData = queryClient.getQueriesData<Array<{ id: string }>>({
+				queryKey: ['folders'],
+			})
+
+			queryClient.setQueriesData<Array<{ id: string }>>(
+				{ queryKey: ['folders'] },
+				(old) => {
+					if (!Array.isArray(old)) return old
+					return old.filter((f) => f.id !== variables.id)
+				},
+			)
+
+			return { previousData }
+		},
+		onError: (_err, _variables, context) => {
+			if (context?.previousData) {
+				for (const [queryKey, data] of context.previousData) {
+					queryClient.setQueryData(queryKey, data)
+				}
+			}
+		},
+		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ['folders'] })
 			queryClient.invalidateQueries({ queryKey: ['folder'] })
 			queryClient.invalidateQueries({ queryKey: ['breadcrumb'] })
@@ -98,7 +124,31 @@ export function useDeleteFolder() {
 			if (error) throw error
 			return data
 		},
-		onSuccess: () => {
+		onMutate: async (id) => {
+			await queryClient.cancelQueries({ queryKey: ['folders'] })
+
+			const previousData = queryClient.getQueriesData<Array<{ id: string }>>({
+				queryKey: ['folders'],
+			})
+
+			queryClient.setQueriesData<Array<{ id: string }>>(
+				{ queryKey: ['folders'] },
+				(old) => {
+					if (!Array.isArray(old)) return old
+					return old.filter((f) => f.id !== id)
+				},
+			)
+
+			return { previousData }
+		},
+		onError: (_err, _variables, context) => {
+			if (context?.previousData) {
+				for (const [queryKey, data] of context.previousData) {
+					queryClient.setQueryData(queryKey, data)
+				}
+			}
+		},
+		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ['folders'] })
 			queryClient.invalidateQueries({ queryKey: ['bookmarks'] })
 		},

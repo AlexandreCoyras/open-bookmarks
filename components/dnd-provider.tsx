@@ -173,7 +173,10 @@ export function DndProvider({
 				return
 			}
 
-			// Dragging a bookmark onto a folder target
+			// Dragging a bookmark onto a folder target — remove from local state immediately
+			setLocalItems((prev) =>
+				prev.filter((b) => b.id !== (active.id as string)),
+			)
 			try {
 				await updateBookmark.mutateAsync({
 					id: active.id as string,
