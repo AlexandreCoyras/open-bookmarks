@@ -87,7 +87,7 @@ export default function FolderPage() {
 		<div className="space-y-6">
 			<BreadcrumbNav currentName={folder.name} parentId={folder.parentId} />
 
-			<div className="flex items-center justify-between">
+			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 				<h2 className="font-semibold text-xl">{folder.name}</h2>
 				<div className="flex gap-2">
 					<Button
