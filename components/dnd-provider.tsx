@@ -41,9 +41,11 @@ export function useDndItems() {
 export function DndProvider({
 	children,
 	folderId,
+	parentFolderId,
 }: {
 	children: ReactNode
 	folderId?: string
+	parentFolderId?: string | null
 }) {
 	const { data: bookmarks } = useBookmarks(folderId)
 	const serverItems = (bookmarks ?? []) as BookmarkData[]
@@ -93,9 +95,13 @@ export function DndProvider({
 			try {
 				await updateBookmark.mutateAsync({
 					id: active.id as string,
-					folderId: null,
+					folderId: parentFolderId ?? null,
 				})
-				toast.success('Favori deplace a la racine')
+				toast.success(
+					parentFolderId
+						? 'Favori deplace dans le dossier parent'
+						: 'Favori deplace a la racine',
+				)
 			} catch {
 				toast.error('Erreur lors du deplacement')
 			}

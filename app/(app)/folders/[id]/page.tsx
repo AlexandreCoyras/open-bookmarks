@@ -116,7 +116,7 @@ export default function FolderPage() {
 				</div>
 			</div>
 
-			<DndProvider folderId={id}>
+			<DndProvider folderId={id} parentFolderId={folder.parentId}>
 				<DroppableRoot />
 
 				<FolderList parentId={id} />
