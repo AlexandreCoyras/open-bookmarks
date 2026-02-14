@@ -17,6 +17,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { getFolderIcon } from '@/lib/folder-icons'
+import { useTouchDevice } from '@/lib/hooks/use-touch-device'
 
 export type FolderData = {
 	id: string
@@ -43,6 +44,7 @@ export function FolderCard({
 	href?: string
 }) {
 	const Icon = getFolderIcon(folder.icon)
+	const isTouch = useTouchDevice()
 
 	const content = (
 		<Card className="group relative">
@@ -95,7 +97,7 @@ export function FolderCard({
 		</Card>
 	)
 
-	if (readOnly) return content
+	if (readOnly || isTouch) return content
 
 	return (
 		<ContextMenu>

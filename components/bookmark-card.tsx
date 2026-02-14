@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { useTouchDevice } from '@/lib/hooks/use-touch-device'
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -54,6 +55,7 @@ export function BookmarkCard({
 	selected?: boolean
 	onToggleSelect?: () => void
 }) {
+	const isTouch = useTouchDevice()
 	const content = (
 		<Card
 			className={cn(
@@ -137,7 +139,7 @@ export function BookmarkCard({
 		</Card>
 	)
 
-	if (readOnly) return content
+	if (readOnly || isTouch) return content
 
 	return (
 		<ContextMenu>

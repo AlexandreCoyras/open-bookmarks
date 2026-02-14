@@ -9,6 +9,7 @@ import {
 	ContextMenuSeparator,
 	ContextMenuTrigger,
 } from '@/components/ui/context-menu'
+import { useTouchDevice } from '@/lib/hooks/use-touch-device'
 
 type BookmarksAreaContextMenuProps = {
 	children: ReactNode
@@ -25,6 +26,10 @@ export function BookmarksAreaContextMenu({
 	onImport,
 	folderLabel = 'Nouveau dossier',
 }: BookmarksAreaContextMenuProps) {
+	const isTouch = useTouchDevice()
+
+	if (isTouch) return <>{children}</>
+
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger asChild>{children}</ContextMenuTrigger>

@@ -40,7 +40,7 @@ export function SortableBookmark({
 		transform: CSS.Transform.toString(transform),
 		transition,
 		opacity: isDragging ? 0.4 : isAnyDragging ? 0.6 : 1,
-		touchAction: 'none' as const,
+		touchAction: 'pan-y' as const,
 	}
 
 	return (
