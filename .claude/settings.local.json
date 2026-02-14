@@ -24,7 +24,9 @@
       "Bash(bunx tsc:*)",
       "Bash(bun run lint:*)",
       "Bash(bun pm:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(magick:*)"
     ]
   }
 }
