@@ -1,4 +1,11 @@
-import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import {
+	boolean,
+	index,
+	integer,
+	pgTable,
+	text,
+	timestamp,
+} from 'drizzle-orm/pg-core'
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -49,3 +56,53 @@ export const verification = pgTable('verification', {
 	createdAt: timestamp('created_at'),
 	updatedAt: timestamp('updated_at'),
 })
+
+export const folder = pgTable(
+	'folder',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		name: text('name').notNull(),
+		color: text('color'),
+		parentId: text('parent_id'),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id, { onDelete: 'cascade' }),
+		position: integer('position').notNull().default(0),
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+		updatedAt: timestamp('updated_at')
+			.notNull()
+			.defaultNow()
+			.$onUpdate(() => new Date()),
+	},
+	(table) => [index('folder_user_parent_idx').on(table.userId, table.parentId)],
+)
+
+export const bookmark = pgTable(
+	'bookmark',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		url: text('url').notNull(),
+		title: text('title').notNull(),
+		description: text('description'),
+		favicon: text('favicon'),
+		folderId: text('folder_id').references(() => folder.id, {
+			onDelete: 'set null',
+		}),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id, { onDelete: 'cascade' }),
+		position: integer('position').notNull().default(0),
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+		updatedAt: timestamp('updated_at')
+			.notNull()
+			.defaultNow()
+			.$onUpdate(() => new Date()),
+	},
+	(table) => [
+		index('bookmark_user_folder_idx').on(table.userId, table.folderId),
+	],
+)

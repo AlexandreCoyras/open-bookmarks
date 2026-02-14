@@ -1,11 +1,13 @@
 import { Elysia } from 'elysia'
+import { authPlugin } from '@/server/auth-middleware'
+import { bookmarkRoutes } from '@/server/routes/bookmarks'
+import { folderRoutes } from '@/server/routes/folders'
 
 const app = new Elysia({ prefix: '/api' })
+	.use(authPlugin)
+	.use(bookmarkRoutes)
+	.use(folderRoutes)
 	.get('/health', () => ({ status: 'ok' }))
-	.all('/auth/*', async ({ request }) => {
-		const { auth } = await import('@/lib/auth')
-		return auth.handler(request)
-	})
 
 export type App = typeof app
 

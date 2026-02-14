@@ -1,0 +1,87 @@
+'use client'
+
+import { ExternalLink, MoreVertical, Pencil, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+
+export type BookmarkData = {
+	id: string
+	url: string
+	title: string
+	description: string | null
+	favicon: string | null
+	folderId: string | null
+	position: number
+}
+
+export function BookmarkCard({
+	bookmark,
+	onEdit,
+	onDelete,
+}: {
+	bookmark: BookmarkData
+	onEdit: () => void
+	onDelete: () => void
+}) {
+	return (
+		<Card className="group">
+			<CardContent className="flex items-center gap-3 p-3">
+				{bookmark.favicon ? (
+					// biome-ignore lint/performance/noImgElement: external favicon domains
+					<img
+						src={bookmark.favicon}
+						alt=""
+						className="size-5 shrink-0 rounded"
+					/>
+				) : (
+					<ExternalLink className="size-5 shrink-0 text-muted-foreground" />
+				)}
+				<div className="min-w-0 flex-1">
+					<a
+						href={bookmark.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="font-medium text-sm hover:underline truncate block"
+					>
+						{bookmark.title}
+					</a>
+					{bookmark.description && (
+						<p className="text-xs text-muted-foreground truncate">
+							{bookmark.description}
+						</p>
+					)}
+					<p className="text-xs text-muted-foreground/60 truncate">
+						{bookmark.url}
+					</p>
+				</div>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant="ghost"
+							size="icon-xs"
+							className="opacity-0 group-hover:opacity-100 shrink-0"
+						>
+							<MoreVertical className="size-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						<DropdownMenuItem onClick={onEdit}>
+							<Pencil className="mr-2 size-4" />
+							Modifier
+						</DropdownMenuItem>
+						<DropdownMenuItem onClick={onDelete} className="text-destructive">
+							<Trash2 className="mr-2 size-4" />
+							Supprimer
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</CardContent>
+		</Card>
+	)
+}
