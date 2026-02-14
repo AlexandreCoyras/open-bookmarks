@@ -1,5 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { and, asc, eq, sql } from 'drizzle-orm'
+import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { PublicFolderContent } from '@/app/(public)/s/[slug]/public-folder-content'
 import { bookmark, folder, user } from '@/drizzle/schema'
@@ -31,12 +32,14 @@ export default async function PublicFolderPage({
 
 	if (!found) notFound()
 
-	// Only increment view count if visitor is not the owner
+	// Only increment if not the owner AND not already viewed (cookie-based, set by middleware)
+	const headersList = await headers()
+	const alreadyViewed = headersList.get('x-already-viewed') === '1'
 	const session = await getSession()
 	const isOwner = session?.user?.id === found.userId
 
 	let viewCount = found.viewCount
-	if (!isOwner) {
+	if (!isOwner && !alreadyViewed) {
 		const [updated] = await db
 			.update(folder)
 			.set({ viewCount: sql`${folder.viewCount} + 1` })
