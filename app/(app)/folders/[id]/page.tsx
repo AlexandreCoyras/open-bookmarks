@@ -1,164 +1,82 @@
-'use client'
+import { and, asc, eq, sql } from 'drizzle-orm'
+import { redirect } from 'next/navigation'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+import { FolderContent } from '@/app/(app)/folders/[id]/folder-content'
+import { bookmark, folder } from '@/drizzle/schema'
+import { getSession } from '@/lib/auth-server'
+import { db } from '@/lib/db'
+import { getQueryClient } from '@/lib/get-query-client'
 
-import { FolderPlus, Pencil, Trash2 } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { AddBookmarkButton } from '@/components/add-bookmark-button'
-import { BookmarkList } from '@/components/bookmark-list'
-import { BreadcrumbNav } from '@/components/breadcrumb-nav'
-import { DndProvider } from '@/components/dnd-provider'
-import { DroppableRoot } from '@/components/droppable-root'
-import { FolderForm } from '@/components/folder-form'
-import { FolderList } from '@/components/folder-list'
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { Skeleton } from '@/components/ui/skeleton'
-import {
-	useCreateFolder,
-	useDeleteFolder,
-	useFolder,
-	useUpdateFolder,
-} from '@/lib/hooks/use-folders'
+export default async function FolderPage({
+	params,
+}: {
+	params: Promise<{ id: string }>
+}) {
+	const { id } = await params
+	const session = await getSession()
+	if (!session) redirect('/login')
 
-export default function FolderPage() {
-	const { id } = useParams<{ id: string }>()
-	const router = useRouter()
-	const { data: folder, isLoading } = useFolder(id)
-	const updateFolder = useUpdateFolder()
-	const deleteFolder = useDeleteFolder()
-	const createFolder = useCreateFolder()
+	const userId = session.user.id
+	const queryClient = getQueryClient()
 
-	const [editOpen, setEditOpen] = useState(false)
-	const [deleteOpen, setDeleteOpen] = useState(false)
-	const [newFolderOpen, setNewFolderOpen] = useState(false)
-
-	if (isLoading) {
-		return (
-			<div className="space-y-4">
-				<Skeleton className="h-6 w-48" />
-				<Skeleton className="h-8 w-64" />
-			</div>
-		)
-	}
-
-	if (!folder || typeof folder !== 'object' || !('id' in folder)) {
-		return <p className="text-muted-foreground">Dossier introuvable.</p>
-	}
-
-	async function handleEditFolder(data: {
-		name: string
-		color?: string
-		parentId?: string
-	}) {
-		await updateFolder.mutateAsync({ id, ...data })
-		setEditOpen(false)
-		toast.success('Dossier modifie')
-	}
-
-	async function handleDeleteFolder() {
-		await deleteFolder.mutateAsync(id)
-		setDeleteOpen(false)
-		router.push('/')
-		toast.success('Dossier supprime')
-	}
-
-	async function handleCreateSubfolder(data: {
-		name: string
-		color?: string
-		parentId?: string
-	}) {
-		await createFolder.mutateAsync({ ...data, parentId: id })
-		setNewFolderOpen(false)
-		toast.success('Sous-dossier cree')
-	}
+	await Promise.all([
+		queryClient.prefetchQuery({
+			queryKey: ['folder', id],
+			queryFn: async () => {
+				const [found] = await db
+					.select()
+					.from(folder)
+					.where(and(eq(folder.id, id), eq(folder.userId, userId)))
+				return found ?? null
+			},
+		}),
+		queryClient.prefetchQuery({
+			queryKey: ['folders', id],
+			queryFn: () =>
+				db
+					.select()
+					.from(folder)
+					.where(and(eq(folder.userId, userId), eq(folder.parentId, id)))
+					.orderBy(asc(folder.position)),
+		}),
+		queryClient.prefetchQuery({
+			queryKey: ['bookmarks', id],
+			queryFn: () =>
+				db
+					.select()
+					.from(bookmark)
+					.where(and(eq(bookmark.userId, userId), eq(bookmark.folderId, id)))
+					.orderBy(asc(bookmark.position)),
+		}),
+		queryClient.prefetchQuery({
+			queryKey: ['breadcrumb', id],
+			queryFn: async () => {
+				const result = await db.execute(sql`
+					WITH RECURSIVE ancestors AS (
+						SELECT id, name, parent_id, color, 0 AS depth
+						FROM folder
+						WHERE id = ${id} AND user_id = ${userId}
+						UNION ALL
+						SELECT f.id, f.name, f.parent_id, f.color, a.depth + 1
+						FROM folder f
+						JOIN ancestors a ON f.id = a.parent_id
+						WHERE f.user_id = ${userId} AND a.depth < 20
+					)
+					SELECT id, name, parent_id AS "parentId", color FROM ancestors ORDER BY depth DESC
+				`)
+				return result.rows as {
+					id: string
+					name: string
+					parentId: string | null
+					color: string | null
+				}[]
+			},
+		}),
+	])
 
 	return (
-		<div className="space-y-6">
-			<BreadcrumbNav currentName={folder.name} parentId={folder.parentId} />
-
-			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-				<h2 className="font-semibold text-xl">{folder.name}</h2>
-				<div className="flex gap-2">
-					<Button
-						size="sm"
-						variant="outline"
-						onClick={() => setNewFolderOpen(true)}
-					>
-						<FolderPlus className="mr-1 size-4" />
-						Sous-dossier
-					</Button>
-					<AddBookmarkButton folderId={id} />
-					<Button
-						size="icon-sm"
-						variant="ghost"
-						onClick={() => setEditOpen(true)}
-					>
-						<Pencil className="size-4" />
-					</Button>
-					<Button
-						size="icon-sm"
-						variant="ghost"
-						onClick={() => setDeleteOpen(true)}
-					>
-						<Trash2 className="size-4" />
-					</Button>
-				</div>
-			</div>
-
-			<DndProvider folderId={id} parentFolderId={folder.parentId}>
-				<DroppableRoot />
-
-				<FolderList parentId={id} />
-
-				<Separator className="my-6" />
-
-				<BookmarkList />
-			</DndProvider>
-
-			<FolderForm
-				open={editOpen}
-				onOpenChange={setEditOpen}
-				onSubmit={handleEditFolder}
-				defaultValues={folder}
-				loading={updateFolder.isPending}
-			/>
-
-			<FolderForm
-				open={newFolderOpen}
-				onOpenChange={setNewFolderOpen}
-				onSubmit={handleCreateSubfolder}
-				defaultValues={{ parentId: id } as never}
-				loading={createFolder.isPending}
-			/>
-
-			<AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Supprimer ce dossier ?</AlertDialogTitle>
-						<AlertDialogDescription>
-							Les sous-dossiers seront egalement supprimes. Les favoris contenus
-							seront deplaces a la racine.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Annuler</AlertDialogCancel>
-						<AlertDialogAction onClick={handleDeleteFolder}>
-							Supprimer
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-		</div>
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<FolderContent id={id} />
+		</HydrationBoundary>
 	)
 }

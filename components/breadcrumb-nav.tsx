@@ -10,33 +10,20 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { useFolder } from '@/lib/hooks/use-folders'
-
-function ParentBreadcrumb({ parentId }: { parentId: string }) {
-	const { data: parent } = useFolder(parentId)
-
-	if (!parent || typeof parent !== 'object' || !('id' in parent)) return null
-
-	return (
-		<>
-			{parent.parentId && <ParentBreadcrumb parentId={parent.parentId} />}
-			<BreadcrumbItem>
-				<BreadcrumbLink asChild>
-					<Link href={`/folders/${parent.id}`}>{parent.name}</Link>
-				</BreadcrumbLink>
-			</BreadcrumbItem>
-			<BreadcrumbSeparator />
-		</>
-	)
-}
+import { useBreadcrumb } from '@/lib/hooks/use-folders'
 
 export function BreadcrumbNav({
 	currentName,
-	parentId,
+	folderId,
 }: {
 	currentName: string
-	parentId?: string | null
+	folderId: string
 }) {
+	const { data: ancestors } = useBreadcrumb(folderId)
+
+	// All ancestors except the last one (which is the current folder)
+	const parents = ancestors?.slice(0, -1)
+
 	return (
 		<Breadcrumb>
 			<BreadcrumbList>
@@ -48,7 +35,16 @@ export function BreadcrumbNav({
 					</BreadcrumbLink>
 				</BreadcrumbItem>
 				<BreadcrumbSeparator />
-				{parentId && <ParentBreadcrumb parentId={parentId} />}
+				{parents?.map((parent) => (
+					<span key={parent.id} className="contents">
+						<BreadcrumbItem>
+							<BreadcrumbLink asChild>
+								<Link href={`/folders/${parent.id}`}>{parent.name}</Link>
+							</BreadcrumbLink>
+						</BreadcrumbItem>
+						<BreadcrumbSeparator />
+					</span>
+				))}
 				<BreadcrumbItem>
 					<BreadcrumbPage>{currentName}</BreadcrumbPage>
 				</BreadcrumbItem>

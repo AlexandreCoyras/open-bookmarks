@@ -26,6 +26,20 @@ export function useFolder(id: string) {
 	})
 }
 
+export function useBreadcrumb(folderId: string) {
+	return useQuery({
+		queryKey: ['breadcrumb', folderId],
+		queryFn: async () => {
+			const { data, error } = await api.api
+				.folders({ id: folderId })
+				.breadcrumb.get()
+			if (error) throw error
+			return data
+		},
+		enabled: !!folderId,
+	})
+}
+
 export function useCreateFolder() {
 	const queryClient = useQueryClient()
 

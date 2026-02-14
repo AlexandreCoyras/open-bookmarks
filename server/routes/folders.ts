@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull } from 'drizzle-orm'
+import { and, asc, eq, isNull, sql } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { folder } from '@/drizzle/schema'
 import { db } from '@/lib/db'
@@ -38,6 +38,35 @@ export const folderRoutes = new Elysia({ prefix: '/folders' })
 			if (!found) return status(404)
 
 			return found
+		},
+		{
+			auth: true,
+			params: t.Object({ id: t.String() }),
+		},
+	)
+	.get(
+		'/:id/breadcrumb',
+		async ({ user, params }) => {
+			const result = await db.execute(sql`
+				WITH RECURSIVE ancestors AS (
+					SELECT id, name, parent_id, color, 0 AS depth
+					FROM folder
+					WHERE id = ${params.id} AND user_id = ${user.id}
+					UNION ALL
+					SELECT f.id, f.name, f.parent_id, f.color, a.depth + 1
+					FROM folder f
+					JOIN ancestors a ON f.id = a.parent_id
+					WHERE f.user_id = ${user.id} AND a.depth < 20
+				)
+				SELECT id, name, parent_id AS "parentId", color FROM ancestors ORDER BY depth DESC
+			`)
+
+			return result.rows as {
+				id: string
+				name: string
+				parentId: string | null
+				color: string | null
+			}[]
 		},
 		{
 			auth: true,
