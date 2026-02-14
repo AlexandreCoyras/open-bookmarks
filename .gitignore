@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+
+# env
+.env
+.env.local
+
+# vercel
+.vercel
+
+# PWA (generated)
+public/sw*
+public/swe-worker*
+
+# drizzle
+drizzle/migrations/meta/
+
+# next-agents-md
+.next-docs/
+.agents/
