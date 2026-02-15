@@ -96,40 +96,44 @@ export default function BookmarkScene() {
 					canvas.addEventListener('webglcontextlost', () => setCrashed(true))
 				}}
 			>
-			<ambientLight intensity={0.6} />
-			<directionalLight position={[5, 5, 5]} intensity={0.7} color="#f5c842" />
-			<pointLight position={[-3, -2, 4]} intensity={0.3} color="#ffeedd" />
+				<ambientLight intensity={0.6} />
+				<directionalLight
+					position={[5, 5, 5]}
+					intensity={0.7}
+					color="#f5c842"
+				/>
+				<pointLight position={[-3, -2, 4]} intensity={0.3} color="#ffeedd" />
 
-			<SwayGroup>
-				<FloatingBookmarkCard
-					position={[-2, 1.5, 0]}
-					rotation={[0.1, 0.2, -0.05]}
-				/>
-				<FloatingBookmarkCard
-					position={[1.5, 1, 1]}
-					rotation={[-0.05, -0.15, 0.1]}
-				/>
-				<FloatingBookmarkCard
-					position={[-1, -1, 0.5]}
-					rotation={[0.05, 0.1, 0.05]}
-				/>
-				<FloatingBookmarkCard
-					position={[2, -0.5, -0.5]}
-					rotation={[-0.1, 0.2, -0.1]}
-				/>
+				<SwayGroup>
+					<FloatingBookmarkCard
+						position={[-2, 1.5, 0]}
+						rotation={[0.1, 0.2, -0.05]}
+					/>
+					<FloatingBookmarkCard
+						position={[1.5, 1, 1]}
+						rotation={[-0.05, -0.15, 0.1]}
+					/>
+					<FloatingBookmarkCard
+						position={[-1, -1, 0.5]}
+						rotation={[0.05, 0.1, 0.05]}
+					/>
+					<FloatingBookmarkCard
+						position={[2, -0.5, -0.5]}
+						rotation={[-0.1, 0.2, -0.1]}
+					/>
 
-				<FloatingFolder
-					position={[-2.5, -1, -1]}
-					rotation={[0.1, 0.3, 0.1]}
-					color="#e8a030"
-				/>
-				<FloatingFolder
-					position={[2.5, 1.5, -0.5]}
-					rotation={[-0.1, -0.2, -0.05]}
-					color="#6b8e5a"
-				/>
-			</SwayGroup>
-		</Canvas>
+					<FloatingFolder
+						position={[-2.5, -1, -1]}
+						rotation={[0.1, 0.3, 0.1]}
+						color="#e8a030"
+					/>
+					<FloatingFolder
+						position={[2.5, 1.5, -0.5]}
+						rotation={[-0.1, -0.2, -0.05]}
+						color="#6b8e5a"
+					/>
+				</SwayGroup>
+			</Canvas>
 		</div>
 	)
 }

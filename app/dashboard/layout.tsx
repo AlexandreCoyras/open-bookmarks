@@ -1,5 +1,10 @@
+import type { Metadata } from 'next'
 import { AppHeader } from '@/components/app-header'
 import { OfflineBanner } from '@/components/offline-banner'
+
+export const metadata: Metadata = {
+	robots: { index: false, follow: false },
+}
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
 	return (

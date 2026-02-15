@@ -4,7 +4,9 @@ export function LandingFooter() {
 			<div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6">
 				<div className="flex items-center gap-2">
 					<span className="font-serif font-semibold">Open Bookmarks</span>
-					<span className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()}</span>
+					<span className="text-sm text-muted-foreground">
+						&copy; {new Date().getFullYear()}
+					</span>
 				</div>
 
 				<div className="flex items-center gap-4">

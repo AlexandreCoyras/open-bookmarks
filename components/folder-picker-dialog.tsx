@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { Folder, Home } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
