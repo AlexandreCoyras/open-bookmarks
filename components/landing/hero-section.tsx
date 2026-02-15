@@ -42,7 +42,7 @@ export function HeroSection() {
 					</motion.p>
 
 					<motion.div
-						className="mt-8 flex gap-4"
+						className="mt-8 flex flex-wrap gap-4"
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.2 }}
