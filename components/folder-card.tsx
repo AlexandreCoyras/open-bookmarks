@@ -55,7 +55,7 @@ export function FolderCard({
 					style={{ color: folder.color ?? undefined }}
 				/>
 				<Link
-					href={href ?? `/folders/${folder.id}`}
+					href={href ?? `/dashboard/folders/${folder.id}`}
 					className="flex-1 font-medium text-sm hover:underline truncate after:absolute after:inset-0"
 				>
 					{folder.name}

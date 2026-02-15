@@ -51,7 +51,7 @@ export function SearchCommand() {
 
 	function handleSelectFolder(folderId: string) {
 		setOpen(false)
-		router.push(`/folders/${folderId}`)
+		router.push(`/dashboard/folders/${folderId}`)
 	}
 
 	function handleSelectBookmark(url: string) {

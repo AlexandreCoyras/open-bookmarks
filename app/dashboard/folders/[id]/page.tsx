@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { asc, eq, sql } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
-import { FolderContent } from '@/app/(app)/folders/[id]/folder-content'
+import { FolderContent } from '@/app/dashboard/folders/[id]/folder-content'
 import { bookmark, folder, folderCollaborator } from '@/drizzle/schema'
 import { getSession } from '@/lib/auth-server'
 import { db } from '@/lib/db'
@@ -65,7 +65,7 @@ export default async function FolderPage({
 	const userId = session.user.id
 	const folderAccess = await getFolderAccessServer(userId, id)
 
-	if (!folderAccess) redirect('/')
+	if (!folderAccess) redirect('/dashboard')
 
 	const ownerId = folderAccess.ownerId
 	const queryClient = getQueryClient()

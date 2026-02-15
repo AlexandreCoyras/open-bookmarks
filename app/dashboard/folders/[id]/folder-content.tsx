@@ -84,7 +84,7 @@ export function FolderContent({ id }: { id: string }) {
 	async function handleDeleteFolder() {
 		await deleteFolder.mutateAsync(id)
 		setDeleteOpen(false)
-		router.push('/')
+		router.push('/dashboard')
 		toast.success('Dossier supprime')
 	}
 

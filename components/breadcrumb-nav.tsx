@@ -31,7 +31,7 @@ export function BreadcrumbNav({
 				<BreadcrumbItem>
 					<DroppableBreadcrumbItem folderId={null}>
 						<BreadcrumbLink asChild>
-							<Link href="/">
+							<Link href="/dashboard">
 								<Home className="size-5" />
 							</Link>
 						</BreadcrumbLink>
@@ -43,7 +43,9 @@ export function BreadcrumbNav({
 						<BreadcrumbItem>
 							<DroppableBreadcrumbItem folderId={parent.id}>
 								<BreadcrumbLink asChild>
-									<Link href={`/folders/${parent.id}`}>{parent.name}</Link>
+									<Link href={`/dashboard/folders/${parent.id}`}>
+										{parent.name}
+									</Link>
 								</BreadcrumbLink>
 							</DroppableBreadcrumbItem>
 						</BreadcrumbItem>

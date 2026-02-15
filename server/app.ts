@@ -1,12 +1,12 @@
 import { Elysia } from 'elysia'
 import { authPlugin } from '@/server/auth-middleware'
+import { avatarRoutes } from '@/server/routes/avatar'
 import { bookmarkRoutes } from '@/server/routes/bookmarks'
 import { collaboratorRoutes } from '@/server/routes/collaborators'
 import { exportRoutes } from '@/server/routes/export'
 import { folderRoutes } from '@/server/routes/folders'
 import { importRoutes } from '@/server/routes/import'
 import { publicRoutes } from '@/server/routes/public'
-import { avatarRoutes } from '@/server/routes/avatar'
 import { searchRoutes } from '@/server/routes/search'
 
 const app = new Elysia({ prefix: '/api' })

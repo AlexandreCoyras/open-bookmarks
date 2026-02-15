@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { and, asc, eq, isNull, sql } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
-import { HomeContent } from '@/app/(app)/home-content'
+import { HomeContent } from '@/app/dashboard/home-content'
 import { bookmark, folder, folderCollaborator, user } from '@/drizzle/schema'
 import { getSession } from '@/lib/auth-server'
 import { db } from '@/lib/db'

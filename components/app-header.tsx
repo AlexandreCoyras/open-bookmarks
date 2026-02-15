@@ -61,7 +61,7 @@ export function AppHeader() {
 	return (
 		<header className="border-b px-3 py-3 h-[60px] sm:px-4">
 			<div className="flex items-center justify-between">
-				<Link href="/" className="font-semibold text-lg">
+				<Link href="/dashboard" className="font-semibold text-lg">
 					Open Bookmarks
 				</Link>
 				<div className="flex items-center gap-2">

@@ -32,7 +32,7 @@ export function SharedFoldersSection() {
 									/>
 									<div className="flex-1 min-w-0">
 										<Link
-											href={`/folders/${item.folder.id}`}
+											href={`/dashboard/folders/${item.folder.id}`}
 											className="font-medium text-sm hover:underline truncate block after:absolute after:inset-0"
 										>
 											{item.folder.name}
