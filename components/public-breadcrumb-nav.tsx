@@ -35,7 +35,7 @@ export function PublicBreadcrumbNav({
 				<BreadcrumbItem>
 					<BreadcrumbLink asChild>
 						<Link href="/">
-							<Home className="size-4" />
+							<Home className="size-5" />
 						</Link>
 					</BreadcrumbLink>
 				</BreadcrumbItem>
