@@ -41,14 +41,18 @@ export function SelectionBar({
 		await bulkDelete.mutateAsync([...selectedIds])
 		setDeleteOpen(false)
 		onClear()
-		toast.success(`${count} favori${count > 1 ? 's' : ''} supprimé${count > 1 ? 's' : ''}`)
+		toast.success(
+			`${count} favori${count > 1 ? 's' : ''} supprimé${count > 1 ? 's' : ''}`,
+		)
 	}
 
 	async function handleMove(folderId: string | null) {
 		await bulkMove.mutateAsync({ ids: [...selectedIds], folderId })
 		setMoveOpen(false)
 		onClear()
-		toast.success(`${count} favori${count > 1 ? 's' : ''} déplacé${count > 1 ? 's' : ''}`)
+		toast.success(
+			`${count} favori${count > 1 ? 's' : ''} déplacé${count > 1 ? 's' : ''}`,
+		)
 	}
 
 	return (
@@ -58,11 +62,7 @@ export function SelectionBar({
 					{count} sélectionné{count > 1 ? 's' : ''}
 				</span>
 				<div className="h-4 w-px bg-border" />
-				<Button
-					size="sm"
-					variant="outline"
-					onClick={() => setMoveOpen(true)}
-				>
+				<Button size="sm" variant="outline" onClick={() => setMoveOpen(true)}>
 					<FolderInput className="size-4" />
 					<span className="hidden sm:inline">Déplacer</span>
 				</Button>

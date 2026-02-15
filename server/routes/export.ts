@@ -159,8 +159,7 @@ export const exportRoutes = new Elysia({ prefix: '/export' })
 			const filename = `open-bookmarks-export-${yyyy}-${mm}-${dd}.html`
 
 			set.headers['content-type'] = 'text/html; charset=utf-8'
-			set.headers['content-disposition'] =
-				`attachment; filename="${filename}"`
+			set.headers['content-disposition'] = `attachment; filename="${filename}"`
 
 			return html
 		},

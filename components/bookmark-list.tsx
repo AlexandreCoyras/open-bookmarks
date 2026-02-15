@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDeleteBookmark, useUpdateBookmark } from '@/lib/hooks/use-bookmarks'
 
-export function BookmarkList() {
+export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 	const { items, folderId, parentFolderId } = useDndItems()
 	const isLoading = false
 	const updateBookmark = useUpdateBookmark()
@@ -109,7 +109,7 @@ export function BookmarkList() {
 
 	return (
 		<>
-			{items.length > 0 && (
+			{items.length > 0 && !readOnly && (
 				<div className="flex items-center justify-end mb-2">
 					<Button
 						size="sm"
@@ -132,10 +132,12 @@ export function BookmarkList() {
 
 			{items.length > 0 ? (
 				<DndBookmarkList
-					onEdit={handleEdit}
-					onDelete={(id) => setDeletingId(id)}
-					onRemoveFromFolder={folderId ? handleRemoveFromFolder : undefined}
-					selectionMode={selectionMode}
+					onEdit={readOnly ? undefined : handleEdit}
+					onDelete={readOnly ? undefined : (id) => setDeletingId(id)}
+					onRemoveFromFolder={
+						!readOnly && folderId ? handleRemoveFromFolder : undefined
+					}
+					selectionMode={!readOnly && selectionMode}
 					selectedIds={selectedIds}
 					onToggleSelect={toggleSelect}
 				/>
@@ -145,7 +147,7 @@ export function BookmarkList() {
 				</p>
 			)}
 
-			{selectionMode && (
+			{selectionMode && !readOnly && (
 				<SelectionBar
 					selectedIds={selectedIds}
 					onClear={clearSelection}

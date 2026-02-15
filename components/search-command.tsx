@@ -1,8 +1,8 @@
 'use client'
 
 import { ExternalLink, Search } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
 	CommandDialog,
@@ -106,9 +106,7 @@ export function SearchCommand() {
 												color: f.color ?? undefined,
 											}}
 										/>
-										<span className="truncate">
-											{f.name}
-										</span>
+										<span className="truncate">{f.name}</span>
 										{f.parentName && (
 											<span className="ml-auto text-xs text-muted-foreground truncate">
 												{f.parentName}
@@ -138,9 +136,7 @@ export function SearchCommand() {
 										<ExternalLink className="size-4 shrink-0 text-muted-foreground" />
 									)}
 									<div className="min-w-0 flex-1">
-										<span className="truncate block text-sm">
-											{b.title}
-										</span>
+										<span className="truncate block text-sm">{b.title}</span>
 										<span className="truncate block text-xs text-muted-foreground">
 											{b.url}
 										</span>

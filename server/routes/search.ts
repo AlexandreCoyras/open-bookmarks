@@ -21,9 +21,7 @@ export const searchRoutes = new Elysia({ prefix: '/search' })
 						parentId: folder.parentId,
 					})
 					.from(folder)
-					.where(
-						and(eq(folder.userId, user.id), ilike(folder.name, term)),
-					)
+					.where(and(eq(folder.userId, user.id), ilike(folder.name, term)))
 					.limit(10),
 				db
 					.select({
@@ -76,15 +74,11 @@ export const searchRoutes = new Elysia({ prefix: '/search' })
 			return {
 				folders: folders.map((f) => ({
 					...f,
-					parentName: f.parentId
-						? (folderNames.get(f.parentId) ?? null)
-						: null,
+					parentName: f.parentId ? (folderNames.get(f.parentId) ?? null) : null,
 				})),
 				bookmarks: bookmarks.map((b) => ({
 					...b,
-					folderName: b.folderId
-						? (folderNames.get(b.folderId) ?? null)
-						: null,
+					folderName: b.folderId ? (folderNames.get(b.folderId) ?? null) : null,
 				})),
 			}
 		},

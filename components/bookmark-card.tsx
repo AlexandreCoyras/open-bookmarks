@@ -11,8 +11,6 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import { useTouchDevice } from '@/lib/hooks/use-touch-device'
 import {
 	ContextMenu,
 	ContextMenuContent,
@@ -25,6 +23,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useTouchDevice } from '@/lib/hooks/use-touch-device'
+import { cn } from '@/lib/utils'
 
 export type BookmarkData = {
 	id: string
@@ -65,13 +65,12 @@ export function BookmarkCard({
 			onClick={selectionMode ? onToggleSelect : undefined}
 		>
 			<CardContent className="flex items-center gap-3 p-3 min-w-0">
-				{selectionMode && (
-					selected ? (
+				{selectionMode &&
+					(selected ? (
 						<CheckSquare className="size-5 shrink-0 text-primary" />
 					) : (
 						<Square className="size-5 shrink-0 text-muted-foreground" />
-					)
-				)}
+					))}
 				{bookmark.favicon ? (
 					// biome-ignore lint/performance/noImgElement: external favicon domains
 					<img
@@ -139,26 +138,30 @@ export function BookmarkCard({
 		</Card>
 	)
 
-	if (readOnly || isTouch) return content
+	if (readOnly || isTouch || (!onEdit && !onDelete)) return content
 
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger asChild>{content}</ContextMenuTrigger>
 			<ContextMenuContent>
-				<ContextMenuItem onClick={onEdit}>
-					<Pencil className="mr-2 size-4" />
-					Modifier
-				</ContextMenuItem>
+				{onEdit && (
+					<ContextMenuItem onClick={onEdit}>
+						<Pencil className="mr-2 size-4" />
+						Modifier
+					</ContextMenuItem>
+				)}
 				{onRemoveFromFolder && (
 					<ContextMenuItem onClick={onRemoveFromFolder}>
 						<ArrowUpFromLine className="mr-2 size-4" />
 						Retirer du dossier
 					</ContextMenuItem>
 				)}
-				<ContextMenuItem onClick={onDelete} className="text-destructive">
-					<Trash2 className="mr-2 size-4" />
-					Supprimer
-				</ContextMenuItem>
+				{onDelete && (
+					<ContextMenuItem onClick={onDelete} className="text-destructive">
+						<Trash2 className="mr-2 size-4" />
+						Supprimer
+					</ContextMenuItem>
+				)}
 			</ContextMenuContent>
 		</ContextMenu>
 	)

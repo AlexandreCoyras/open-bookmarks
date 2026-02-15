@@ -20,7 +20,10 @@ export function useFolder(id: string) {
 		queryFn: async () => {
 			const { data, error } = await api.api.folders({ id }).get()
 			if (error) throw error
-			return data
+			return data as typeof data & {
+				access?: 'owner' | 'editor' | 'viewer'
+				hasCollaborators?: boolean
+			}
 		},
 		enabled: !!id,
 	})

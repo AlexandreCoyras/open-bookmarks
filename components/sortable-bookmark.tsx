@@ -15,8 +15,8 @@ export function SortableBookmark({
 	onToggleSelect,
 }: {
 	bookmark: BookmarkData
-	onEdit: () => void
-	onDelete: () => void
+	onEdit?: () => void
+	onDelete?: () => void
 	onRemoveFromFolder?: () => void
 	selectionMode?: boolean
 	selected?: boolean
@@ -44,7 +44,13 @@ export function SortableBookmark({
 	}
 
 	return (
-		<div ref={setNodeRef} style={style} className="min-w-0" {...attributes} {...(selectionMode ? {} : listeners)}>
+		<div
+			ref={setNodeRef}
+			style={style}
+			className="min-w-0"
+			{...attributes}
+			{...(selectionMode ? {} : listeners)}
+		>
 			<BookmarkCard
 				bookmark={bookmark}
 				onEdit={onEdit}

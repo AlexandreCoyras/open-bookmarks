@@ -22,7 +22,13 @@ import {
 	useUpdateFolder,
 } from '@/lib/hooks/use-folders'
 
-export function FolderList({ parentId }: { parentId?: string }) {
+export function FolderList({
+	parentId,
+	readOnly,
+}: {
+	parentId?: string
+	readOnly?: boolean
+}) {
 	const { data: folders, isLoading } = useFolders(parentId)
 	const updateFolder = useUpdateFolder()
 	const deleteFolder = useDeleteFolder()
@@ -74,8 +80,11 @@ export function FolderList({ parentId }: { parentId?: string }) {
 						<DroppableFolder
 							key={folder.id}
 							folder={folder as FolderData}
-							onEdit={() => handleEdit(folder as FolderData)}
-							onDelete={() => setDeletingId(folder.id)}
+							onEdit={
+								readOnly ? undefined : () => handleEdit(folder as FolderData)
+							}
+							onDelete={readOnly ? undefined : () => setDeletingId(folder.id)}
+							readOnly={readOnly}
 						/>
 					))}
 				</div>

@@ -6,7 +6,9 @@ export async function middleware(request: NextRequest) {
 		const slug = request.nextUrl.pathname.split('/')[2]
 		if (!slug) return NextResponse.next()
 
-		const viewedSlugs = (request.cookies.get('ob-viewed')?.value ?? '').split(',').filter(Boolean)
+		const viewedSlugs = (request.cookies.get('ob-viewed')?.value ?? '')
+			.split(',')
+			.filter(Boolean)
 		const alreadyViewed = viewedSlugs.includes(slug)
 
 		const requestHeaders = new Headers(request.headers)
@@ -40,5 +42,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/', '/s/:path*', '/((?!login|register|api|_next|favicon|icon|manifest|sw|serwist|~offline).*)'],
+	matcher: [
+		'/',
+		'/s/:path*',
+		'/((?!login|register|api|_next|favicon|icon|manifest|sw|serwist|~offline).*)',
+	],
 }

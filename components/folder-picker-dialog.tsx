@@ -1,7 +1,7 @@
 'use client'
 
-import { Folder, Home } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
+import { Folder, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
 	Dialog,
@@ -23,7 +23,9 @@ function useAllFolders() {
 	return useQuery({
 		queryKey: ['folders', 'all'],
 		queryFn: async () => {
-			const { data, error } = await api.api.folders.get({ query: { all: 'true' } })
+			const { data, error } = await api.api.folders.get({
+				query: { all: 'true' },
+			})
 			if (error) throw error
 			return data as FolderItem[]
 		},
@@ -79,9 +81,7 @@ function FolderTreeItem({
 				/>
 				<span className="truncate">{node.name}</span>
 				{isCurrent && (
-					<span className="ml-auto text-xs text-muted-foreground">
-						actuel
-					</span>
+					<span className="ml-auto text-xs text-muted-foreground">actuel</span>
 				)}
 			</button>
 			{node.children.map((child) => (

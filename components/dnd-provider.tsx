@@ -101,10 +101,12 @@ export function DndProvider({
 	children,
 	folderId,
 	parentFolderId,
+	access = 'owner',
 }: {
 	children: ReactNode
 	folderId?: string
 	parentFolderId?: string | null
+	access?: 'owner' | 'editor' | 'viewer'
 }) {
 	const dndId = useId()
 	const { data: bookmarks } = useBookmarks(folderId)
@@ -241,6 +243,21 @@ export function DndProvider({
 	}
 
 	const isDragging = activeDragItem !== null
+
+	if (access === 'viewer') {
+		return (
+			<DndBookmarkContext.Provider
+				value={{
+					items: localItems,
+					folderId,
+					parentFolderId,
+					isDragging: false,
+				}}
+			>
+				{children}
+			</DndBookmarkContext.Provider>
+		)
+	}
 
 	return (
 		<DndBookmarkContext.Provider

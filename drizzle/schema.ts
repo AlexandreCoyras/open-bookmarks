@@ -5,6 +5,7 @@ import {
 	pgTable,
 	text,
 	timestamp,
+	uniqueIndex,
 } from 'drizzle-orm/pg-core'
 
 export const user = pgTable('user', {
@@ -107,5 +108,31 @@ export const bookmark = pgTable(
 	},
 	(table) => [
 		index('bookmark_user_folder_idx').on(table.userId, table.folderId),
+	],
+)
+
+export const folderCollaborator = pgTable(
+	'folder_collaborator',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		folderId: text('folder_id')
+			.notNull()
+			.references(() => folder.id, { onDelete: 'cascade' }),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id, { onDelete: 'cascade' }),
+		role: text('role').notNull().default('viewer'), // 'viewer' | 'editor'
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+		updatedAt: timestamp('updated_at')
+			.notNull()
+			.defaultNow()
+			.$onUpdate(() => new Date()),
+	},
+	(table) => [
+		index('folder_collab_folder_idx').on(table.folderId),
+		index('folder_collab_user_idx').on(table.userId),
+		uniqueIndex('folder_collab_unique_idx').on(table.folderId, table.userId),
 	],
 )

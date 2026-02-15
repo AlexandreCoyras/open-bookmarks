@@ -9,10 +9,12 @@ export function DroppableFolder({
 	folder,
 	onEdit,
 	onDelete,
+	readOnly,
 }: {
 	folder: FolderData
-	onEdit: () => void
-	onDelete: () => void
+	onEdit?: () => void
+	onDelete?: () => void
+	readOnly?: boolean
 }) {
 	const { isDragging: isAnyDragging } = useDndItems()
 	const { setNodeRef: setDroppableRef, isOver } = useDroppable({
@@ -55,7 +57,12 @@ export function DroppableFolder({
 			{...attributes}
 			{...listeners}
 		>
-			<FolderCard folder={folder} onEdit={onEdit} onDelete={onDelete} />
+			<FolderCard
+				folder={folder}
+				onEdit={onEdit}
+				onDelete={onDelete}
+				readOnly={readOnly}
+			/>
 		</div>
 	)
 }

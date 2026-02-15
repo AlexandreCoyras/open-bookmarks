@@ -178,7 +178,10 @@ export function useBulkMoveBookmarks() {
 		mutationFn: async ({
 			ids,
 			folderId,
-		}: { ids: string[]; folderId: string | null }) => {
+		}: {
+			ids: string[]
+			folderId: string | null
+		}) => {
 			const { data, error } = await api.api.bookmarks['bulk-move'].post({
 				ids,
 				folderId,

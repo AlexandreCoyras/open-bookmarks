@@ -8,6 +8,7 @@ import { BookmarkForm } from '@/components/bookmark-form'
 import { BookmarkList } from '@/components/bookmark-list'
 import { BookmarksAreaContextMenu } from '@/components/bookmarks-area-context-menu'
 import { BreadcrumbNav } from '@/components/breadcrumb-nav'
+import { CollaboratorsDialog } from '@/components/collaborators-dialog'
 import { DndProvider } from '@/components/dnd-provider'
 import { FolderForm } from '@/components/folder-form'
 import { FolderList } from '@/components/folder-list'
@@ -34,6 +35,8 @@ import {
 	useUpdateFolder,
 } from '@/lib/hooks/use-folders'
 import { useImportBookmarks } from '@/lib/hooks/use-import'
+
+type Access = 'owner' | 'editor' | 'viewer'
 
 export function FolderContent({ id }: { id: string }) {
 	const router = useRouter()
@@ -62,6 +65,10 @@ export function FolderContent({ id }: { id: string }) {
 	if (!folder || typeof folder !== 'object' || !('id' in folder)) {
 		return <p className="text-muted-foreground">Dossier introuvable.</p>
 	}
+
+	const access: Access = (folder as { access?: Access }).access ?? 'owner'
+	const isOwner = access === 'owner'
+	const canEdit = access === 'owner' || access === 'editor'
 
 	async function handleEditFolder(data: {
 		name: string
@@ -112,21 +119,20 @@ export function FolderContent({ id }: { id: string }) {
 		)
 	}
 
-	return (
-		<div className="space-y-4 sm:space-y-6">
-			<BookmarksAreaContextMenu
-				onNewFolder={() => setNewFolderOpen(true)}
-				onAddBookmark={() => setBookmarkFormOpen(true)}
-				onImport={() => setImportDialogOpen(true)}
-				folderLabel="Sous-dossier"
+	const innerContent = (
+		<div className="min-h-[calc(100vh-12rem)] space-y-4 sm:space-y-6">
+			<DndProvider
+				folderId={id}
+				parentFolderId={folder.parentId}
+				access={access}
 			>
-				<div className="min-h-[calc(100vh-12rem)] space-y-4 sm:space-y-6">
-					<DndProvider folderId={id} parentFolderId={folder.parentId}>
-						<BreadcrumbNav currentName={folder.name} folderId={id} />
+				<BreadcrumbNav currentName={folder.name} folderId={id} />
 
-						<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-							<h2 className="font-semibold text-xl">{folder.name}</h2>
-							<div className="flex gap-2">
+				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+					<h2 className="font-semibold text-xl">{folder.name}</h2>
+					<div className="flex gap-2">
+						{canEdit && (
+							<>
 								<Button
 									size="sm"
 									variant="outline"
@@ -139,11 +145,16 @@ export function FolderContent({ id }: { id: string }) {
 									<Plus className="size-4" />
 									<span className="hidden sm:inline">Ajouter un favori</span>
 								</Button>
+							</>
+						)}
+						{isOwner && (
+							<>
 								<ShareFolderDialog
 									folderId={id}
 									publicSlug={folder.publicSlug}
 									viewCount={folder.viewCount}
 								/>
+								<CollaboratorsDialog folderId={id} />
 								<Button
 									size="icon-sm"
 									variant="ghost"
@@ -158,66 +169,98 @@ export function FolderContent({ id }: { id: string }) {
 								>
 									<Trash2 className="size-4" />
 								</Button>
-							</div>
-						</div>
-
-						<FolderList parentId={id} />
-
-						<Separator className="my-6" />
-
-						<BookmarkList />
-					</DndProvider>
+							</>
+						)}
+						{!isOwner && canEdit && (
+							<Button
+								size="icon-sm"
+								variant="ghost"
+								onClick={() => setEditOpen(true)}
+							>
+								<Pencil className="size-4" />
+							</Button>
+						)}
+					</div>
 				</div>
-			</BookmarksAreaContextMenu>
 
-			<BookmarkForm
-				open={bookmarkFormOpen}
-				onOpenChange={setBookmarkFormOpen}
-				onSubmit={handleCreateBookmark}
-				defaultValues={{ folderId: id } as never}
-				loading={createBookmark.isPending}
-			/>
+				<FolderList parentId={id} readOnly={!canEdit} />
 
-			<FolderForm
-				open={editOpen}
-				onOpenChange={setEditOpen}
-				onSubmit={handleEditFolder}
-				defaultValues={folder}
-				loading={updateFolder.isPending}
-			/>
+				<Separator className="my-6" />
 
-			<FolderForm
-				open={newFolderOpen}
-				onOpenChange={setNewFolderOpen}
-				onSubmit={handleCreateSubfolder}
-				defaultValues={{ parentId: id } as never}
-				loading={createFolder.isPending}
-			/>
+				<BookmarkList readOnly={!canEdit} />
+			</DndProvider>
+		</div>
+	)
 
-			<ImportDialog
-				open={importDialogOpen}
-				onOpenChange={setImportDialogOpen}
-				onImport={handleImport}
-				loading={importBookmarks.isPending}
-			/>
+	return (
+		<div className="space-y-4 sm:space-y-6">
+			{canEdit ? (
+				<BookmarksAreaContextMenu
+					onNewFolder={() => setNewFolderOpen(true)}
+					onAddBookmark={() => setBookmarkFormOpen(true)}
+					onImport={() => setImportDialogOpen(true)}
+					folderLabel="Sous-dossier"
+				>
+					{innerContent}
+				</BookmarksAreaContextMenu>
+			) : (
+				innerContent
+			)}
 
-			<AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Supprimer ce dossier ?</AlertDialogTitle>
-						<AlertDialogDescription>
-							Les sous-dossiers et tous les favoris contenus seront
-							definitivement supprimes.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Annuler</AlertDialogCancel>
-						<AlertDialogAction onClick={handleDeleteFolder}>
-							Supprimer
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			{canEdit && (
+				<>
+					<BookmarkForm
+						open={bookmarkFormOpen}
+						onOpenChange={setBookmarkFormOpen}
+						onSubmit={handleCreateBookmark}
+						defaultValues={{ folderId: id } as never}
+						loading={createBookmark.isPending}
+					/>
+
+					<FolderForm
+						open={editOpen}
+						onOpenChange={setEditOpen}
+						onSubmit={handleEditFolder}
+						defaultValues={folder}
+						loading={updateFolder.isPending}
+					/>
+
+					<FolderForm
+						open={newFolderOpen}
+						onOpenChange={setNewFolderOpen}
+						onSubmit={handleCreateSubfolder}
+						defaultValues={{ parentId: id } as never}
+						loading={createFolder.isPending}
+					/>
+
+					<ImportDialog
+						open={importDialogOpen}
+						onOpenChange={setImportDialogOpen}
+						onImport={handleImport}
+						loading={importBookmarks.isPending}
+					/>
+				</>
+			)}
+
+			{isOwner && (
+				<AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Supprimer ce dossier ?</AlertDialogTitle>
+							<AlertDialogDescription>
+								Les sous-dossiers et tous les favoris contenus seront
+								definitivement supprimes.
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Annuler</AlertDialogCancel>
+							<AlertDialogAction onClick={handleDeleteFolder}>
+								Supprimer
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			)}
 		</div>
 	)
 }

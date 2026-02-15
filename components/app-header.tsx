@@ -62,38 +62,41 @@ export function AppHeader() {
 					Open Bookmarks
 				</Link>
 				<div className="flex items-center gap-2">
-				{user && <SearchCommand />}
-				{isPending ? (
-					<Skeleton className="size-9 rounded-full" />
-				) : user ? (
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="icon" className="rounded-full">
-								<Avatar className="size-8">
-									<AvatarImage src={user.image ?? undefined} alt={user.name} />
-									<AvatarFallback>
-										<User className="size-4" />
-									</AvatarFallback>
-								</Avatar>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuLabel>
-								<p className="text-sm font-medium">{user.name}</p>
-								<p className="text-xs text-muted-foreground">{user.email}</p>
-							</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={handleExport}>
-								<Download className="mr-2 size-4" />
-								Exporter les favoris
-							</DropdownMenuItem>
-							<DropdownMenuItem onClick={handleSignOut}>
-								<LogOut className="mr-2 size-4" />
-								Deconnexion
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				) : null}
+					{user && <SearchCommand />}
+					{isPending ? (
+						<Skeleton className="size-9 rounded-full" />
+					) : user ? (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="ghost" size="icon" className="rounded-full">
+									<Avatar className="size-8">
+										<AvatarImage
+											src={user.image ?? undefined}
+											alt={user.name}
+										/>
+										<AvatarFallback>
+											<User className="size-4" />
+										</AvatarFallback>
+									</Avatar>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuLabel>
+									<p className="text-sm font-medium">{user.name}</p>
+									<p className="text-xs text-muted-foreground">{user.email}</p>
+								</DropdownMenuLabel>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem onClick={handleExport}>
+									<Download className="mr-2 size-4" />
+									Exporter les favoris
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={handleSignOut}>
+									<LogOut className="mr-2 size-4" />
+									Deconnexion
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					) : null}
 				</div>
 			</div>
 		</header>

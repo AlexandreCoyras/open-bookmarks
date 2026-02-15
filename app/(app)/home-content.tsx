@@ -10,6 +10,7 @@ import { DndProvider } from '@/components/dnd-provider'
 import { FolderForm } from '@/components/folder-form'
 import { FolderList } from '@/components/folder-list'
 import { ImportDialog } from '@/components/import-dialog'
+import { SharedFoldersSection } from '@/components/shared-folders-section'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useCreateBookmark } from '@/lib/hooks/use-bookmarks'
@@ -94,6 +95,8 @@ export function HomeContent() {
 
 						<BookmarkList />
 					</DndProvider>
+
+					<SharedFoldersSection />
 				</div>
 			</BookmarksAreaContextMenu>
 

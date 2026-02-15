@@ -13,8 +13,8 @@ export function DndBookmarkList({
 	selectedIds,
 	onToggleSelect,
 }: {
-	onEdit: (bookmark: BookmarkData) => void
-	onDelete: (id: string) => void
+	onEdit?: (bookmark: BookmarkData) => void
+	onDelete?: (id: string) => void
 	onRemoveFromFolder?: (id: string) => void
 	selectionMode?: boolean
 	selectedIds?: Set<string>
@@ -34,8 +34,8 @@ export function DndBookmarkList({
 					<SortableBookmark
 						key={bookmark.id}
 						bookmark={bookmark}
-						onEdit={() => onEdit(bookmark)}
-						onDelete={() => onDelete(bookmark.id)}
+						onEdit={onEdit ? () => onEdit(bookmark) : undefined}
+						onDelete={onDelete ? () => onDelete(bookmark.id) : undefined}
 						onRemoveFromFolder={
 							onRemoveFromFolder
 								? () => onRemoveFromFolder(bookmark.id)
@@ -44,9 +44,7 @@ export function DndBookmarkList({
 						selectionMode={selectionMode}
 						selected={selectedIds?.has(bookmark.id)}
 						onToggleSelect={
-							onToggleSelect
-								? () => onToggleSelect(bookmark.id)
-								: undefined
+							onToggleSelect ? () => onToggleSelect(bookmark.id) : undefined
 						}
 					/>
 				))}
