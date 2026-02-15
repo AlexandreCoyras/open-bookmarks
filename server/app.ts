@@ -6,6 +6,7 @@ import { exportRoutes } from '@/server/routes/export'
 import { folderRoutes } from '@/server/routes/folders'
 import { importRoutes } from '@/server/routes/import'
 import { publicRoutes } from '@/server/routes/public'
+import { avatarRoutes } from '@/server/routes/avatar'
 import { searchRoutes } from '@/server/routes/search'
 
 const app = new Elysia({ prefix: '/api' })
@@ -17,6 +18,7 @@ const app = new Elysia({ prefix: '/api' })
 	.use(importRoutes)
 	.use(exportRoutes)
 	.use(searchRoutes)
+	.use(avatarRoutes)
 	.get('/health', () => ({ status: 'ok' }))
 
 export type App = typeof app

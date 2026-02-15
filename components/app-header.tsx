@@ -1,9 +1,11 @@
 'use client'
 
-import { Download, LogOut, User } from 'lucide-react'
+import { Camera, Download, LogOut, User } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { toast } from 'sonner'
+import { AvatarUploadDialog } from '@/components/avatar-upload-dialog'
 import { SearchCommand } from '@/components/search-command'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -22,6 +24,7 @@ export function AppHeader() {
 	const router = useRouter()
 	const { data: session, isPending } = useSession()
 	const user = session?.user
+	const [avatarOpen, setAvatarOpen] = useState(false)
 
 	async function handleSignOut() {
 		await signOut()
@@ -86,6 +89,10 @@ export function AppHeader() {
 									<p className="text-xs text-muted-foreground">{user.email}</p>
 								</DropdownMenuLabel>
 								<DropdownMenuSeparator />
+								<DropdownMenuItem onClick={() => setAvatarOpen(true)}>
+									<Camera className="mr-2 size-4" />
+									Photo de profil
+								</DropdownMenuItem>
 								<DropdownMenuItem onClick={handleExport}>
 									<Download className="mr-2 size-4" />
 									Exporter les favoris
@@ -99,6 +106,14 @@ export function AppHeader() {
 					) : null}
 				</div>
 			</div>
+			{user && (
+				<AvatarUploadDialog
+					open={avatarOpen}
+					onOpenChange={setAvatarOpen}
+					currentImage={user.image}
+					userName={user.name}
+				/>
+			)}
 		</header>
 	)
 }

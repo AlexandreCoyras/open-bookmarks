@@ -62,9 +62,7 @@ export function FolderCard({
 				</Link>
 				{!readOnly && (folder.publicSlug || folder.hasCollaborators) && (
 					<div className="flex items-center gap-1.5 shrink-0 text-muted-foreground">
-						{folder.hasCollaborators && (
-							<Users className="size-3.5" />
-						)}
+						{folder.hasCollaborators && <Users className="size-3.5" />}
 						{folder.publicSlug && (
 							<>
 								<Globe className="size-3.5" />
