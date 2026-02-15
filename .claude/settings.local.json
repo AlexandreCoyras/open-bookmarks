@@ -37,7 +37,8 @@
       "Bash(bunx biome:*)",
       "Bash(NODE_ENV=development npm run build:*)",
       "Bash(bun remove:*)",
-      "Bash(bun run format:*)"
+      "Bash(bun run format:*)",
+      "Bash(convert:*)"
     ]
   }
 }

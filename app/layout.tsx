@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono, Playfair_Display } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import { Providers } from '@/components/providers'
 import './globals.css'
 
@@ -48,6 +49,7 @@ export default function RootLayout({
 				className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} antialiased`}
 			>
 				<Providers>{children}</Providers>
+				<Analytics />
 			</body>
 		</html>
 	)
