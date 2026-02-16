@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { type FormEvent, useEffect, useState } from 'react'
 import type { BookmarkData } from '@/components/bookmark-card'
 import { Button } from '@/components/ui/button'
@@ -36,6 +37,7 @@ export function BookmarkForm({
 	const [url, setUrl] = useState('')
 	const [title, setTitle] = useState('')
 	const [description, setDescription] = useState('')
+	const t = useTranslations('Bookmark')
 
 	useEffect(() => {
 		if (open) {
@@ -63,36 +65,36 @@ export function BookmarkForm({
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>
-						{isEditing ? 'Modifier le favori' : 'Ajouter un favori'}
+						{isEditing ? t('editBookmark') : t('addBookmark')}
 					</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit} className="grid gap-4">
 					<div className="grid gap-2">
-						<Label htmlFor="url">URL</Label>
+						<Label htmlFor="url">{t('urlLabel')}</Label>
 						<Input
 							id="url"
 							type="url"
-							placeholder="https://exemple.com"
+							placeholder={t('urlPlaceholder')}
 							value={url}
 							onChange={(e) => setUrl(e.target.value)}
 							required
 						/>
 					</div>
 					<div className="grid gap-2">
-						<Label htmlFor="title">Titre</Label>
+						<Label htmlFor="title">{t('titleLabel')}</Label>
 						<Input
 							id="title"
-							placeholder="Mon site"
+							placeholder={t('titlePlaceholder')}
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 							required
 						/>
 					</div>
 					<div className="grid gap-2">
-						<Label htmlFor="description">Description</Label>
+						<Label htmlFor="description">{t('descriptionLabel')}</Label>
 						<Input
 							id="description"
-							placeholder="Description optionnelle"
+							placeholder={t('descriptionPlaceholder')}
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 						/>
@@ -103,14 +105,10 @@ export function BookmarkForm({
 							variant="outline"
 							onClick={() => onOpenChange(false)}
 						>
-							Annuler
+							{t('cancel')}
 						</Button>
 						<Button type="submit" disabled={loading}>
-							{loading
-								? 'Enregistrement...'
-								: isEditing
-									? 'Modifier'
-									: 'Ajouter'}
+							{loading ? t('saving') : isEditing ? t('edit') : t('add')}
 						</Button>
 					</div>
 				</form>

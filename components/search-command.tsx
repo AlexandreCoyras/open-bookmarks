@@ -1,7 +1,7 @@
 'use client'
 
 import { ExternalLink, Search } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,12 +14,14 @@ import {
 } from '@/components/ui/command'
 import { getFolderIcon } from '@/lib/folder-icons'
 import { useSearch } from '@/lib/hooks/use-search'
+import { useRouter } from '@/lib/navigation'
 
 export function SearchCommand() {
 	const [open, setOpen] = useState(false)
 	const [query, setQuery] = useState('')
 	const [debouncedQuery, setDebouncedQuery] = useState('')
 	const router = useRouter()
+	const t = useTranslations('Search')
 
 	const { data, isLoading } = useSearch(debouncedQuery, open)
 
@@ -72,26 +74,26 @@ export function SearchCommand() {
 				onClick={() => setOpen(true)}
 			>
 				<Search className="size-4" />
-				<span className="hidden sm:inline">Rechercher...</span>
+				<span className="hidden sm:inline">{t('searchPlaceholder')}</span>
 				<kbd className="bg-muted text-muted-foreground pointer-events-none hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium sm:inline-flex">
 					<span className="text-xs">&#8984;</span>K
 				</kbd>
 			</Button>
 			<CommandDialog open={open} onOpenChange={handleOpenChange}>
 				<CommandInput
-					placeholder="Rechercher des dossiers et favoris..."
+					placeholder={t('searchInputPlaceholder')}
 					value={query}
 					onValueChange={setQuery}
 				/>
 				<CommandList>
 					{isLoading && debouncedQuery.length >= 2 && (
 						<div className="py-6 text-center text-sm text-muted-foreground">
-							Recherche...
+							{t('searching')}
 						</div>
 					)}
-					{showEmpty && <CommandEmpty>Aucun résultat.</CommandEmpty>}
+					{showEmpty && <CommandEmpty>{t('noResults')}</CommandEmpty>}
 					{data && data.folders.length > 0 && (
-						<CommandGroup heading="Dossiers">
+						<CommandGroup heading={t('folders')}>
 							{data.folders.map((f) => {
 								const Icon = getFolderIcon(f.icon)
 								return (
@@ -118,7 +120,7 @@ export function SearchCommand() {
 						</CommandGroup>
 					)}
 					{data && data.bookmarks.length > 0 && (
-						<CommandGroup heading="Favoris">
+						<CommandGroup heading={t('bookmarks')}>
 							{data.bookmarks.map((b) => (
 								<CommandItem
 									key={b.id}

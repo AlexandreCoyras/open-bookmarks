@@ -1,6 +1,7 @@
 'use client'
 
 import { CheckSquare } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 import type { BookmarkData } from '@/components/bookmark-card'
@@ -27,6 +28,8 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 	const isLoading = false
 	const updateBookmark = useUpdateBookmark()
 	const deleteBookmark = useDeleteBookmark()
+	const t = useTranslations('Bookmark')
+	const td = useTranslations('DeleteBookmark')
 
 	const [formOpen, setFormOpen] = useState(false)
 	const [editingBookmark, setEditingBookmark] = useState<BookmarkData | null>(
@@ -68,7 +71,7 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 	}) {
 		if (editingBookmark?.id) {
 			await updateBookmark.mutateAsync({ id: editingBookmark.id, ...data })
-			toast.success('Favori modifie')
+			toast.success(t('bookmarkUpdated'))
 		}
 		setFormOpen(false)
 		setEditingBookmark(null)
@@ -78,7 +81,7 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 		if (!deletingId) return
 		await deleteBookmark.mutateAsync(deletingId)
 		setDeletingId(null)
-		toast.success('Favori supprime')
+		toast.success(t('bookmarkDeleted'))
 	}
 
 	async function handleRemoveFromFolder(id: string) {
@@ -87,13 +90,9 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 				id,
 				folderId: parentFolderId ?? null,
 			})
-			toast.success(
-				parentFolderId
-					? 'Favori deplace dans le dossier parent'
-					: 'Favori deplace a la racine',
-			)
+			toast.success(parentFolderId ? t('movedToParent') : t('movedToRoot'))
 		} catch {
-			toast.error('Erreur lors du deplacement')
+			toast.error(t('moveError'))
 		}
 	}
 
@@ -124,7 +123,7 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 					>
 						<CheckSquare className="size-4" />
 						<span className="hidden sm:inline">
-							{selectionMode ? 'Annuler' : 'Sélectionner'}
+							{selectionMode ? t('cancel') : t('select')}
 						</span>
 					</Button>
 				</div>
@@ -143,7 +142,7 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 				/>
 			) : (
 				<p className="text-sm text-muted-foreground py-4 text-center">
-					Aucun favori pour le moment.
+					{t('noBookmarks')}
 				</p>
 			)}
 
@@ -169,15 +168,13 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Supprimer ce favori ?</AlertDialogTitle>
-						<AlertDialogDescription>
-							Cette action est irreversible.
-						</AlertDialogDescription>
+						<AlertDialogTitle>{td('title')}</AlertDialogTitle>
+						<AlertDialogDescription>{td('description')}</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Annuler</AlertDialogCancel>
+						<AlertDialogCancel>{td('cancel')}</AlertDialogCancel>
 						<AlertDialogAction onClick={handleDelete}>
-							Supprimer
+							{td('confirm')}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

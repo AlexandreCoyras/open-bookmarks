@@ -9,6 +9,7 @@ import {
 	Square,
 	Trash2,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -56,6 +57,7 @@ export function BookmarkCard({
 	onToggleSelect?: () => void
 }) {
 	const isTouch = useTouchDevice()
+	const t = useTranslations('ContextMenu')
 	const content = (
 		<Card
 			className={cn(
@@ -119,17 +121,17 @@ export function BookmarkCard({
 						<DropdownMenuContent align="end">
 							<DropdownMenuItem onClick={onEdit}>
 								<Pencil className="mr-2 size-4" />
-								Modifier
+								{t('edit')}
 							</DropdownMenuItem>
 							{onRemoveFromFolder && (
 								<DropdownMenuItem onClick={onRemoveFromFolder}>
 									<ArrowUpFromLine className="mr-2 size-4" />
-									Retirer du dossier
+									{t('removeFromFolder')}
 								</DropdownMenuItem>
 							)}
 							<DropdownMenuItem onClick={onDelete} className="text-destructive">
 								<Trash2 className="mr-2 size-4" />
-								Supprimer
+								{t('delete')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -147,19 +149,19 @@ export function BookmarkCard({
 				{onEdit && (
 					<ContextMenuItem onClick={onEdit}>
 						<Pencil className="mr-2 size-4" />
-						Modifier
+						{t('edit')}
 					</ContextMenuItem>
 				)}
 				{onRemoveFromFolder && (
 					<ContextMenuItem onClick={onRemoveFromFolder}>
 						<ArrowUpFromLine className="mr-2 size-4" />
-						Retirer du dossier
+						{t('removeFromFolder')}
 					</ContextMenuItem>
 				)}
 				{onDelete && (
 					<ContextMenuItem onClick={onDelete} className="text-destructive">
 						<Trash2 className="mr-2 size-4" />
-						Supprimer
+						{t('delete')}
 					</ContextMenuItem>
 				)}
 			</ContextMenuContent>

@@ -1,6 +1,7 @@
 'use client'
 
 import { FolderInput, Trash2, X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { FolderPickerDialog } from '@/components/folder-picker-dialog'
@@ -33,6 +34,7 @@ export function SelectionBar({
 	const [moveOpen, setMoveOpen] = useState(false)
 	const bulkDelete = useBulkDeleteBookmarks()
 	const bulkMove = useBulkMoveBookmarks()
+	const t = useTranslations('Selection')
 
 	const count = selectedIds.size
 	if (count === 0) return null
@@ -42,7 +44,7 @@ export function SelectionBar({
 		setDeleteOpen(false)
 		onClear()
 		toast.success(
-			`${count} favori${count > 1 ? 's' : ''} supprimé${count > 1 ? 's' : ''}`,
+			count > 1 ? t('deletedPlural', { count }) : t('deleted', { count }),
 		)
 	}
 
@@ -51,7 +53,7 @@ export function SelectionBar({
 		setMoveOpen(false)
 		onClear()
 		toast.success(
-			`${count} favori${count > 1 ? 's' : ''} déplacé${count > 1 ? 's' : ''}`,
+			count > 1 ? t('movedPlural', { count }) : t('moved', { count }),
 		)
 	}
 
@@ -59,12 +61,14 @@ export function SelectionBar({
 		<>
 			<div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-lg border bg-background px-4 py-2 shadow-lg">
 				<span className="text-sm font-medium whitespace-nowrap">
-					{count} sélectionné{count > 1 ? 's' : ''}
+					{count > 1
+						? t('selectedPlural', { count })
+						: t('selected', { count })}
 				</span>
 				<div className="h-4 w-px bg-border" />
 				<Button size="sm" variant="outline" onClick={() => setMoveOpen(true)}>
 					<FolderInput className="size-4" />
-					<span className="hidden sm:inline">Déplacer</span>
+					<span className="hidden sm:inline">{t('move')}</span>
 				</Button>
 				<Button
 					size="sm"
@@ -73,7 +77,7 @@ export function SelectionBar({
 					onClick={() => setDeleteOpen(true)}
 				>
 					<Trash2 className="size-4" />
-					<span className="hidden sm:inline">Supprimer</span>
+					<span className="hidden sm:inline">{t('delete')}</span>
 				</Button>
 				<div className="h-4 w-px bg-border" />
 				<Button size="icon-sm" variant="ghost" onClick={onClear}>
@@ -85,16 +89,18 @@ export function SelectionBar({
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>
-							Supprimer {count} favori{count > 1 ? 's' : ''} ?
+							{count > 1
+								? t('deleteTitlePlural', { count })
+								: t('deleteTitle', { count })}
 						</AlertDialogTitle>
 						<AlertDialogDescription>
-							Cette action est irréversible.
+							{t('deleteDescription')}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Annuler</AlertDialogCancel>
+						<AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
 						<AlertDialogAction onClick={handleDelete}>
-							Supprimer
+							{t('confirm')}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

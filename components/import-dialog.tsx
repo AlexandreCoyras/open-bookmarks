@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { type ChangeEvent, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
@@ -27,6 +28,7 @@ export function ImportDialog({
 	const [file, setFile] = useState<File | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
+	const t = useTranslations('Import')
 
 	function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
 		setError(null)
@@ -36,7 +38,7 @@ export function ImportDialog({
 			return
 		}
 		if (selected.size > MAX_FILE_SIZE) {
-			setError('Le fichier est trop volumineux (max 10 Mo)')
+			setError(t('fileTooLarge'))
 			setFile(null)
 			return
 		}
@@ -65,13 +67,10 @@ export function ImportDialog({
 		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Importer des favoris</DialogTitle>
+					<DialogTitle>{t('title')}</DialogTitle>
 				</DialogHeader>
 				<div className="grid gap-4">
-					<p className="text-muted-foreground text-sm">
-						Selectionnez un fichier HTML exporte depuis Chrome
-						(chrome://bookmarks).
-					</p>
+					<p className="text-muted-foreground text-sm">{t('description')}</p>
 					<input
 						ref={inputRef}
 						type="file"
@@ -86,10 +85,10 @@ export function ImportDialog({
 							variant="outline"
 							onClick={() => handleOpenChange(false)}
 						>
-							Annuler
+							{t('cancel')}
 						</Button>
 						<Button onClick={handleImport} disabled={!file || loading}>
-							{loading ? 'Import en cours...' : 'Importer'}
+							{loading ? t('importing') : t('importButton')}
 						</Button>
 					</div>
 				</div>

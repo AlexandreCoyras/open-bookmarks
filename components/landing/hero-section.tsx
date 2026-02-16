@@ -2,8 +2,9 @@
 
 import { motion } from 'motion/react'
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
+import { Link } from '@/lib/navigation'
 
 const BookmarkScene = dynamic(
 	() => import('@/components/landing/bookmark-scene'),
@@ -15,9 +16,10 @@ const BookmarkScene = dynamic(
 	},
 )
 
-const indicators = ['Open source', 'Multi-appareils', 'Collaboration']
-
 export function HeroSection() {
+	const t = useTranslations('Landing')
+	const indicators = [t('openSource'), t('multiDevice'), t('collaboration')]
+
 	return (
 		<section className="flex min-h-svh items-center pt-24">
 			<div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2">
@@ -28,7 +30,7 @@ export function HeroSection() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0 }}
 					>
-						Tous vos favoris, organisés et accessibles partout.
+						{t('heroTitle')}
 					</motion.h1>
 
 					<motion.p
@@ -37,8 +39,7 @@ export function HeroSection() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.1 }}
 					>
-						Sauvegardez, organisez et retrouvez vos favoris en un instant.
-						Synchronisés entre tous vos appareils, même hors-ligne.
+						{t('heroDescription')}
 					</motion.p>
 
 					<motion.div
@@ -48,7 +49,7 @@ export function HeroSection() {
 						transition={{ delay: 0.2 }}
 					>
 						<Button asChild size="lg">
-							<Link href="/register">Commencer gratuitement</Link>
+							<Link href="/register">{t('getStarted')}</Link>
 						</Button>
 						<Button
 							variant="outline"
@@ -59,7 +60,7 @@ export function HeroSection() {
 									?.scrollIntoView({ behavior: 'smooth' })
 							}
 						>
-							En savoir plus
+							{t('learnMore')}
 						</Button>
 					</motion.div>
 

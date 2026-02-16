@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { Folder, Home } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import {
 	Dialog,
 	DialogContent,
@@ -57,11 +58,13 @@ function FolderTreeItem({
 	depth,
 	currentFolderId,
 	onSelect,
+	currentLabel,
 }: {
 	node: TreeNode
 	depth: number
 	currentFolderId?: string | null
 	onSelect: (id: string | null) => void
+	currentLabel: string
 }) {
 	const isCurrent = node.id === currentFolderId
 
@@ -80,7 +83,9 @@ function FolderTreeItem({
 				/>
 				<span className="truncate">{node.name}</span>
 				{isCurrent && (
-					<span className="ml-auto text-xs text-muted-foreground">actuel</span>
+					<span className="ml-auto text-xs text-muted-foreground">
+						{currentLabel}
+					</span>
 				)}
 			</button>
 			{node.children.map((child) => (
@@ -90,6 +95,7 @@ function FolderTreeItem({
 					depth={depth + 1}
 					currentFolderId={currentFolderId}
 					onSelect={onSelect}
+					currentLabel={currentLabel}
 				/>
 			))}
 		</>
@@ -109,12 +115,13 @@ export function FolderPickerDialog({
 }) {
 	const { data: folders } = useAllFolders()
 	const tree = folders ? buildTree(folders) : []
+	const t = useTranslations('FolderPicker')
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="max-w-sm">
 				<DialogHeader>
-					<DialogTitle>Déplacer vers</DialogTitle>
+					<DialogTitle>{t('title')}</DialogTitle>
 				</DialogHeader>
 				<div className="max-h-64 overflow-y-auto space-y-0.5">
 					<button
@@ -123,7 +130,7 @@ export function FolderPickerDialog({
 						className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
 					>
 						<Home className="size-4 shrink-0" />
-						<span>Racine</span>
+						<span>{t('root')}</span>
 					</button>
 					{tree.map((node) => (
 						<FolderTreeItem
@@ -132,6 +139,7 @@ export function FolderPickerDialog({
 							depth={1}
 							currentFolderId={currentFolderId}
 							onSelect={onSelect}
+							currentLabel={t('current')}
 						/>
 					))}
 				</div>

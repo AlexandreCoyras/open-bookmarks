@@ -1,6 +1,7 @@
 'use client'
 
 import { Check, Copy, Eye, Globe, RefreshCw } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -25,16 +26,6 @@ function generateSlug() {
 
 const slugRegex = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/
 
-function validateSlug(slug: string): string | null {
-	if (slug.length < 3) return 'Minimum 3 caractères'
-	if (slug.length > 50) return 'Maximum 50 caractères'
-	if (!/^[a-z0-9-]+$/.test(slug))
-		return 'Lettres minuscules, chiffres et tirets uniquement'
-	if (!slugRegex.test(slug))
-		return 'Ne peut pas commencer ou finir par un tiret'
-	return null
-}
-
 export function ShareFolderDialog({
 	folderId,
 	publicSlug,
@@ -47,6 +38,7 @@ export function ShareFolderDialog({
 	const updateFolder = useUpdateFolder()
 	const [copied, setCopied] = useState(false)
 	const isPublic = !!publicSlug
+	const t = useTranslations('Share')
 
 	const [slugInput, setSlugInput] = useState(publicSlug ?? '')
 	const [debouncedSlug, setDebouncedSlug] = useState(slugInput)
@@ -60,6 +52,14 @@ export function ShareFolderDialog({
 		const timer = setTimeout(() => setDebouncedSlug(slugInput), 500)
 		return () => clearTimeout(timer)
 	}, [slugInput])
+
+	function validateSlug(slug: string): string | null {
+		if (slug.length < 3) return t('minChars')
+		if (slug.length > 50) return t('maxChars')
+		if (!/^[a-z0-9-]+$/.test(slug)) return t('lowercaseOnly')
+		if (!slugRegex.test(slug)) return t('noStartEndHyphen')
+		return null
+	}
 
 	const validationError = slugInput ? validateSlug(slugInput) : null
 	const isChanged = slugInput !== (publicSlug ?? '')
@@ -83,7 +83,7 @@ export function ShareFolderDialog({
 			id: folderId,
 			publicSlug: newSlug,
 		})
-		toast.success(checked ? 'Dossier rendu public' : 'Partage désactivé')
+		toast.success(checked ? t('folderMadePublic') : t('sharingDisabled'))
 	}
 
 	async function handleSaveSlug() {
@@ -93,9 +93,9 @@ export function ShareFolderDialog({
 				id: folderId,
 				publicSlug: slugInput,
 			})
-			toast.success('Lien mis à jour')
+			toast.success(t('linkUpdated'))
 		} catch {
-			toast.error('Ce lien est déjà utilisé')
+			toast.error(t('linkAlreadyUsed'))
 		}
 	}
 
@@ -126,15 +126,13 @@ export function ShareFolderDialog({
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-md">
 				<DialogHeader>
-					<DialogTitle>Partager le dossier</DialogTitle>
-					<DialogDescription>
-						Rendez ce dossier accessible via un lien public en lecture seule.
-					</DialogDescription>
+					<DialogTitle>{t('title')}</DialogTitle>
+					<DialogDescription>{t('description')}</DialogDescription>
 				</DialogHeader>
 
 				{/* Toggle */}
 				<div className="flex items-center justify-between">
-					<Label htmlFor="public-toggle">Dossier public</Label>
+					<Label htmlFor="public-toggle">{t('publicFolder')}</Label>
 					<Switch
 						id="public-toggle"
 						checked={isPublic}
@@ -150,7 +148,7 @@ export function ShareFolderDialog({
 						{/* URL preview + copy */}
 						<div className="space-y-1.5">
 							<Label className="text-xs text-muted-foreground">
-								Lien de partage
+								{t('shareLink')}
 							</Label>
 							<div className="flex items-center gap-2">
 								<div className="flex min-w-0 flex-1 items-center rounded-md border bg-muted/50 px-3 py-2">
@@ -182,7 +180,7 @@ export function ShareFolderDialog({
 								htmlFor="slug-input"
 								className="text-xs text-muted-foreground"
 							>
-								Personnaliser le lien
+								{t('customizeLink')}
 							</Label>
 							<div className="flex items-center gap-1.5">
 								<div className="flex min-w-0 flex-1 items-center rounded-md border bg-muted/50 focus-within:ring-ring/50 focus-within:border-ring focus-within:ring-[3px] transition-[box-shadow,border-color]">
@@ -194,14 +192,14 @@ export function ShareFolderDialog({
 										value={slugInput}
 										onChange={(e) => setSlugInput(e.target.value.toLowerCase())}
 										className="border-0 bg-transparent shadow-none pl-0 focus-visible:ring-0 focus-visible:border-transparent"
-										placeholder="mon-dossier"
+										placeholder={t('slugPlaceholder')}
 									/>
 								</div>
 								<Button
 									size="icon"
 									variant="ghost"
 									onClick={handleRegenerate}
-									title="Régénérer"
+									title={t('regenerate')}
 									className="shrink-0"
 								>
 									<RefreshCw className="size-4" />
@@ -227,10 +225,10 @@ export function ShareFolderDialog({
 									: !shouldCheck
 										? '\u00A0'
 										: checkingSlug
-											? 'Vérification...'
+											? t('checking')
 											: isSlugAvailable
-												? 'Disponible'
-												: 'Ce lien est déjà utilisé'}
+												? t('available')
+												: t('alreadyUsed')}
 							</p>
 						</div>
 
@@ -240,7 +238,7 @@ export function ShareFolderDialog({
 							disabled={!canSave || updateFolder.isPending}
 							className="w-full"
 						>
-							Enregistrer le lien
+							{t('saveLink')}
 						</Button>
 
 						{/* View count */}
@@ -250,7 +248,7 @@ export function ShareFolderDialog({
 								<div className="flex items-center gap-1.5 text-xs text-muted-foreground">
 									<Eye className="size-3.5" />
 									<span>
-										{viewCount} vue{viewCount !== 1 ? 's' : ''}
+										{viewCount} {viewCount !== 1 ? t('views') : t('view')}
 									</span>
 								</div>
 							</>

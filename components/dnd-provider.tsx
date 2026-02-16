@@ -16,6 +16,7 @@ import {
 	useSensors,
 } from '@dnd-kit/core'
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
+import { useTranslations } from 'next-intl'
 import {
 	createContext,
 	type ReactNode,
@@ -119,6 +120,8 @@ export function DndProvider({
 	const [activeDragItem, setActiveDragItem] = useState<ActiveDragItem | null>(
 		null,
 	)
+	const tf = useTranslations('Folder')
+	const tt = useTranslations('Toast')
 
 	// Sync local state when server data changes (initial load, refetch)
 	useEffect(() => {
@@ -191,9 +194,9 @@ export function DndProvider({
 						id: draggedFolderId,
 						parentId: targetFolderId,
 					})
-					toast.success('Dossier deplace')
+					toast.success(tf('folderMoved'))
 				} catch {
-					toast.error('Erreur lors du deplacement du dossier')
+					toast.error(tf('folderMoveError'))
 				}
 				return
 			}
@@ -207,9 +210,9 @@ export function DndProvider({
 					id: active.id as string,
 					folderId: overData.folderId,
 				})
-				toast.success('Favori deplace dans le dossier')
+				toast.success(tt('bookmarkMovedToFolder'))
 			} catch {
-				toast.error('Erreur lors du deplacement')
+				toast.error(tt('moveError'))
 			}
 			return
 		}
@@ -237,7 +240,7 @@ export function DndProvider({
 				await reorderBookmarks.mutateAsync(reorderPayload)
 			} catch {
 				setLocalItems(previous)
-				toast.error('Erreur lors du reordonnancement')
+				toast.error(tt('reorderError'))
 			}
 		}
 	}

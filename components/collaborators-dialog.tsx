@@ -1,6 +1,7 @@
 'use client'
 
 import { Trash2, Users } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -35,6 +36,7 @@ export function CollaboratorsDialog({ folderId }: { folderId: string }) {
 	const invite = useInviteCollaborator()
 	const updateRole = useUpdateCollaboratorRole()
 	const remove = useRemoveCollaborator()
+	const t = useTranslations('Collaborators')
 
 	const [email, setEmail] = useState('')
 	const [role, setRole] = useState<'viewer' | 'editor'>('viewer')
@@ -46,17 +48,17 @@ export function CollaboratorsDialog({ folderId }: { folderId: string }) {
 		try {
 			await invite.mutateAsync({ folderId, email: email.trim(), role })
 			setEmail('')
-			toast.success('Collaborateur invite')
+			toast.success(t('collaboratorInvited'))
 		} catch (err: unknown) {
 			const status = (err as { status?: number })?.status
 			if (status === 404) {
-				toast.error('Utilisateur introuvable')
+				toast.error(t('userNotFound'))
 			} else if (status === 400) {
-				toast.error('Vous ne pouvez pas vous inviter vous-meme')
+				toast.error(t('cannotInviteSelf'))
 			} else if (status === 409) {
-				toast.error('Cet utilisateur est deja invite')
+				toast.error(t('alreadyInvited'))
 			} else {
-				toast.error("Erreur lors de l'invitation")
+				toast.error(t('inviteError'))
 			}
 		}
 	}
@@ -67,18 +69,18 @@ export function CollaboratorsDialog({ folderId }: { folderId: string }) {
 	) {
 		try {
 			await updateRole.mutateAsync({ id: collabId, role: newRole })
-			toast.success('Role mis a jour')
+			toast.success(t('roleUpdated'))
 		} catch {
-			toast.error('Erreur lors de la mise a jour')
+			toast.error(t('roleUpdateError'))
 		}
 	}
 
 	async function handleRemove(collabId: string) {
 		try {
 			await remove.mutateAsync(collabId)
-			toast.success('Collaborateur retire')
+			toast.success(t('collaboratorRemoved'))
 		} catch {
-			toast.error('Erreur lors de la suppression')
+			toast.error(t('removeError'))
 		}
 	}
 
@@ -99,10 +101,8 @@ export function CollaboratorsDialog({ folderId }: { folderId: string }) {
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-md">
 				<DialogHeader>
-					<DialogTitle>Collaborateurs</DialogTitle>
-					<DialogDescription>
-						Invitez des utilisateurs a collaborer sur ce dossier.
-					</DialogDescription>
+					<DialogTitle>{t('title')}</DialogTitle>
+					<DialogDescription>{t('description')}</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleInvite} className="flex gap-2">
@@ -113,7 +113,7 @@ export function CollaboratorsDialog({ folderId }: { folderId: string }) {
 						<Input
 							id="collab-email"
 							type="email"
-							placeholder="email@exemple.com"
+							placeholder={t('emailPlaceholder')}
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 						/>
@@ -126,12 +126,12 @@ export function CollaboratorsDialog({ folderId }: { folderId: string }) {
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="viewer">Lecteur</SelectItem>
-							<SelectItem value="editor">Editeur</SelectItem>
+							<SelectItem value="viewer">{t('viewer')}</SelectItem>
+							<SelectItem value="editor">{t('editor')}</SelectItem>
 						</SelectContent>
 					</Select>
 					<Button type="submit" disabled={invite.isPending || !email.trim()}>
-						Inviter
+						{t('invite')}
 					</Button>
 				</form>
 
@@ -165,8 +165,8 @@ export function CollaboratorsDialog({ folderId }: { folderId: string }) {
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value="viewer">Lecteur</SelectItem>
-											<SelectItem value="editor">Editeur</SelectItem>
+											<SelectItem value="viewer">{t('viewer')}</SelectItem>
+											<SelectItem value="editor">{t('editor')}</SelectItem>
 										</SelectContent>
 									</Select>
 									<Button

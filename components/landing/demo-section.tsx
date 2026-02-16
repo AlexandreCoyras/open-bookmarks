@@ -2,12 +2,7 @@
 
 import { ChevronRight } from 'lucide-react'
 import { motion } from 'motion/react'
-
-const folders = [
-	{ color: 'bg-amber-400', label: 'Design' },
-	{ color: 'bg-blue-400', label: 'Développement' },
-	{ color: 'bg-green-400', label: 'Ressources' },
-]
+import { useTranslations } from 'next-intl'
 
 const bookmarks = [
 	{ title: 'Guide Tailwind CSS', url: 'tailwindcss.com/docs' },
@@ -15,16 +10,22 @@ const bookmarks = [
 ]
 
 export function DemoSection() {
+	const t = useTranslations('Landing')
+
+	const folders = [
+		{ color: 'bg-amber-400', label: t('demoDesign') },
+		{ color: 'bg-blue-400', label: t('demoDevelopment') },
+		{ color: 'bg-green-400', label: t('demoResources') },
+	]
+
 	return (
 		<section className="overflow-hidden py-24">
 			<div className="mx-auto max-w-5xl px-4 sm:px-6">
 				<div className="text-center">
 					<h2 className="font-serif text-3xl font-bold sm:text-4xl">
-						Une interface pensée pour vous
+						{t('demoTitle')}
 					</h2>
-					<p className="mt-4 text-muted-foreground">
-						Simple, intuitive et rapide.
-					</p>
+					<p className="mt-4 text-muted-foreground">{t('demoDescription')}</p>
 				</div>
 
 				<motion.div
@@ -49,7 +50,7 @@ export function DemoSection() {
 						</div>
 
 						<div className="min-h-[300px] p-4 sm:p-6">
-							<h3 className="text-lg font-semibold">Mes favoris</h3>
+							<h3 className="text-lg font-semibold">{t('demoMyBookmarks')}</h3>
 
 							<div className="mt-4 space-y-2">
 								{folders.map((folder) => (

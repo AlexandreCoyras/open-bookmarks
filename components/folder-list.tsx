@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { DroppableFolder } from '@/components/droppable-folder'
@@ -32,6 +33,8 @@ export function FolderList({
 	const { data: folders, isLoading } = useFolders(parentId)
 	const updateFolder = useUpdateFolder()
 	const deleteFolder = useDeleteFolder()
+	const t = useTranslations('Folder')
+	const td = useTranslations('DeleteFolder')
 
 	const [formOpen, setFormOpen] = useState(false)
 	const [editingFolder, setEditingFolder] = useState<FolderData | null>(null)
@@ -49,7 +52,7 @@ export function FolderList({
 	}) {
 		if (editingFolder?.id) {
 			await updateFolder.mutateAsync({ id: editingFolder.id, ...data })
-			toast.success('Dossier modifie')
+			toast.success(t('folderUpdated'))
 		}
 		setFormOpen(false)
 		setEditingFolder(null)
@@ -59,7 +62,7 @@ export function FolderList({
 		if (!deletingId) return
 		await deleteFolder.mutateAsync(deletingId)
 		setDeletingId(null)
-		toast.success('Dossier supprime')
+		toast.success(t('folderDeleted'))
 	}
 
 	if (isLoading) {
@@ -104,16 +107,13 @@ export function FolderList({
 			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Supprimer ce dossier ?</AlertDialogTitle>
-						<AlertDialogDescription>
-							Les sous-dossiers et tous les favoris contenus seront
-							definitivement supprimes.
-						</AlertDialogDescription>
+						<AlertDialogTitle>{td('title')}</AlertDialogTitle>
+						<AlertDialogDescription>{td('description')}</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Annuler</AlertDialogCancel>
+						<AlertDialogCancel>{td('cancel')}</AlertDialogCancel>
 						<AlertDialogAction onClick={handleDelete}>
-							Supprimer
+							{td('confirm')}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

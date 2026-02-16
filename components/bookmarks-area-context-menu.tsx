@@ -1,6 +1,7 @@
 'use client'
 
 import { FolderPlus, Plus, Upload } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
 import {
 	ContextMenu,
@@ -24,9 +25,12 @@ export function BookmarksAreaContextMenu({
 	onNewFolder,
 	onAddBookmark,
 	onImport,
-	folderLabel = 'Nouveau dossier',
+	folderLabel,
 }: BookmarksAreaContextMenuProps) {
 	const isTouch = useTouchDevice()
+	const t = useTranslations('ContextMenu')
+
+	const label = folderLabel ?? t('newFolder')
 
 	if (isTouch) return <>{children}</>
 
@@ -36,18 +40,18 @@ export function BookmarksAreaContextMenu({
 			<ContextMenuContent>
 				<ContextMenuItem onClick={onNewFolder}>
 					<FolderPlus className="mr-2 size-4" />
-					{folderLabel}
+					{label}
 				</ContextMenuItem>
 				<ContextMenuItem onClick={onAddBookmark}>
 					<Plus className="mr-2 size-4" />
-					Ajouter un favori
+					{t('addBookmark')}
 				</ContextMenuItem>
 				{onImport && (
 					<>
 						<ContextMenuSeparator />
 						<ContextMenuItem onClick={onImport}>
 							<Upload className="mr-2 size-4" />
-							Importer des favoris
+							{t('importBookmarks')}
 						</ContextMenuItem>
 					</>
 				)}

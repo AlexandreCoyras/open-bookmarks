@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { type FormEvent, useEffect, useState } from 'react'
 import type { FolderData } from '@/components/folder-card'
 import { IconPicker } from '@/components/icon-picker'
@@ -46,6 +47,7 @@ export function FolderForm({
 	const [name, setName] = useState('')
 	const [color, setColor] = useState<string | null>(null)
 	const [icon, setIcon] = useState<string | null>(null)
+	const t = useTranslations('Folder')
 
 	useEffect(() => {
 		if (open) {
@@ -72,22 +74,22 @@ export function FolderForm({
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>
-						{isEditing ? 'Modifier le dossier' : 'Nouveau dossier'}
+						{isEditing ? t('editFolder') : t('newFolder')}
 					</DialogTitle>
 				</DialogHeader>
 				<form onSubmit={handleSubmit} className="grid gap-4">
 					<div className="grid gap-2">
-						<Label htmlFor="folder-name">Nom</Label>
+						<Label htmlFor="folder-name">{t('nameLabel')}</Label>
 						<Input
 							id="folder-name"
-							placeholder="Mon dossier"
+							placeholder={t('namePlaceholder')}
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							required
 						/>
 					</div>
 					<div className="grid gap-2">
-						<Label>Couleur</Label>
+						<Label>{t('colorLabel')}</Label>
 						<div className="flex gap-2">
 							{FOLDER_COLORS.map((c) => (
 								<button
@@ -111,10 +113,10 @@ export function FolderForm({
 							variant="outline"
 							onClick={() => onOpenChange(false)}
 						>
-							Annuler
+							{t('cancel')}
 						</Button>
 						<Button type="submit" disabled={loading}>
-							{loading ? 'Enregistrement...' : isEditing ? 'Modifier' : 'Creer'}
+							{loading ? t('saving') : isEditing ? t('edit') : t('create')}
 						</Button>
 					</div>
 				</form>

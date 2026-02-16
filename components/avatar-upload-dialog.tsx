@@ -1,6 +1,7 @@
 'use client'
 
 import { Camera, Loader2, Trash2, Upload, User } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -28,6 +29,7 @@ export function AvatarUploadDialog({
 	const [selectedFile, setSelectedFile] = useState<File | null>(null)
 	const [preview, setPreview] = useState<string | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
+	const t = useTranslations('Avatar')
 
 	const uploadAvatar = useUploadAvatar()
 	const deleteAvatar = useDeleteAvatar()
@@ -37,7 +39,7 @@ export function AvatarUploadDialog({
 		if (!file) return
 
 		if (file.size > 2 * 1024 * 1024) {
-			toast.error('Le fichier est trop volumineux. Taille maximale : 2 Mo.')
+			toast.error(t('fileTooLarge'))
 			return
 		}
 
@@ -51,22 +53,20 @@ export function AvatarUploadDialog({
 
 		try {
 			await uploadAvatar.mutateAsync(selectedFile)
-			toast.success('Photo de profil mise à jour')
+			toast.success(t('updated'))
 			resetAndClose()
 		} catch (err) {
-			toast.error(
-				err instanceof Error ? err.message : "Erreur lors de l'upload",
-			)
+			toast.error(err instanceof Error ? err.message : t('uploadError'))
 		}
 	}
 
 	async function handleDelete() {
 		try {
 			await deleteAvatar.mutateAsync()
-			toast.success('Photo de profil supprimée')
+			toast.success(t('deleted'))
 			resetAndClose()
 		} catch {
-			toast.error('Erreur lors de la suppression')
+			toast.error(t('deleteError'))
 		}
 	}
 
@@ -89,10 +89,8 @@ export function AvatarUploadDialog({
 		>
 			<DialogContent className="sm:max-w-sm">
 				<DialogHeader>
-					<DialogTitle>Photo de profil</DialogTitle>
-					<DialogDescription>
-						Choisissez une image (JPEG, PNG, WebP ou GIF, max 2 Mo).
-					</DialogDescription>
+					<DialogTitle>{t('title')}</DialogTitle>
+					<DialogDescription>{t('description')}</DialogDescription>
 				</DialogHeader>
 
 				<div className="flex flex-col items-center gap-4">
@@ -118,7 +116,7 @@ export function AvatarUploadDialog({
 							disabled={isLoading}
 						>
 							<Camera className="mr-2 size-4" />
-							Choisir une image
+							{t('chooseImage')}
 						</Button>
 
 						{currentImage && !selectedFile && (
@@ -132,7 +130,7 @@ export function AvatarUploadDialog({
 								) : (
 									<Trash2 className="mr-2 size-4" />
 								)}
-								Supprimer
+								{t('delete')}
 							</Button>
 						)}
 					</div>
@@ -148,7 +146,7 @@ export function AvatarUploadDialog({
 							) : (
 								<Upload className="mr-2 size-4" />
 							)}
-							Enregistrer
+							{t('save')}
 						</Button>
 					)}
 				</div>

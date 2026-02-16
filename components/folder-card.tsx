@@ -1,7 +1,7 @@
 'use client'
 
 import { Eye, Globe, MoreVertical, Pencil, Trash2, Users } from 'lucide-react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { getFolderIcon } from '@/lib/folder-icons'
 import { useTouchDevice } from '@/lib/hooks/use-touch-device'
+import { Link } from '@/lib/navigation'
 
 export type FolderData = {
 	id: string
@@ -46,6 +47,7 @@ export function FolderCard({
 }) {
 	const Icon = getFolderIcon(folder.icon)
 	const isTouch = useTouchDevice()
+	const t = useTranslations('ContextMenu')
 
 	const content = (
 		<Card className="group relative">
@@ -90,11 +92,11 @@ export function FolderCard({
 						<DropdownMenuContent align="end">
 							<DropdownMenuItem onClick={onEdit}>
 								<Pencil className="mr-2 size-4" />
-								Modifier
+								{t('edit')}
 							</DropdownMenuItem>
 							<DropdownMenuItem onClick={onDelete} className="text-destructive">
 								<Trash2 className="mr-2 size-4" />
-								Supprimer
+								{t('delete')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -111,11 +113,11 @@ export function FolderCard({
 			<ContextMenuContent>
 				<ContextMenuItem onClick={onEdit}>
 					<Pencil className="mr-2 size-4" />
-					Modifier
+					{t('edit')}
 				</ContextMenuItem>
 				<ContextMenuItem onClick={onDelete} className="text-destructive">
 					<Trash2 className="mr-2 size-4" />
-					Supprimer
+					{t('delete')}
 				</ContextMenuItem>
 			</ContextMenuContent>
 		</ContextMenu>

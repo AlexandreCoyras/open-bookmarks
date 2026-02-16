@@ -1,8 +1,7 @@
 'use client'
 
-import { Camera, Download, LogOut, User } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { Camera, Download, Globe, LogOut, User } from 'lucide-react'
+import { useLocale, useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { AvatarUploadDialog } from '@/components/avatar-upload-dialog'
@@ -19,12 +18,23 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
 import { signOut, useSession } from '@/lib/auth-client'
+import { Link, usePathname, useRouter } from '@/lib/navigation'
 
 export function AppHeader() {
 	const router = useRouter()
+	const pathname = usePathname()
+	const locale = useLocale()
 	const { data: session, isPending } = useSession()
 	const user = session?.user
 	const [avatarOpen, setAvatarOpen] = useState(false)
+	const t = useTranslations('Header')
+
+	const otherLocale = locale === 'en' ? 'fr' : 'en'
+	const otherLabel = locale === 'en' ? 'Francais' : 'English'
+
+	function handleSwitchLocale() {
+		router.replace(pathname, { locale: otherLocale })
+	}
 
 	async function handleSignOut() {
 		await signOut()
@@ -52,9 +62,9 @@ export function AppHeader() {
 			document.body.removeChild(a)
 			URL.revokeObjectURL(url)
 
-			toast.success('Bookmarks exportés avec succès')
+			toast.success(t('exportSuccess'))
 		} catch {
-			toast.error("Erreur lors de l'export des bookmarks")
+			toast.error(t('exportError'))
 		}
 	}
 
@@ -91,15 +101,20 @@ export function AppHeader() {
 								<DropdownMenuSeparator />
 								<DropdownMenuItem onClick={() => setAvatarOpen(true)}>
 									<Camera className="mr-2 size-4" />
-									Photo de profil
+									{t('profilePicture')}
 								</DropdownMenuItem>
 								<DropdownMenuItem onClick={handleExport}>
 									<Download className="mr-2 size-4" />
-									Exporter les favoris
+									{t('exportBookmarks')}
 								</DropdownMenuItem>
+								<DropdownMenuItem onClick={handleSwitchLocale}>
+									<Globe className="mr-2 size-4" />
+									{otherLabel}
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
 								<DropdownMenuItem onClick={handleSignOut}>
 									<LogOut className="mr-2 size-4" />
-									Deconnexion
+									{t('signOut')}
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>

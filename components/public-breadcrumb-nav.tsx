@@ -1,7 +1,6 @@
 'use client'
 
 import { Home } from 'lucide-react'
-import Link from 'next/link'
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -11,6 +10,7 @@ import {
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { usePublicBreadcrumb } from '@/lib/hooks/use-public-folders'
+import { Link } from '@/lib/navigation'
 
 export function PublicBreadcrumbNav({
 	slug,

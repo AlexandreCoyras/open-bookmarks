@@ -9,53 +9,54 @@ import {
 	WifiOff,
 } from 'lucide-react'
 import { motion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent } from '@/components/ui/card'
 
-const features = [
-	{
-		icon: FolderTree,
-		title: 'Organisation',
-		description:
-			'Classez vos favoris dans des dossiers imbriqués avec drag-and-drop.',
-	},
-	{
-		icon: RefreshCw,
-		title: 'Synchronisation',
-		description: 'Retrouvez vos favoris sur tous vos appareils en temps réel.',
-	},
-	{
-		icon: WifiOff,
-		title: 'Mode hors-ligne',
-		description: 'Accédez à vos favoris même sans connexion internet.',
-	},
-	{
-		icon: Share2,
-		title: 'Partage',
-		description: 'Partagez vos dossiers avec un simple lien public.',
-	},
-	{
-		icon: Users,
-		title: 'Collaboration',
-		description: 'Invitez des collaborateurs à modifier vos dossiers.',
-	},
-	{
-		icon: Code,
-		title: 'Open source',
-		description: 'Code source ouvert, transparent et libre.',
-	},
-]
-
 export function FeaturesSection() {
+	const t = useTranslations('Landing')
+
+	const features = [
+		{
+			icon: FolderTree,
+			title: t('featureOrganization'),
+			description: t('featureOrganizationDesc'),
+		},
+		{
+			icon: RefreshCw,
+			title: t('featureSync'),
+			description: t('featureSyncDesc'),
+		},
+		{
+			icon: WifiOff,
+			title: t('featureOffline'),
+			description: t('featureOfflineDesc'),
+		},
+		{
+			icon: Share2,
+			title: t('featureShare'),
+			description: t('featureShareDesc'),
+		},
+		{
+			icon: Users,
+			title: t('featureCollaboration'),
+			description: t('featureCollaborationDesc'),
+		},
+		{
+			icon: Code,
+			title: t('featureOpenSource'),
+			description: t('featureOpenSourceDesc'),
+		},
+	]
+
 	return (
 		<section id="features" className="py-24">
 			<div className="mx-auto max-w-6xl px-4 sm:px-6">
 				<div className="text-center">
 					<h2 className="font-serif text-3xl font-bold sm:text-4xl">
-						Tout ce dont vous avez besoin
+						{t('featuresTitle')}
 					</h2>
 					<p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-						Une solution complète pour gérer vos favoris, conçue pour être
-						simple, rapide et accessible.
+						{t('featuresDescription')}
 					</p>
 				</div>
 

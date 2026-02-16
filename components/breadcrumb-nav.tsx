@@ -1,7 +1,6 @@
 'use client'
 
 import { Home } from 'lucide-react'
-import Link from 'next/link'
 import { DroppableBreadcrumbItem } from '@/components/droppable-breadcrumb-item'
 import {
 	Breadcrumb,
@@ -12,6 +11,7 @@ import {
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { useBreadcrumb } from '@/lib/hooks/use-folders'
+import { Link } from '@/lib/navigation'
 
 export function BreadcrumbNav({
 	currentName,

@@ -1,15 +1,17 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { getFolderIcon } from '@/lib/folder-icons'
 import { useSharedFolders } from '@/lib/hooks/use-collaborators'
+import { Link } from '@/lib/navigation'
 
 export function SharedFoldersSection() {
 	const { data: sharedFolders } = useSharedFolders()
+	const t = useTranslations('SharedFolders')
 
 	if (!sharedFolders || sharedFolders.length === 0) return null
 
@@ -17,7 +19,7 @@ export function SharedFoldersSection() {
 		<>
 			<Separator className="my-6" />
 			<div className="space-y-4">
-				<h2 className="font-semibold text-xl">Partages avec moi</h2>
+				<h2 className="font-semibold text-xl">{t('title')}</h2>
 				<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
 					{sharedFolders.map((item) => {
 						const Icon = getFolderIcon(item.folder.icon)
@@ -50,7 +52,7 @@ export function SharedFoldersSection() {
 										</div>
 									</div>
 									<Badge variant="secondary" className="text-xs shrink-0">
-										{item.role === 'editor' ? 'Editeur' : 'Lecteur'}
+										{item.role === 'editor' ? t('editor') : t('viewer')}
 									</Badge>
 								</CardContent>
 							</Card>

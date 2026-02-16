@@ -1,13 +1,16 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
+import { LocaleSwitcher } from '@/components/locale-switcher'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/lib/auth-client'
+import { Link } from '@/lib/navigation'
 
 export function LandingHeader() {
 	const { data: session, isPending } = useSession()
 	const [scrolled, setScrolled] = useState(false)
+	const t = useTranslations('Landing')
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -32,24 +35,24 @@ export function LandingHeader() {
 					Open Bookmarks
 				</Link>
 
-				{!isPending && (
-					<nav className="flex items-center gap-2">
-						{session?.user ? (
+				<nav className="flex items-center gap-2">
+					<LocaleSwitcher />
+					{!isPending &&
+						(session?.user ? (
 							<Button asChild>
-								<Link href="/dashboard">Tableau de bord</Link>
+								<Link href="/dashboard">{t('dashboard')}</Link>
 							</Button>
 						) : (
 							<>
 								<Button variant="ghost" asChild>
-									<Link href="/login">Connexion</Link>
+									<Link href="/login">{t('signIn')}</Link>
 								</Button>
 								<Button asChild>
-									<Link href="/register">Commencer</Link>
+									<Link href="/register">{t('getStartedBtn')}</Link>
 								</Button>
 							</>
-						)}
-					</nav>
-				)}
+						))}
+				</nav>
 			</div>
 		</header>
 	)

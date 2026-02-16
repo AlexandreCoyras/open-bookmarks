@@ -1,3 +1,7 @@
+'use client'
+
+import { LocaleSwitcher } from '@/components/locale-switcher'
+
 export function LandingFooter() {
 	return (
 		<footer className="border-t py-8">
@@ -10,6 +14,7 @@ export function LandingFooter() {
 				</div>
 
 				<div className="flex items-center gap-4">
+					<LocaleSwitcher />
 					<a
 						href="https://github.com/AlexandreCoyras/open-bookmarks"
 						target="_blank"
