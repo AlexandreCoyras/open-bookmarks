@@ -6,7 +6,9 @@
 		"loginTitle": "Sign in — Open Bookmarks",
 		"loginDescription": "Sign in to your Open Bookmarks account",
 		"registerTitle": "Create account — Open Bookmarks",
-		"registerDescription": "Sign up to start saving your bookmarks"
+		"registerDescription": "Sign up to start saving your bookmarks",
+		"sharedFolderTitle": "\"{name}\" — Shared Bookmarks | Open Bookmarks",
+		"sharedFolderDescription": "Browse \"{name}\" bookmarks shared by {owner} on Open Bookmarks."
 	},
 	"Landing": {
 		"heroTitle": "All your bookmarks, organized and accessible everywhere.",
@@ -251,6 +253,12 @@
 		"title": "Shared with me",
 		"editor": "Editor",
 		"viewer": "Viewer"
+	},
+	"NotFound": {
+		"title": "Page not found",
+		"description": "The page you are looking for does not exist or has been moved.",
+		"goHome": "Go to homepage",
+		"createAccount": "Create a free account"
 	},
 	"Manifest": {
 		"description": "Save and organize your bookmarks, synced across all your devices."

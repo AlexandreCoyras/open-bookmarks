@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
 		short_name: 'Bookmarks',
 		description:
 			'Save and organize your bookmarks, synced across all your devices.',
-		start_url: '/en/dashboard',
+		start_url: '/dashboard',
 		display: 'standalone',
 		background_color: '#000000',
 		theme_color: '#000000',

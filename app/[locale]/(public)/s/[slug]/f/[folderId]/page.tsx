@@ -1,11 +1,67 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { and, asc, eq, sql } from 'drizzle-orm'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PublicFolderContent } from '@/app/[locale]/(public)/s/[slug]/public-folder-content'
 import { bookmark, folder, user } from '@/drizzle/schema'
+import { routing } from '@/i18n/routing'
 import { db } from '@/lib/db'
 import { getQueryClient } from '@/lib/get-query-client'
+
+const baseUrl =
+	process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.openbookmarks.app'
+
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ locale: string; slug: string; folderId: string }>
+}): Promise<Metadata> {
+	const { locale, slug, folderId } = await params
+	const t = await getTranslations('Metadata')
+
+	const [rootFolder] = await db
+		.select({
+			ownerName: user.name,
+		})
+		.from(folder)
+		.innerJoin(user, eq(folder.userId, user.id))
+		.where(eq(folder.publicSlug, slug))
+
+	if (!rootFolder) return {}
+
+	const [subfolder] = await db
+		.select({ name: folder.name })
+		.from(folder)
+		.where(eq(folder.id, folderId))
+
+	if (!subfolder) return {}
+
+	const title = t('sharedFolderTitle', { name: subfolder.name })
+	const description = t('sharedFolderDescription', {
+		name: subfolder.name,
+		owner: rootFolder.ownerName,
+	})
+
+	return {
+		title,
+		description,
+		alternates: {
+			canonical: `${baseUrl}/${locale}/s/${slug}/f/${folderId}`,
+			languages: {
+				en: `${baseUrl}/en/s/${slug}/f/${folderId}`,
+				fr: `${baseUrl}/fr/s/${slug}/f/${folderId}`,
+			},
+		},
+		openGraph: {
+			title,
+			description,
+			locale,
+			alternateLocale: routing.locales.filter((l) => l !== locale),
+			url: `${baseUrl}/${locale}/s/${slug}/f/${folderId}`,
+		},
+	}
+}
 
 export default async function PublicSubfolderPage({
 	params,

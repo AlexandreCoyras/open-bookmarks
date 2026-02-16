@@ -40,8 +40,30 @@ export default async function LandingPage({
 	const { locale } = await params
 	setRequestLocale(locale)
 
+	const t = await getTranslations('Metadata')
+
 	return (
 		<>
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						'@context': 'https://schema.org',
+						'@type': 'WebApplication',
+						name: 'Open Bookmarks',
+						url: `${baseUrl}/${locale}`,
+						description: t('landingDescription'),
+						applicationCategory: 'Productivity',
+						operatingSystem: 'All',
+						offers: {
+							'@type': 'Offer',
+							price: '0',
+							priceCurrency: 'USD',
+						},
+					}),
+				}}
+			/>
 			<LandingHeader />
 			<HeroSection />
 			<FeaturesSection />

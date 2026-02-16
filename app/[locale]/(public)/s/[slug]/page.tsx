@@ -1,13 +1,63 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { and, asc, eq, sql } from 'drizzle-orm'
+import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PublicFolderContent } from '@/app/[locale]/(public)/s/[slug]/public-folder-content'
 import { bookmark, folder, user } from '@/drizzle/schema'
+import { routing } from '@/i18n/routing'
 import { getSession } from '@/lib/auth-server'
 import { db } from '@/lib/db'
 import { getQueryClient } from '@/lib/get-query-client'
+
+const baseUrl =
+	process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.openbookmarks.app'
+
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ locale: string; slug: string }>
+}): Promise<Metadata> {
+	const { locale, slug } = await params
+	const t = await getTranslations('Metadata')
+
+	const [found] = await db
+		.select({
+			name: folder.name,
+			ownerName: user.name,
+		})
+		.from(folder)
+		.innerJoin(user, eq(folder.userId, user.id))
+		.where(eq(folder.publicSlug, slug))
+
+	if (!found) return {}
+
+	const title = t('sharedFolderTitle', { name: found.name })
+	const description = t('sharedFolderDescription', {
+		name: found.name,
+		owner: found.ownerName,
+	})
+
+	return {
+		title,
+		description,
+		alternates: {
+			canonical: `${baseUrl}/${locale}/s/${slug}`,
+			languages: {
+				en: `${baseUrl}/en/s/${slug}`,
+				fr: `${baseUrl}/fr/s/${slug}`,
+			},
+		},
+		openGraph: {
+			title,
+			description,
+			locale,
+			alternateLocale: routing.locales.filter((l) => l !== locale),
+			url: `${baseUrl}/${locale}/s/${slug}`,
+		},
+	}
+}
 
 export default async function PublicFolderPage({
 	params,
@@ -120,8 +170,26 @@ export default async function PublicFolderPage({
 	])
 
 	return (
-		<HydrationBoundary state={dehydrate(queryClient)}>
-			<PublicFolderContent slug={slug} />
-		</HydrationBoundary>
+		<>
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						'@context': 'https://schema.org',
+						'@type': 'CollectionPage',
+						name: found.name,
+						url: `${baseUrl}/${locale}/s/${slug}`,
+						author: {
+							'@type': 'Person',
+							name: owner.name,
+						},
+					}),
+				}}
+			/>
+			<HydrationBoundary state={dehydrate(queryClient)}>
+				<PublicFolderContent slug={slug} />
+			</HydrationBoundary>
+		</>
 	)
 }
