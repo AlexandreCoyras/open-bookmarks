@@ -54,10 +54,10 @@ export const searchRoutes = new Elysia({ prefix: '/search' })
 						folderId: bookmark.folderId,
 						matchedTag: tag.name,
 					})
-					.from(bookmarkTag)
-					.innerJoin(tag, eq(tag.id, bookmarkTag.tagId))
+					.from(tag)
+					.innerJoin(bookmarkTag, eq(bookmarkTag.tagId, tag.id))
 					.innerJoin(bookmark, eq(bookmark.id, bookmarkTag.bookmarkId))
-					.where(and(eq(bookmark.userId, user.id), ilike(tag.name, term)))
+					.where(and(eq(tag.userId, user.id), ilike(tag.name, term)))
 					.limit(10),
 			])
 

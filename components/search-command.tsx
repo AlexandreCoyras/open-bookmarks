@@ -80,7 +80,11 @@ export function SearchCommand() {
 					<span className="text-xs">&#8984;</span>K
 				</kbd>
 			</Button>
-			<CommandDialog open={open} onOpenChange={handleOpenChange}>
+			<CommandDialog
+				open={open}
+				onOpenChange={handleOpenChange}
+				shouldFilter={false}
+			>
 				<CommandInput
 					placeholder={t('searchInputPlaceholder')}
 					value={query}
