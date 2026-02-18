@@ -68,6 +68,7 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 		description?: string
 		favicon?: string
 		folderId?: string
+		tags?: string[]
 	}) {
 		if (editingBookmark?.id) {
 			await updateBookmark.mutateAsync({ id: editingBookmark.id, ...data })

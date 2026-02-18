@@ -10,6 +10,7 @@ import {
 	Trash2,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -35,6 +36,7 @@ export type BookmarkData = {
 	favicon: string | null
 	folderId: string | null
 	position: number
+	tags?: { id: string; name: string }[]
 }
 
 export function BookmarkCard({
@@ -106,6 +108,19 @@ export function BookmarkCard({
 					<p className="text-xs text-muted-foreground/60 truncate">
 						{bookmark.url}
 					</p>
+					{bookmark.tags && bookmark.tags.length > 0 && (
+						<div className="flex gap-1 flex-wrap mt-1">
+							{bookmark.tags.map((tag) => (
+								<Badge
+									key={tag.id}
+									variant="secondary"
+									className="text-[10px] px-1.5 py-0 h-4 relative z-10"
+								>
+									{tag.name}
+								</Badge>
+							))}
+						</div>
+					)}
 				</div>
 				{!readOnly && !selectionMode && onEdit && onDelete && (
 					<DropdownMenu>

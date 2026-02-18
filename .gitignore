@@ -24,3 +24,5 @@ public/swe-worker*
 # next-agents-md
 .next-docs/
 .agents/
+
+.DS_Store

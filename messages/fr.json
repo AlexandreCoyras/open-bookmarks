@@ -98,7 +98,11 @@
 		"removeFromFolder": "Retirer du dossier",
 		"movedToParent": "Favori deplace dans le dossier parent",
 		"movedToRoot": "Favori deplace a la racine",
-		"moveError": "Erreur lors du deplacement"
+		"moveError": "Erreur lors du deplacement",
+		"tagsLabel": "Tags",
+		"tagsPlaceholder": "Ajouter des tags...",
+		"noTagsFound": "Aucun tag trouvé.",
+		"createTag": "Créer \"{name}\""
 	},
 	"Folder": {
 		"editFolder": "Modifier le dossier",

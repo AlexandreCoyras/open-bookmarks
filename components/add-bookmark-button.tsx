@@ -18,6 +18,7 @@ export function AddBookmarkButton({ folderId }: { folderId?: string }) {
 		description?: string
 		favicon?: string
 		folderId?: string
+		tags?: string[]
 	}) {
 		await createBookmark.mutateAsync(data)
 		setOpen(false)

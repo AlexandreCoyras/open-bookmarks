@@ -4,6 +4,11 @@ import { bookmark } from '@/drizzle/schema'
 import { db } from '@/lib/db'
 import { authPlugin } from '@/server/auth-middleware'
 import { getFolderAccess } from '@/server/folder-access'
+import {
+	getBookmarkTags,
+	syncBookmarkTags,
+	upsertTags,
+} from '@/server/tag-helpers'
 
 export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 	.use(authPlugin)
@@ -12,10 +17,12 @@ export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 		async ({ user, query }) => {
 			const folderId = query.folderId
 
+			let bookmarks: (typeof bookmark.$inferSelect)[]
+
 			if (folderId) {
 				const access = await getFolderAccess(user.id, folderId)
 				if (access) {
-					return db
+					bookmarks = await db
 						.select()
 						.from(bookmark)
 						.where(
@@ -25,18 +32,30 @@ export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 							),
 						)
 						.orderBy(asc(bookmark.position))
+				} else {
+					const condition = and(
+						eq(bookmark.userId, user.id),
+						eq(bookmark.folderId, folderId),
+					)
+					bookmarks = await db
+						.select()
+						.from(bookmark)
+						.where(condition)
+						.orderBy(asc(bookmark.position))
 				}
+			} else {
+				bookmarks = await db
+					.select()
+					.from(bookmark)
+					.where(and(eq(bookmark.userId, user.id), isNull(bookmark.folderId)))
+					.orderBy(asc(bookmark.position))
 			}
 
-			const condition = folderId
-				? and(eq(bookmark.userId, user.id), eq(bookmark.folderId, folderId))
-				: and(eq(bookmark.userId, user.id), isNull(bookmark.folderId))
-
-			return db
-				.select()
-				.from(bookmark)
-				.where(condition)
-				.orderBy(asc(bookmark.position))
+			const tagsMap = await getBookmarkTags(bookmarks.map((b) => b.id))
+			return bookmarks.map((b) => ({
+				...b,
+				tags: tagsMap.get(b.id) ?? [],
+			}))
 		},
 		{
 			auth: true,
@@ -61,20 +80,26 @@ export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 				userId = access.ownerId
 			}
 
+			const { tags: tagNames, ...bookmarkData } = body
+
 			const [created] = await db
 				.insert(bookmark)
 				.values({
-					url: body.url,
-					title: body.title,
-					description: body.description,
-					favicon: body.favicon,
-					folderId: body.folderId,
+					...bookmarkData,
 					userId,
-					position: body.position ?? 0,
+					position: bookmarkData.position ?? 0,
 				})
 				.returning()
 
-			return created
+			let tags: { id: string; name: string }[] = []
+			if (tagNames && tagNames.length > 0) {
+				const tagIds = await upsertTags(tagNames, userId)
+				await syncBookmarkTags(created.id, tagIds)
+				const tagsMap = await getBookmarkTags([created.id])
+				tags = tagsMap.get(created.id) ?? []
+			}
+
+			return { ...created, tags }
 		},
 		{
 			auth: true,
@@ -85,6 +110,7 @@ export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 				favicon: t.Optional(t.String()),
 				folderId: t.Optional(t.String()),
 				position: t.Optional(t.Number()),
+				tags: t.Optional(t.Array(t.String())),
 			}),
 		},
 	)
@@ -127,15 +153,23 @@ export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 				}
 			}
 
+			const { tags: tagNames, ...updateData } = body
+
 			const [updated] = await db
 				.update(bookmark)
-				.set(body)
+				.set(updateData)
 				.where(eq(bookmark.id, params.id))
 				.returning()
 
 			if (!updated) return status(404)
 
-			return updated
+			if (tagNames !== undefined) {
+				const tagIds = await upsertTags(tagNames, found.userId)
+				await syncBookmarkTags(params.id, tagIds)
+			}
+
+			const tagsMap = await getBookmarkTags([params.id])
+			return { ...updated, tags: tagsMap.get(params.id) ?? [] }
 		},
 		{
 			auth: true,
@@ -147,6 +181,7 @@ export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 				favicon: t.Optional(t.String()),
 				folderId: t.Optional(t.Nullable(t.String())),
 				position: t.Optional(t.Number()),
+				tags: t.Optional(t.Array(t.String())),
 			}),
 		},
 	)

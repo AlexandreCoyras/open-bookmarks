@@ -3,6 +3,7 @@
 import { ExternalLink, Search } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
 	CommandDialog,
@@ -143,11 +144,21 @@ export function SearchCommand() {
 											{b.url}
 										</span>
 									</div>
-									{b.folderName && (
-										<span className="ml-auto text-xs text-muted-foreground shrink-0">
-											{b.folderName}
-										</span>
-									)}
+									<div className="ml-auto flex items-center gap-1.5 shrink-0">
+										{b.matchedTag && (
+											<Badge
+												variant="secondary"
+												className="text-[10px] px-1.5 py-0 h-4"
+											>
+												{b.matchedTag}
+											</Badge>
+										)}
+										{b.folderName && (
+											<span className="text-xs text-muted-foreground">
+												{b.folderName}
+											</span>
+										)}
+									</div>
 								</CommandItem>
 							))}
 						</CommandGroup>

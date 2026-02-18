@@ -111,6 +111,41 @@ export const bookmark = pgTable(
 	],
 )
 
+export const tag = pgTable(
+	'tag',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		name: text('name').notNull(),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id, { onDelete: 'cascade' }),
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+	},
+	(table) => [uniqueIndex('tag_user_name_idx').on(table.userId, table.name)],
+)
+
+export const bookmarkTag = pgTable(
+	'bookmark_tag',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		bookmarkId: text('bookmark_id')
+			.notNull()
+			.references(() => bookmark.id, { onDelete: 'cascade' }),
+		tagId: text('tag_id')
+			.notNull()
+			.references(() => tag.id, { onDelete: 'cascade' }),
+	},
+	(table) => [
+		uniqueIndex('bookmark_tag_unique_idx').on(table.bookmarkId, table.tagId),
+		index('bookmark_tag_bookmark_idx').on(table.bookmarkId),
+		index('bookmark_tag_tag_idx').on(table.tagId),
+	],
+)
+
 export const folderCollaborator = pgTable(
 	'folder_collaborator',
 	{

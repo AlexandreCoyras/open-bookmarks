@@ -98,7 +98,11 @@
 		"removeFromFolder": "Remove from folder",
 		"movedToParent": "Bookmark moved to parent folder",
 		"movedToRoot": "Bookmark moved to root",
-		"moveError": "Error moving bookmark"
+		"moveError": "Error moving bookmark",
+		"tagsLabel": "Tags",
+		"tagsPlaceholder": "Add tags...",
+		"noTagsFound": "No tags found.",
+		"createTag": "Create \"{name}\""
 	},
 	"Folder": {
 		"editFolder": "Edit folder",

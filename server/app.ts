@@ -8,6 +8,7 @@ import { folderRoutes } from '@/server/routes/folders'
 import { importRoutes } from '@/server/routes/import'
 import { publicRoutes } from '@/server/routes/public'
 import { searchRoutes } from '@/server/routes/search'
+import { tagRoutes } from '@/server/routes/tags'
 
 const app = new Elysia({ prefix: '/api' })
 	.use(publicRoutes)
@@ -18,6 +19,7 @@ const app = new Elysia({ prefix: '/api' })
 	.use(importRoutes)
 	.use(exportRoutes)
 	.use(searchRoutes)
+	.use(tagRoutes)
 	.use(avatarRoutes)
 	.get('/health', () => ({ status: 'ok' }))
 

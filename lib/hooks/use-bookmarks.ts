@@ -25,6 +25,7 @@ export function useCreateBookmark() {
 			favicon?: string
 			folderId?: string
 			position?: number
+			tags?: string[]
 		}) => {
 			const { data, error } = await api.api.bookmarks.post(body)
 			if (error) throw error
@@ -34,6 +35,7 @@ export function useCreateBookmark() {
 			queryClient.invalidateQueries({
 				queryKey: ['bookmarks', variables.folderId ?? 'root'],
 			})
+			queryClient.invalidateQueries({ queryKey: ['tags'] })
 		},
 	})
 }
@@ -53,6 +55,7 @@ export function useUpdateBookmark() {
 			favicon?: string
 			folderId?: string | null
 			position?: number
+			tags?: string[]
 		}) => {
 			const { data, error } = await api.api.bookmarks({ id }).patch(body)
 			if (error) throw error
@@ -86,6 +89,7 @@ export function useUpdateBookmark() {
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ['bookmarks'] })
+			queryClient.invalidateQueries({ queryKey: ['tags'] })
 		},
 	})
 }

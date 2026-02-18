@@ -7,6 +7,7 @@ import { bookmark, folder, folderCollaborator } from '@/drizzle/schema'
 import { getSession } from '@/lib/auth-server'
 import { db } from '@/lib/db'
 import { getQueryClient } from '@/lib/get-query-client'
+import { getBookmarkTags } from '@/server/tag-helpers'
 
 async function getFolderAccessServer(userId: string, folderId: string) {
 	const result = await db.execute(sql`
@@ -131,14 +132,20 @@ export default async function FolderPage({
 		}),
 		queryClient.prefetchQuery({
 			queryKey: ['bookmarks', id],
-			queryFn: () =>
-				db
+			queryFn: async () => {
+				const bookmarks = await db
 					.select()
 					.from(bookmark)
 					.where(
 						sql`${bookmark.userId} = ${ownerId} AND ${bookmark.folderId} = ${id}`,
 					)
-					.orderBy(asc(bookmark.position)),
+					.orderBy(asc(bookmark.position))
+				const tagsMap = await getBookmarkTags(bookmarks.map((b) => b.id))
+				return bookmarks.map((b) => ({
+					...b,
+					tags: tagsMap.get(b.id) ?? [],
+				}))
+			},
 		}),
 		queryClient.prefetchQuery({
 			queryKey: ['breadcrumb', id],

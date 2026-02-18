@@ -1,6 +1,6 @@
 import { and, eq, ilike, or } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
-import { bookmark, folder } from '@/drizzle/schema'
+import { bookmark, bookmarkTag, folder, tag } from '@/drizzle/schema'
 import { db } from '@/lib/db'
 import { authPlugin } from '@/server/auth-middleware'
 
@@ -11,7 +11,7 @@ export const searchRoutes = new Elysia({ prefix: '/search' })
 		async ({ user, query }) => {
 			const term = `%${query.q}%`
 
-			const [folders, bookmarks] = await Promise.all([
+			const [folders, textBookmarks, tagBookmarks] = await Promise.all([
 				db
 					.select({
 						id: folder.id,
@@ -44,7 +44,45 @@ export const searchRoutes = new Elysia({ prefix: '/search' })
 						),
 					)
 					.limit(10),
+				db
+					.select({
+						id: bookmark.id,
+						url: bookmark.url,
+						title: bookmark.title,
+						description: bookmark.description,
+						favicon: bookmark.favicon,
+						folderId: bookmark.folderId,
+						matchedTag: tag.name,
+					})
+					.from(bookmarkTag)
+					.innerJoin(tag, eq(tag.id, bookmarkTag.tagId))
+					.innerJoin(bookmark, eq(bookmark.id, bookmarkTag.bookmarkId))
+					.where(and(eq(bookmark.userId, user.id), ilike(tag.name, term)))
+					.limit(10),
 			])
+
+			// Merge and deduplicate bookmarks
+			const seen = new Set<string>()
+			const bookmarks: {
+				id: string
+				url: string
+				title: string
+				description: string | null
+				favicon: string | null
+				folderId: string | null
+				matchedTag: string | null
+			}[] = []
+
+			for (const b of textBookmarks) {
+				seen.add(b.id)
+				bookmarks.push({ ...b, matchedTag: null })
+			}
+			for (const b of tagBookmarks) {
+				if (!seen.has(b.id)) {
+					seen.add(b.id)
+					bookmarks.push(b)
+				}
+			}
 
 			const folderIdsForContext = new Set<string>()
 			for (const f of folders) {
