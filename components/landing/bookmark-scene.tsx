@@ -80,15 +80,13 @@ export default function BookmarkScene() {
 	const [crashed, setCrashed] = useState(false)
 
 	if (crashed) {
-		return (
-			<div className="flex min-h-[400px] items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20" />
-		)
+		return <div className="min-h-[400px]" />
 	}
 
 	return (
 		<div className="h-[500px] w-full">
 			<Canvas
-				dpr={[1, 3]}
+				dpr={[1, 1.5]}
 				camera={{ position: [0, 0, 12], fov: 45 }}
 				gl={{ alpha: true, powerPreference: 'low-power', antialias: false }}
 				onCreated={({ gl }) => {

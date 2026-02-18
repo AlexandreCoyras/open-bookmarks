@@ -4,11 +4,11 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { LocaleSwitcher } from '@/components/locale-switcher'
 import { Button } from '@/components/ui/button'
-import { useSession } from '@/lib/auth-client'
 import { Link } from '@/lib/navigation'
 
-export function LandingHeader() {
-	const { data: session, isPending } = useSession()
+export function LandingHeader({
+	isAuthenticated,
+}: { isAuthenticated: boolean }) {
 	const [scrolled, setScrolled] = useState(false)
 	const t = useTranslations('Landing')
 
@@ -37,21 +37,20 @@ export function LandingHeader() {
 
 				<nav className="flex items-center gap-2">
 					<LocaleSwitcher />
-					{!isPending &&
-						(session?.user ? (
-							<Button asChild>
-								<Link href="/dashboard">{t('dashboard')}</Link>
+					{isAuthenticated ? (
+						<Button asChild>
+							<Link href="/dashboard">{t('dashboard')}</Link>
+						</Button>
+					) : (
+						<>
+							<Button variant="ghost" asChild>
+								<Link href="/login">{t('signIn')}</Link>
 							</Button>
-						) : (
-							<>
-								<Button variant="ghost" asChild>
-									<Link href="/login">{t('signIn')}</Link>
-								</Button>
-								<Button asChild>
-									<Link href="/register">{t('getStartedBtn')}</Link>
-								</Button>
-							</>
-						))}
+							<Button asChild>
+								<Link href="/register">{t('getStartedBtn')}</Link>
+							</Button>
+						</>
+					)}
 				</nav>
 			</div>
 		</header>

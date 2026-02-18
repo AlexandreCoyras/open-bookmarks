@@ -6,6 +6,7 @@ import { FeaturesSection } from '@/components/landing/features-section'
 import { HeroSection } from '@/components/landing/hero-section'
 import { LandingFooter } from '@/components/landing/landing-footer'
 import { LandingHeader } from '@/components/landing/landing-header'
+import { getSession } from '@/lib/auth-server'
 import { routing } from '@/i18n/routing'
 
 const baseUrl =
@@ -40,7 +41,10 @@ export default async function LandingPage({
 	const { locale } = await params
 	setRequestLocale(locale)
 
-	const t = await getTranslations('Metadata')
+	const [t, session] = await Promise.all([
+		getTranslations('Metadata'),
+		getSession(),
+	])
 
 	return (
 		<>
@@ -64,7 +68,7 @@ export default async function LandingPage({
 					}),
 				}}
 			/>
-			<LandingHeader />
+			<LandingHeader isAuthenticated={!!session?.user} />
 			<HeroSection />
 			<FeaturesSection />
 			<DemoSection />

@@ -1,20 +1,8 @@
-'use client'
-
-import { motion } from 'motion/react'
-import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/lib/navigation'
-
-const BookmarkScene = dynamic(
-	() => import('@/components/landing/bookmark-scene'),
-	{
-		ssr: false,
-		loading: () => (
-			<div className="min-h-[400px] animate-pulse rounded-2xl bg-gradient-to-br from-amber-100 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20" />
-		),
-	},
-)
+import { BookmarkSceneWrapper } from './bookmark-scene-wrapper'
+import { ScrollToFeaturesButton } from './scroll-to-features-button'
 
 export function HeroSection() {
 	const t = useTranslations('Landing')
@@ -24,52 +12,22 @@ export function HeroSection() {
 		<section className="flex min-h-svh items-center pt-24">
 			<div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2">
 				<div>
-					<motion.h1
-						className="font-serif text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0 }}
-					>
+					<h1 className="animate-fade-in-up font-serif text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
 						{t('heroTitle')}
-					</motion.h1>
+					</h1>
 
-					<motion.p
-						className="mt-6 text-lg text-muted-foreground"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.1 }}
-					>
+					<p className="animate-fade-in-up mt-6 text-lg text-muted-foreground [animation-delay:100ms]">
 						{t('heroDescription')}
-					</motion.p>
+					</p>
 
-					<motion.div
-						className="mt-8 flex flex-wrap gap-4"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.2 }}
-					>
+					<div className="animate-fade-in-up mt-8 flex flex-wrap gap-4 [animation-delay:200ms]">
 						<Button asChild size="lg">
 							<Link href="/register">{t('getStarted')}</Link>
 						</Button>
-						<Button
-							variant="outline"
-							size="lg"
-							onClick={() =>
-								document
-									.getElementById('features')
-									?.scrollIntoView({ behavior: 'smooth' })
-							}
-						>
-							{t('learnMore')}
-						</Button>
-					</motion.div>
+						<ScrollToFeaturesButton label={t('learnMore')} />
+					</div>
 
-					<motion.div
-						className="mt-12 flex flex-wrap gap-6"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.3 }}
-					>
+					<div className="animate-fade-in-up mt-12 flex flex-wrap gap-6 [animation-delay:300ms]">
 						{indicators.map((label) => (
 							<span
 								key={label}
@@ -78,17 +36,12 @@ export function HeroSection() {
 								{label}
 							</span>
 						))}
-					</motion.div>
+					</div>
 				</div>
 
-				<motion.div
-					className="hidden min-h-[500px] lg:block"
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 0.4 }}
-				>
-					<BookmarkScene />
-				</motion.div>
+				<div className="animate-fade-in-up hidden min-h-[500px] lg:block [animation-delay:400ms]">
+					<BookmarkSceneWrapper />
+				</div>
 			</div>
 		</section>
 	)

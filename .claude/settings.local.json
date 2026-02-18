@@ -40,7 +40,8 @@
       "Bash(bun run format:*)",
       "Bash(convert:*)",
       "Bash(bun -e:*)",
-      "Bash(bun biome check:*)"
+      "Bash(bun biome check:*)",
+      "Bash(head:*)"
     ]
   }
 }

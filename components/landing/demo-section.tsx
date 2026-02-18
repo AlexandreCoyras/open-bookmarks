@@ -1,7 +1,4 @@
-'use client'
-
 import { ChevronRight } from 'lucide-react'
-import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 
 const bookmarks = [
@@ -28,17 +25,11 @@ export function DemoSection() {
 					<p className="mt-4 text-muted-foreground">{t('demoDescription')}</p>
 				</div>
 
-				<motion.div
-					className="relative mt-16"
-					initial={{ opacity: 0, scale: 0.95 }}
-					whileInView={{ opacity: 1, scale: 1 }}
-					transition={{ duration: 0.6 }}
-					viewport={{ once: true }}
-				>
+				<div className="relative mt-16">
 					<div className="absolute -inset-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 blur-3xl" />
 
 					<div className="relative overflow-hidden rounded-xl border bg-card shadow-2xl">
-						<div className="flex h-10 items-center border-b bg-muted/50 px-4 gap-2">
+						<div className="flex h-10 items-center gap-2 border-b bg-muted/50 px-4">
 							<div className="flex gap-1.5">
 								<div className="size-3 rounded-full bg-red-400" />
 								<div className="size-3 rounded-full bg-yellow-400" />
@@ -89,7 +80,7 @@ export function DemoSection() {
 							</div>
 						</div>
 					</div>
-				</motion.div>
+				</div>
 			</div>
 		</section>
 	)
