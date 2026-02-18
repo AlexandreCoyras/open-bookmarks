@@ -4,6 +4,32 @@ import { Float, RoundedBox } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useRef, useState } from 'react'
 import type { Group } from 'three'
+import { MathUtils } from 'three'
+
+function FadeIn({
+	delay,
+	children,
+}: { delay: number; children: React.ReactNode }) {
+	const ref = useRef<Group>(null)
+	const progress = useRef(0)
+	const started = useRef(false)
+
+	useFrame(({ clock }) => {
+		if (!ref.current) return
+		if (!started.current) {
+			if (clock.getElapsedTime() < delay) return
+			started.current = true
+		}
+		progress.current = MathUtils.lerp(progress.current, 1, 0.05)
+		ref.current.scale.setScalar(progress.current)
+	})
+
+	return (
+		<group ref={ref} scale={0}>
+			{children}
+		</group>
+	)
+}
 
 function FloatingBookmarkCard({
 	position,
@@ -103,33 +129,44 @@ export default function BookmarkScene() {
 				<pointLight position={[-3, -2, 4]} intensity={0.3} color="#ffeedd" />
 
 				<SwayGroup>
-					<FloatingBookmarkCard
-						position={[-2, 1.5, 0]}
-						rotation={[0.1, 0.2, -0.05]}
-					/>
-					<FloatingBookmarkCard
-						position={[1.5, 1, 1]}
-						rotation={[-0.05, -0.15, 0.1]}
-					/>
-					<FloatingBookmarkCard
-						position={[-1, -1, 0.5]}
-						rotation={[0.05, 0.1, 0.05]}
-					/>
-					<FloatingBookmarkCard
-						position={[2, -0.5, -0.5]}
-						rotation={[-0.1, 0.2, -0.1]}
-					/>
-
-					<FloatingFolder
-						position={[-2.5, -1, -1]}
-						rotation={[0.1, 0.3, 0.1]}
-						color="#e8a030"
-					/>
-					<FloatingFolder
-						position={[2.5, 1.5, -0.5]}
-						rotation={[-0.1, -0.2, -0.05]}
-						color="#6b8e5a"
-					/>
+					<FadeIn delay={0}>
+						<FloatingBookmarkCard
+							position={[-2, 1.5, 0]}
+							rotation={[0.1, 0.2, -0.05]}
+						/>
+					</FadeIn>
+					<FadeIn delay={0.15}>
+						<FloatingBookmarkCard
+							position={[1.5, 1, 1]}
+							rotation={[-0.05, -0.15, 0.1]}
+						/>
+					</FadeIn>
+					<FadeIn delay={0.3}>
+						<FloatingBookmarkCard
+							position={[-1, -1, 0.5]}
+							rotation={[0.05, 0.1, 0.05]}
+						/>
+					</FadeIn>
+					<FadeIn delay={0.45}>
+						<FloatingBookmarkCard
+							position={[2, -0.5, -0.5]}
+							rotation={[-0.1, 0.2, -0.1]}
+						/>
+					</FadeIn>
+					<FadeIn delay={0.6}>
+						<FloatingFolder
+							position={[-2.5, -1, -1]}
+							rotation={[0.1, 0.3, 0.1]}
+							color="#e8a030"
+						/>
+					</FadeIn>
+					<FadeIn delay={0.75}>
+						<FloatingFolder
+							position={[2.5, 1.5, -0.5]}
+							rotation={[-0.1, -0.2, -0.05]}
+							color="#6b8e5a"
+						/>
+					</FadeIn>
 				</SwayGroup>
 			</Canvas>
 		</div>
