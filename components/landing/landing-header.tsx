@@ -8,7 +8,9 @@ import { Link } from '@/lib/navigation'
 
 export function LandingHeader({
 	isAuthenticated,
-}: { isAuthenticated: boolean }) {
+}: {
+	isAuthenticated: boolean
+}) {
 	const [scrolled, setScrolled] = useState(false)
 	const t = useTranslations('Landing')
 

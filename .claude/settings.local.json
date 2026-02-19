@@ -41,7 +41,8 @@
       "Bash(convert:*)",
       "Bash(bun -e:*)",
       "Bash(bun biome check:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(bun test:*)"
     ]
   }
 }

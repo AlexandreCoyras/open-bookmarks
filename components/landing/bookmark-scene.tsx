@@ -9,7 +9,10 @@ import { MathUtils } from 'three'
 function FadeIn({
 	delay,
 	children,
-}: { delay: number; children: React.ReactNode }) {
+}: {
+	delay: number
+	children: React.ReactNode
+}) {
 	const ref = useRef<Group>(null)
 	const progress = useRef(0)
 	const started = useRef(false)
