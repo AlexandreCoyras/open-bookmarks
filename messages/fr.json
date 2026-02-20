@@ -102,7 +102,9 @@
 		"tagsLabel": "Tags",
 		"tagsPlaceholder": "Ajouter des tags...",
 		"noTagsFound": "Aucun tag trouvé.",
-		"createTag": "Créer \"{name}\""
+		"createTag": "Créer \"{name}\"",
+		"viewList": "Vue liste",
+		"viewGrid": "Vue grille"
 	},
 	"Folder": {
 		"editFolder": "Modifier le dossier",

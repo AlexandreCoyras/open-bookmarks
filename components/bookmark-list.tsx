@@ -1,6 +1,6 @@
 'use client'
 
-import { CheckSquare } from 'lucide-react'
+import { CheckSquare, LayoutGrid, List } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
@@ -22,6 +22,34 @@ import {
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDeleteBookmark, useUpdateBookmark } from '@/lib/hooks/use-bookmarks'
+import { usePreferences } from '@/lib/stores/preferences'
+
+function ViewToggle() {
+	const viewMode = usePreferences((s) => s.bookmarkViewMode)
+	const setViewMode = usePreferences((s) => s.setBookmarkViewMode)
+	const t = useTranslations('Bookmark')
+
+	return (
+		<div className="hidden sm:flex items-center gap-0.5">
+			<Button
+				size="icon-xs"
+				variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+				onClick={() => setViewMode('list')}
+				title={t('viewList')}
+			>
+				<List className="size-4" />
+			</Button>
+			<Button
+				size="icon-xs"
+				variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+				onClick={() => setViewMode('grid')}
+				title={t('viewGrid')}
+			>
+				<LayoutGrid className="size-4" />
+			</Button>
+		</div>
+	)
+}
 
 export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 	const { items, folderId, parentFolderId } = useDndItems()
@@ -110,7 +138,8 @@ export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
 	return (
 		<>
 			{items.length > 0 && !readOnly && (
-				<div className="flex items-center justify-end mb-2">
+				<div className="flex items-center justify-end gap-1 mb-2">
+					<ViewToggle />
 					<Button
 						size="sm"
 						variant={selectionMode ? 'secondary' : 'ghost'}

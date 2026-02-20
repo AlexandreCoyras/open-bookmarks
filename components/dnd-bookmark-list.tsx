@@ -1,9 +1,15 @@
 'use client'
 
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import {
+	rectSortingStrategy,
+	SortableContext,
+	verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 import type { BookmarkData } from '@/components/bookmark-card'
 import { useDndItems } from '@/components/dnd-provider'
 import { SortableBookmark } from '@/components/sortable-bookmark'
+import { usePreferences } from '@/lib/stores/preferences'
+import { cn } from '@/lib/utils'
 
 export function DndBookmarkList({
 	onEdit,
@@ -21,15 +27,23 @@ export function DndBookmarkList({
 	onToggleSelect?: (id: string) => void
 }) {
 	const { items } = useDndItems()
+	const viewMode = usePreferences((s) => s.bookmarkViewMode)
+	const isGrid = viewMode === 'grid'
 
 	if (items.length === 0) return null
 
 	return (
 		<SortableContext
 			items={items.map((b) => b.id)}
-			strategy={verticalListSortingStrategy}
+			strategy={isGrid ? rectSortingStrategy : verticalListSortingStrategy}
 		>
-			<div className="grid gap-2">
+			<div
+				className={cn(
+					'grid gap-2',
+					isGrid &&
+						'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
+				)}
+			>
 				{items.map((bookmark) => (
 					<SortableBookmark
 						key={bookmark.id}
@@ -46,6 +60,7 @@ export function DndBookmarkList({
 						onToggleSelect={
 							onToggleSelect ? () => onToggleSelect(bookmark.id) : undefined
 						}
+						variant={viewMode}
 					/>
 				))}
 			</div>

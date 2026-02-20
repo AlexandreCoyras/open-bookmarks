@@ -48,6 +48,7 @@ export function BookmarkCard({
 	selectionMode,
 	selected,
 	onToggleSelect,
+	variant = 'list',
 }: {
 	bookmark: BookmarkData
 	onEdit?: () => void
@@ -57,41 +58,77 @@ export function BookmarkCard({
 	selectionMode?: boolean
 	selected?: boolean
 	onToggleSelect?: () => void
+	variant?: 'list' | 'grid'
 }) {
 	const isTouch = useTouchDevice()
 	const t = useTranslations('ContextMenu')
+	const isGrid = variant === 'grid'
+
+	let hostname = ''
+	if (isGrid) {
+		try {
+			hostname = new URL(bookmark.url).hostname
+		} catch {
+			hostname = bookmark.url
+		}
+	}
+
 	const content = (
 		<Card
 			className={cn(
 				'group relative overflow-hidden',
 				selected && 'ring-2 ring-primary',
+				isGrid && 'h-full',
 			)}
 			onClick={selectionMode ? onToggleSelect : undefined}
 		>
-			<CardContent className="flex items-center gap-3 p-3 min-w-0">
+			<CardContent
+				className={cn(
+					'min-w-0',
+					isGrid
+						? 'flex flex-col items-center gap-2 p-3 text-center'
+						: 'flex items-center gap-3 p-3',
+				)}
+			>
 				{selectionMode &&
+					!isGrid &&
 					(selected ? (
 						<CheckSquare className="size-5 shrink-0 text-primary" />
 					) : (
 						<Square className="size-5 shrink-0 text-muted-foreground" />
 					))}
+				{selectionMode && isGrid && (
+					<div className="absolute top-1 left-1 z-10">
+						{selected ? (
+							<CheckSquare className="size-4 text-primary" />
+						) : (
+							<Square className="size-4 text-muted-foreground" />
+						)}
+					</div>
+				)}
 				{bookmark.favicon ? (
 					// biome-ignore lint/performance/noImgElement: external favicon domains
 					<img
 						src={bookmark.favicon}
 						alt=""
-						className="size-5 shrink-0 rounded"
+						className={cn('shrink-0 rounded', isGrid ? 'size-8' : 'size-5')}
 					/>
 				) : (
-					<ExternalLink className="size-5 shrink-0 text-muted-foreground" />
+					<ExternalLink
+						className={cn(
+							'shrink-0 text-muted-foreground',
+							isGrid ? 'size-8' : 'size-5',
+						)}
+					/>
 				)}
-				<div className="min-w-0 flex-1">
+				<div className={cn('min-w-0', isGrid ? 'w-full' : 'flex-1')}>
 					<a
 						href={selectionMode ? undefined : bookmark.url}
 						target="_blank"
 						rel="noopener noreferrer"
 						className={cn(
-							'font-medium text-sm truncate block',
+							'font-medium text-sm block',
+							isGrid ? 'line-clamp-2' : 'truncate',
 							selectionMode
 								? 'cursor-pointer'
 								: 'hover:underline after:absolute after:inset-0',
@@ -100,15 +137,15 @@ export function BookmarkCard({
 					>
 						{bookmark.title}
 					</a>
-					{bookmark.description && (
+					{!isGrid && bookmark.description && (
 						<p className="text-xs text-muted-foreground truncate">
 							{bookmark.description}
 						</p>
 					)}
 					<p className="text-xs text-muted-foreground/60 truncate">
-						{bookmark.url}
+						{isGrid ? hostname : bookmark.url}
 					</p>
-					{bookmark.tags && bookmark.tags.length > 0 && (
+					{!isGrid && bookmark.tags && bookmark.tags.length > 0 && (
 						<div className="flex gap-1 flex-wrap mt-1">
 							{bookmark.tags.map((tag) => (
 								<Badge
@@ -128,7 +165,12 @@ export function BookmarkCard({
 							<Button
 								variant="ghost"
 								size="icon-xs"
-								className="sm:opacity-0 sm:group-hover:opacity-100 shrink-0 relative z-10"
+								className={cn(
+									'shrink-0 relative z-10',
+									isGrid
+										? 'absolute top-1 right-1 opacity-0 group-hover:opacity-100'
+										: 'sm:opacity-0 sm:group-hover:opacity-100',
+								)}
 							>
 								<MoreVertical className="size-4" />
 							</Button>

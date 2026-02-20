@@ -35,6 +35,8 @@ import {
 	useUpdateBookmark,
 } from '@/lib/hooks/use-bookmarks'
 import { useUpdateFolder } from '@/lib/hooks/use-folders'
+import { usePreferences } from '@/lib/stores/preferences'
+import { cn } from '@/lib/utils'
 
 type DndBookmarkContextValue = {
 	items: BookmarkData[]
@@ -96,6 +98,25 @@ const snapCenterToCursor: Modifier = ({
 	}
 
 	return transform
+}
+
+function DragOverlayBookmark({ bookmark }: { bookmark: BookmarkData }) {
+	const viewMode = usePreferences((s) => s.bookmarkViewMode)
+	return (
+		<div
+			className={cn(
+				'scale-90 opacity-90',
+				viewMode === 'grid' ? 'w-40' : 'w-64',
+			)}
+		>
+			<BookmarkCard
+				bookmark={bookmark}
+				onEdit={() => {}}
+				onDelete={() => {}}
+				variant={viewMode}
+			/>
+		</div>
+	)
 }
 
 export function DndProvider({
@@ -276,13 +297,7 @@ export function DndProvider({
 				{children}
 				<DragOverlay modifiers={[snapCenterToCursor]}>
 					{activeDragItem?.type === 'bookmark' ? (
-						<div className="w-64 scale-90 opacity-90">
-							<BookmarkCard
-								bookmark={activeDragItem.bookmark}
-								onEdit={() => {}}
-								onDelete={() => {}}
-							/>
-						</div>
+						<DragOverlayBookmark bookmark={activeDragItem.bookmark} />
 					) : activeDragItem?.type === 'folder' ? (
 						(() => {
 							const DragIcon = getFolderIcon(activeDragItem.folderIcon)

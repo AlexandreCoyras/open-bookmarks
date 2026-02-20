@@ -102,7 +102,9 @@
 		"tagsLabel": "Tags",
 		"tagsPlaceholder": "Add tags...",
 		"noTagsFound": "No tags found.",
-		"createTag": "Create \"{name}\""
+		"createTag": "Create \"{name}\"",
+		"viewList": "List view",
+		"viewGrid": "Grid view"
 	},
 	"Folder": {
 		"editFolder": "Edit folder",

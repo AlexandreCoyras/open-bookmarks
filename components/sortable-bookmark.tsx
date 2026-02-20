@@ -13,6 +13,7 @@ export function SortableBookmark({
 	selectionMode,
 	selected,
 	onToggleSelect,
+	variant,
 }: {
 	bookmark: BookmarkData
 	onEdit?: () => void
@@ -21,6 +22,7 @@ export function SortableBookmark({
 	selectionMode?: boolean
 	selected?: boolean
 	onToggleSelect?: () => void
+	variant?: 'list' | 'grid'
 }) {
 	const { isDragging: isAnyDragging } = useDndItems()
 	const {
@@ -59,6 +61,7 @@ export function SortableBookmark({
 				selectionMode={selectionMode}
 				selected={selected}
 				onToggleSelect={onToggleSelect}
+				variant={variant}
 			/>
 		</div>
 	)

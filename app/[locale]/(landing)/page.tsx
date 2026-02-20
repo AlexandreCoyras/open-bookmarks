@@ -6,8 +6,8 @@ import { FeaturesSection } from '@/components/landing/features-section'
 import { HeroSection } from '@/components/landing/hero-section'
 import { LandingFooter } from '@/components/landing/landing-footer'
 import { LandingHeader } from '@/components/landing/landing-header'
-import { getSession } from '@/lib/auth-server'
 import { routing } from '@/i18n/routing'
+import { getSession } from '@/lib/auth-server'
 
 const baseUrl =
 	process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.openbookmarks.app'
