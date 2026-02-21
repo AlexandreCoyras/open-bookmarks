@@ -4,11 +4,7 @@ import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-	FOLDER_ICON_CATEGORIES,
-	FOLDER_ICON_MAP,
-	getFolderIcon,
-} from '@/lib/folder-icons'
+import { ALL_ICON_MAP, ICON_CATEGORIES, getFolderIcon } from '@/lib/folder-icons'
 import { cn } from '@/lib/utils'
 
 type IconPickerProps = {
@@ -24,12 +20,17 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
 		? [
 				{
 					label: 'Resultats',
-					icons: Object.keys(FOLDER_ICON_MAP).filter((name) =>
-						name.includes(query),
-					),
+					icons: Object.keys(ALL_ICON_MAP)
+						.filter((name) => {
+							const searchName = name.startsWith('phosphor:')
+								? name.slice(9)
+								: name
+							return searchName.includes(query)
+						})
+						.slice(0, 48),
 				},
 			]
-		: FOLDER_ICON_CATEGORIES
+		: ICON_CATEGORIES
 
 	return (
 		<div className="grid gap-2">
@@ -43,7 +44,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
 					className="pl-9"
 				/>
 			</div>
-			<div className="max-h-48 overflow-y-auto rounded-md border p-2">
+			<div className="max-h-64 overflow-y-auto rounded-md border p-2">
 				{value && (
 					<button
 						type="button"
@@ -64,16 +65,22 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
 							<div className="grid grid-cols-8 gap-1">
 								{category.icons.map((name) => {
 									const Icon = getFolderIcon(name)
+									const displayName = name.startsWith('phosphor:')
+										? name.slice(9)
+										: name
 									return (
 										<button
 											key={name}
 											type="button"
-											title={name}
+											title={displayName}
 											className={cn(
 												'flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-muted',
-												value === name && 'bg-primary/10 ring-2 ring-primary',
+												value === name &&
+													'bg-primary/10 ring-2 ring-primary',
 											)}
-											onClick={() => onChange(value === name ? null : name)}
+											onClick={() =>
+												onChange(value === name ? null : name)
+											}
 										>
 											<Icon className="size-4" />
 										</button>

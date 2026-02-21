@@ -21,6 +21,7 @@
 		"@dnd-kit/utilities": "^3.2.2",
 		"@elysiajs/eden": "^1.4.8",
 		"@neondatabase/serverless": "^1.0.2",
+		"@phosphor-icons/react": "^2.1.10",
 		"@react-three/drei": "^10.7.7",
 		"@react-three/fiber": "^9.5.0",
 		"@tanstack/query-async-storage-persister": "^5.90.22",

@@ -42,7 +42,12 @@
       "Bash(bun -e:*)",
       "Bash(bun biome check:*)",
       "Bash(head:*)",
-      "Bash(bun test:*)"
+      "Bash(bun test:*)",
+      "Bash(bunx --bun tsc:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(node:*)",
+      "Bash(bun:*)",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }
