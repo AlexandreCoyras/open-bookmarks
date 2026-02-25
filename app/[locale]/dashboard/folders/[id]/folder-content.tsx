@@ -2,7 +2,7 @@
 
 import { FolderPlus, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { BookmarkForm } from '@/components/bookmark-form'
 import { BookmarkList } from '@/components/bookmark-list'
@@ -27,15 +27,18 @@ import {
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useCreateBookmark } from '@/lib/hooks/use-bookmarks'
+import { useBookmarks, useCreateBookmark } from '@/lib/hooks/use-bookmarks'
 import {
+	useBreadcrumb,
 	useCreateFolder,
 	useDeleteFolder,
 	useFolder,
+	useFolders,
 	useUpdateFolder,
 } from '@/lib/hooks/use-folders'
 import { useImportBookmarks } from '@/lib/hooks/use-import'
 import { useRouter } from '@/lib/navigation'
+import { getErrorStatus } from '@/lib/utils'
 
 type Access = 'owner' | 'editor' | 'viewer'
 
@@ -46,7 +49,11 @@ export function FolderContent({ id }: { id: string }) {
 	const tFolder = useTranslations('Folder')
 	const tImport = useTranslations('Import')
 	const tDelete = useTranslations('DeleteFolder')
-	const { data: folder, isLoading } = useFolder(id)
+	const { data: folder, isLoading, error } = useFolder(id)
+	// Start all fetches in parallel — React Query deduplicates when children mount
+	useBookmarks(id)
+	useFolders(id)
+	useBreadcrumb(id)
 	const updateFolder = useUpdateFolder()
 	const deleteFolder = useDeleteFolder()
 	const createFolder = useCreateFolder()
@@ -59,6 +66,14 @@ export function FolderContent({ id }: { id: string }) {
 	const [bookmarkFormOpen, setBookmarkFormOpen] = useState(false)
 	const [importDialogOpen, setImportDialogOpen] = useState(false)
 
+	const errorStatus = getErrorStatus(error)
+
+	useEffect(() => {
+		if (errorStatus === 403 || errorStatus === 404) {
+			router.replace('/dashboard')
+		}
+	}, [errorStatus, router])
+
 	if (isLoading) {
 		return (
 			<div className="space-y-4">
@@ -68,9 +83,17 @@ export function FolderContent({ id }: { id: string }) {
 		)
 	}
 
-	if (!folder || typeof folder !== 'object' || !('id' in folder)) {
-		return <p className="text-muted-foreground">{t('folderNotFound')}</p>
+	if (errorStatus === 403 || errorStatus === 404) return null
+
+	if (error) {
+		return (
+			<p className="text-muted-foreground py-4 text-center">
+				{t('loadError')}
+			</p>
+		)
 	}
+
+	if (!folder) return null
 
 	const access: Access = (folder as { access?: Access }).access ?? 'owner'
 	const isOwner = access === 'owner'

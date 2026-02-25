@@ -52,8 +52,7 @@ function ViewToggle() {
 }
 
 export function BookmarkList({ readOnly }: { readOnly?: boolean }) {
-	const { items, folderId, parentFolderId } = useDndItems()
-	const isLoading = false
+	const { items, folderId, parentFolderId, isLoading } = useDndItems()
 	const updateBookmark = useUpdateBookmark()
 	const deleteBookmark = useDeleteBookmark()
 	const t = useTranslations('Bookmark')

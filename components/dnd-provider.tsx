@@ -43,11 +43,13 @@ type DndBookmarkContextValue = {
 	folderId?: string
 	parentFolderId?: string | null
 	isDragging: boolean
+	isLoading: boolean
 }
 
 const DndBookmarkContext = createContext<DndBookmarkContextValue>({
 	items: [],
 	isDragging: false,
+	isLoading: false,
 })
 
 export function useDndItems() {
@@ -131,7 +133,7 @@ export function DndProvider({
 	access?: 'owner' | 'editor' | 'viewer'
 }) {
 	const dndId = useId()
-	const { data: bookmarks } = useBookmarks(folderId)
+	const { data: bookmarks, isLoading } = useBookmarks(folderId)
 	const serverItems = (bookmarks ?? []) as BookmarkData[]
 
 	const [localItems, setLocalItems] = useState<BookmarkData[]>(serverItems)
@@ -276,6 +278,7 @@ export function DndProvider({
 					folderId,
 					parentFolderId,
 					isDragging: false,
+					isLoading,
 				}}
 			>
 				{children}
@@ -285,7 +288,7 @@ export function DndProvider({
 
 	return (
 		<DndBookmarkContext.Provider
-			value={{ items: localItems, folderId, parentFolderId, isDragging }}
+			value={{ items: localItems, folderId, parentFolderId, isDragging, isLoading }}
 		>
 			<DndContext
 				id={dndId}

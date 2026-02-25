@@ -75,6 +75,7 @@
 		"addBookmark": "Add bookmark",
 		"subfolder": "Subfolder",
 		"folderNotFound": "Folder not found.",
+		"loadError": "Failed to load.",
 		"madeBy": "Made by"
 	},
 	"Bookmark": {

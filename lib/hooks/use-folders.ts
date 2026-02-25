@@ -40,6 +40,7 @@ export function useBreadcrumb(folderId: string) {
 			return data
 		},
 		enabled: !!folderId,
+		staleTime: 10 * 60 * 1000,
 	})
 }
 

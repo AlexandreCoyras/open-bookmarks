@@ -75,6 +75,7 @@
 		"addBookmark": "Ajouter un favori",
 		"subfolder": "Sous-dossier",
 		"folderNotFound": "Dossier introuvable.",
+		"loadError": "Erreur lors du chargement.",
 		"madeBy": "Made by"
 	},
 	"Bookmark": {
