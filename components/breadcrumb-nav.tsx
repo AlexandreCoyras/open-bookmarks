@@ -10,8 +10,8 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { useFolderNavigation } from '@/lib/folder-navigation'
 import { useBreadcrumb } from '@/lib/hooks/use-folders'
-import { Link } from '@/lib/navigation'
 
 export function BreadcrumbNav({
 	currentName,
@@ -21,9 +21,16 @@ export function BreadcrumbNav({
 	folderId: string
 }) {
 	const { data: ancestors } = useBreadcrumb(folderId)
+	const { navigateToFolder, buildHref } = useFolderNavigation()
 
 	// All ancestors except the last one (which is the current folder)
 	const parents = ancestors?.slice(0, -1)
+
+	function handleNav(e: React.MouseEvent, id: string | null) {
+		if (e.metaKey || e.ctrlKey || e.shiftKey) return
+		e.preventDefault()
+		navigateToFolder(id)
+	}
 
 	return (
 		<Breadcrumb>
@@ -31,9 +38,9 @@ export function BreadcrumbNav({
 				<BreadcrumbItem>
 					<DroppableBreadcrumbItem folderId={null}>
 						<BreadcrumbLink asChild>
-							<Link href="/dashboard">
+							<a href={buildHref(null)} onClick={(e) => handleNav(e, null)}>
 								<Home className="size-5" />
-							</Link>
+							</a>
 						</BreadcrumbLink>
 					</DroppableBreadcrumbItem>
 				</BreadcrumbItem>
@@ -43,9 +50,12 @@ export function BreadcrumbNav({
 						<BreadcrumbItem>
 							<DroppableBreadcrumbItem folderId={parent.id}>
 								<BreadcrumbLink asChild>
-									<Link href={`/dashboard/folders/${parent.id}`}>
+									<a
+										href={buildHref(parent.id)}
+										onClick={(e) => handleNav(e, parent.id)}
+									>
 										{parent.name}
-									</Link>
+									</a>
 								</BreadcrumbLink>
 							</DroppableBreadcrumbItem>
 						</BreadcrumbItem>

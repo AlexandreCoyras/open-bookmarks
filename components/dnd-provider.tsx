@@ -288,7 +288,13 @@ export function DndProvider({
 
 	return (
 		<DndBookmarkContext.Provider
-			value={{ items: localItems, folderId, parentFolderId, isDragging, isLoading }}
+			value={{
+				items: localItems,
+				folderId,
+				parentFolderId,
+				isDragging,
+				isLoading,
+			}}
 		>
 			<DndContext
 				id={dndId}

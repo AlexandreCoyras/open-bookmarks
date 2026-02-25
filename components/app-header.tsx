@@ -18,22 +18,25 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
 import { signOut, useSession } from '@/lib/auth-client'
-import { Link, usePathname, useRouter } from '@/lib/navigation'
+import { useFolderNavigationOptional } from '@/lib/folder-navigation'
+import { useRouter } from '@/lib/navigation'
 
 export function AppHeader() {
 	const router = useRouter()
-	const pathname = usePathname()
 	const locale = useLocale()
 	const { data: session, isPending } = useSession()
 	const user = session?.user
 	const [avatarOpen, setAvatarOpen] = useState(false)
+	const nav = useFolderNavigationOptional()
 	const t = useTranslations('Header')
 
 	const otherLocale = locale === 'en' ? 'fr' : 'en'
 	const otherLabel = locale === 'en' ? 'Francais' : 'English'
 
 	function handleSwitchLocale() {
-		router.replace(pathname, { locale: otherLocale })
+		// Read from window.location to get the real current path after pushState navigation
+		const currentPath = window.location.pathname.replace(`/${locale}`, '') || '/'
+		router.replace(currentPath, { locale: otherLocale })
 	}
 
 	async function handleSignOut() {
@@ -71,9 +74,17 @@ export function AppHeader() {
 	return (
 		<header className="border-b px-3 py-3 h-[60px] sm:px-4">
 			<div className="flex items-center justify-between">
-				<Link href="/dashboard" className="font-semibold text-lg">
+				<a
+					href={nav ? nav.buildHref(null) : '/dashboard'}
+					onClick={(e) => {
+						if (!nav || e.metaKey || e.ctrlKey || e.shiftKey) return
+						e.preventDefault()
+						nav.navigateToFolder(null)
+					}}
+					className="font-semibold text-lg"
+				>
 					Open Bookmarks
-				</Link>
+				</a>
 				<div className="flex items-center gap-2">
 					{user && <SearchCommand />}
 					{isPending ? (

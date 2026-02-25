@@ -27,6 +27,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useFolderNavigation } from '@/lib/folder-navigation'
 import { useBookmarks, useCreateBookmark } from '@/lib/hooks/use-bookmarks'
 import {
 	useBreadcrumb,
@@ -37,13 +38,12 @@ import {
 	useUpdateFolder,
 } from '@/lib/hooks/use-folders'
 import { useImportBookmarks } from '@/lib/hooks/use-import'
-import { useRouter } from '@/lib/navigation'
 import { getErrorStatus } from '@/lib/utils'
 
 type Access = 'owner' | 'editor' | 'viewer'
 
 export function FolderContent({ id }: { id: string }) {
-	const router = useRouter()
+	const { navigateToFolder } = useFolderNavigation()
 	const t = useTranslations('Dashboard')
 	const tBookmark = useTranslations('Bookmark')
 	const tFolder = useTranslations('Folder')
@@ -70,9 +70,9 @@ export function FolderContent({ id }: { id: string }) {
 
 	useEffect(() => {
 		if (errorStatus === 403 || errorStatus === 404) {
-			router.replace('/dashboard')
+			navigateToFolder(null, { replace: true })
 		}
-	}, [errorStatus, router])
+	}, [errorStatus, navigateToFolder])
 
 	if (isLoading) {
 		return (
@@ -87,9 +87,7 @@ export function FolderContent({ id }: { id: string }) {
 
 	if (error) {
 		return (
-			<p className="text-muted-foreground py-4 text-center">
-				{t('loadError')}
-			</p>
+			<p className="text-muted-foreground py-4 text-center">{t('loadError')}</p>
 		)
 	}
 
@@ -113,7 +111,7 @@ export function FolderContent({ id }: { id: string }) {
 	async function handleDeleteFolder() {
 		await deleteFolder.mutateAsync(id)
 		setDeleteOpen(false)
-		router.push('/dashboard')
+		navigateToFolder(null)
 		toast.success(tFolder('folderDeleted'))
 	}
 

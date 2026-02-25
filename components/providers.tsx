@@ -1,10 +1,10 @@
 'use client'
 
-import { QueryClientProvider } from '@tanstack/react-query'
 import {
 	persistQueryClientRestore,
 	persistQueryClientSubscribe,
 } from '@tanstack/query-persist-client-core'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { type ReactNode, useEffect } from 'react'
 import { RegisterSW } from '@/components/register-sw'
 import { Toaster } from '@/components/ui/sonner'

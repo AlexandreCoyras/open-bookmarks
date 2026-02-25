@@ -4,7 +4,11 @@ import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ALL_ICON_MAP, ICON_CATEGORIES, getFolderIcon } from '@/lib/folder-icons'
+import {
+	ALL_ICON_MAP,
+	getFolderIcon,
+	ICON_CATEGORIES,
+} from '@/lib/folder-icons'
 import { cn } from '@/lib/utils'
 
 type IconPickerProps = {
@@ -75,12 +79,9 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
 											title={displayName}
 											className={cn(
 												'flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-muted',
-												value === name &&
-													'bg-primary/10 ring-2 ring-primary',
+												value === name && 'bg-primary/10 ring-2 ring-primary',
 											)}
-											onClick={() =>
-												onChange(value === name ? null : name)
-											}
+											onClick={() => onChange(value === name ? null : name)}
 										>
 											<Icon className="size-4" />
 										</button>

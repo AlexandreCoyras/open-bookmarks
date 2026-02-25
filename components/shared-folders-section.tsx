@@ -6,12 +6,14 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { getFolderIcon } from '@/lib/folder-icons'
+import { useFolderNavigation } from '@/lib/folder-navigation'
 import { useSharedFolders } from '@/lib/hooks/use-collaborators'
-import { Link } from '@/lib/navigation'
 
 export function SharedFoldersSection() {
 	const { data: sharedFolders } = useSharedFolders()
 	const t = useTranslations('SharedFolders')
+
+	const { navigateToFolder, buildHref } = useFolderNavigation()
 
 	if (!sharedFolders || sharedFolders.length === 0) return null
 
@@ -33,12 +35,17 @@ export function SharedFoldersSection() {
 										}}
 									/>
 									<div className="flex-1 min-w-0">
-										<Link
-											href={`/dashboard/folders/${item.folder.id}`}
+										<a
+											href={buildHref(item.folder.id)}
+											onClick={(e) => {
+												if (e.metaKey || e.ctrlKey || e.shiftKey) return
+												e.preventDefault()
+												navigateToFolder(item.folder.id)
+											}}
 											className="font-medium text-sm hover:underline truncate block after:absolute after:inset-0"
 										>
 											{item.folder.name}
-										</Link>
+										</a>
 										<div className="flex items-center gap-1.5 mt-0.5">
 											<Avatar className="size-4">
 												<AvatarImage src={item.owner.image ?? undefined} />

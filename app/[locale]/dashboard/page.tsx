@@ -1,13 +1,7 @@
-import { setRequestLocale } from 'next-intl/server'
-import { HomeContent } from '@/app/[locale]/dashboard/home-content'
+'use client'
 
-export default async function HomePage({
-	params,
-}: {
-	params: Promise<{ locale: string }>
-}) {
-	const { locale } = await params
-	setRequestLocale(locale)
+import { DashboardView } from '@/components/dashboard-view'
 
-	return <HomeContent />
+export default function DashboardPage() {
+	return <DashboardView />
 }

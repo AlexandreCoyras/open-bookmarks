@@ -17,6 +17,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { getFolderIcon } from '@/lib/folder-icons'
+import { useFolderNavigationOptional } from '@/lib/folder-navigation'
 import { useTouchDevice } from '@/lib/hooks/use-touch-device'
 import { Link } from '@/lib/navigation'
 
@@ -48,6 +49,9 @@ export function FolderCard({
 	const Icon = getFolderIcon(folder.icon)
 	const isTouch = useTouchDevice()
 	const t = useTranslations('ContextMenu')
+	const nav = useFolderNavigationOptional()
+
+	const linkHref = href ?? (nav ? nav.buildHref(folder.id) : `/dashboard/folders/${folder.id}`)
 
 	const content = (
 		<Card className="group relative">
@@ -56,12 +60,26 @@ export function FolderCard({
 					className="size-5 shrink-0"
 					style={{ color: folder.color ?? undefined }}
 				/>
-				<Link
-					href={href ?? `/dashboard/folders/${folder.id}`}
-					className="flex-1 font-medium text-sm hover:underline truncate after:absolute after:inset-0"
-				>
-					{folder.name}
-				</Link>
+				{nav && !href ? (
+					<a
+						href={linkHref}
+						onClick={(e) => {
+							if (e.metaKey || e.ctrlKey || e.shiftKey) return
+							e.preventDefault()
+							nav.navigateToFolder(folder.id)
+						}}
+						className="flex-1 font-medium text-sm hover:underline truncate after:absolute after:inset-0"
+					>
+						{folder.name}
+					</a>
+				) : (
+					<Link
+						href={linkHref}
+						className="flex-1 font-medium text-sm hover:underline truncate after:absolute after:inset-0"
+					>
+						{folder.name}
+					</Link>
+				)}
 				{!readOnly && (folder.publicSlug || folder.hasCollaborators) && (
 					<div className="flex items-center gap-1.5 shrink-0 text-muted-foreground">
 						{folder.hasCollaborators && <Users className="size-3.5" />}

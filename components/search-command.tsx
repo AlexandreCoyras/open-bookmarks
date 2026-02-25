@@ -14,14 +14,14 @@ import {
 	CommandList,
 } from '@/components/ui/command'
 import { getFolderIcon } from '@/lib/folder-icons'
+import { useFolderNavigation } from '@/lib/folder-navigation'
 import { useSearch } from '@/lib/hooks/use-search'
-import { useRouter } from '@/lib/navigation'
 
 export function SearchCommand() {
 	const [open, setOpen] = useState(false)
 	const [query, setQuery] = useState('')
 	const [debouncedQuery, setDebouncedQuery] = useState('')
-	const router = useRouter()
+	const { navigateToFolder } = useFolderNavigation()
 	const t = useTranslations('Search')
 
 	const { data, isLoading } = useSearch(debouncedQuery, open)
@@ -54,7 +54,7 @@ export function SearchCommand() {
 
 	function handleSelectFolder(folderId: string) {
 		setOpen(false)
-		router.push(`/dashboard/folders/${folderId}`)
+		navigateToFolder(folderId)
 	}
 
 	function handleSelectBookmark(url: string) {
