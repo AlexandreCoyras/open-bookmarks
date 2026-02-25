@@ -13,7 +13,7 @@ import { queryPersister } from '@/lib/query-persister'
 
 const persistOptions = {
 	persister: queryPersister,
-	maxAge: 1000 * 60 * 60 * 24, // 24h
+	maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 	dehydrateOptions: {
 		shouldDehydrateQuery: (query: { state: { status: string } }) =>
 			query.state.status === 'success',

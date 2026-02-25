@@ -15,7 +15,7 @@ function makeQueryClient() {
 		defaultOptions: {
 			queries: {
 				staleTime: 300_000,
-				gcTime: 1000 * 60 * 60 * 24, // 24h
+				gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days
 				networkMode: 'offlineFirst',
 				retry: (failureCount, error) => {
 					const status = getErrorStatus(error)
