@@ -1,13 +1,9 @@
-import { setRequestLocale } from 'next-intl/server'
+'use client'
+
+import { useParams } from 'next/navigation'
 import { FolderContent } from '@/app/[locale]/dashboard/folders/[id]/folder-content'
 
-export default async function FolderPage({
-	params,
-}: {
-	params: Promise<{ locale: string; id: string }>
-}) {
-	const { locale, id } = await params
-	setRequestLocale(locale)
-
+export default function FolderPage() {
+	const { id } = useParams<{ id: string }>()
 	return <FolderContent id={id} />
 }
