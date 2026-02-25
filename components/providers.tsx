@@ -25,7 +25,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
 	useEffect(() => {
 		const opts = { queryClient, ...persistOptions }
-		persistQueryClientRestore(opts)
+		persistQueryClientRestore(opts).catch(() => {})
 		return persistQueryClientSubscribe(opts)
 	}, [queryClient])
 
