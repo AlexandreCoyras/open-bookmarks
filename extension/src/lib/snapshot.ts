@@ -1,4 +1,9 @@
-import type { OBBookmark, OBFolder, SyncSnapshot } from '../types'
+import type {
+	OBBookmark,
+	OBFolder,
+	SharedSyncSnapshot,
+	SyncSnapshot,
+} from '../types'
 import { STORAGE_KEYS } from './constants'
 import { logger } from './logger'
 
@@ -62,5 +67,21 @@ export async function saveSnapshot(snapshot: SyncSnapshot): Promise<void> {
 	})
 	logger.debug(
 		`Snapshot saved: ${snapshot.folders.length} folders, ${snapshot.bookmarks.length} bookmarks`,
+	)
+}
+
+export async function loadSharedSnapshot(): Promise<SharedSyncSnapshot | null> {
+	const result = await chrome.storage.local.get(STORAGE_KEYS.lastSharedSnapshot)
+	return (result[STORAGE_KEYS.lastSharedSnapshot] as SharedSyncSnapshot) ?? null
+}
+
+export async function saveSharedSnapshot(
+	snapshot: SharedSyncSnapshot,
+): Promise<void> {
+	await chrome.storage.local.set({
+		[STORAGE_KEYS.lastSharedSnapshot]: snapshot,
+	})
+	logger.debug(
+		`Shared snapshot saved: ${snapshot.folders.length} folders, ${snapshot.bookmarks.length} bookmarks`,
 	)
 }

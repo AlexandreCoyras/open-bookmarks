@@ -62,6 +62,12 @@ chrome.runtime.onMessage.addListener(
 					.then(() => sendResponse(engine.getStatus()))
 					.catch(() => sendResponse(engine.getStatus()))
 				return true // async response
+			case 'setSharedEnabled':
+				engine
+					.setSharedEnabled(message.enabled)
+					.then(() => sendResponse(engine.getStatus()))
+					.catch(() => sendResponse(engine.getStatus()))
+				return true // async response
 		}
 	},
 )

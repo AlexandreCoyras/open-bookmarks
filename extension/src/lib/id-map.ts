@@ -56,13 +56,15 @@ export const idMap = {
 		type: 'folder' | 'bookmark',
 		updatedAt: string,
 		isRoot?: boolean,
+		shared?: boolean,
+		role?: 'editor' | 'viewer',
 	): void {
 		const existing = store[chromeId]
 		if (existing) {
 			reverseIndex.delete(existing.obId)
 		}
 
-		store[chromeId] = { chromeId, obId, type, updatedAt, isRoot }
+		store[chromeId] = { chromeId, obId, type, updatedAt, isRoot, shared, role }
 		reverseIndex.set(obId, chromeId)
 		this.scheduleSave()
 	},
@@ -103,6 +105,31 @@ export const idMap = {
 
 	get size(): number {
 		return Object.keys(store).length
+	},
+
+	isShared(chromeId: string): boolean {
+		return store[chromeId]?.shared === true
+	},
+
+	getRole(chromeId: string): 'editor' | 'viewer' | undefined {
+		return store[chromeId]?.role
+	},
+
+	clearShared(): void {
+		const toRemove: string[] = []
+		for (const [chromeId, entry] of Object.entries(store)) {
+			if (entry.shared || entry.obId === 'SHARED_CONTAINER') {
+				toRemove.push(chromeId)
+			}
+		}
+		for (const chromeId of toRemove) {
+			const entry = store[chromeId]
+			if (entry) {
+				reverseIndex.delete(entry.obId)
+				delete store[chromeId]
+			}
+		}
+		this.scheduleSave()
 	},
 
 	clear(): void {

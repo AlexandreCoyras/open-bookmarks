@@ -5,8 +5,15 @@ const statusBadge = document.getElementById('status-badge')!
 const authWarning = document.getElementById('auth-warning')!
 const syncControls = document.getElementById('sync-controls')!
 const syncToggle = document.getElementById('sync-toggle') as HTMLInputElement
+const sharedToggle = document.getElementById(
+	'shared-toggle',
+) as HTMLInputElement
 const bookmarkCount = document.getElementById('bookmark-count')!
 const folderCount = document.getElementById('folder-count')!
+const sharedFolderStat = document.getElementById('shared-folder-stat')!
+const sharedBookmarkStat = document.getElementById('shared-bookmark-stat')!
+const sharedFolderCount = document.getElementById('shared-folder-count')!
+const sharedBookmarkCount = document.getElementById('shared-bookmark-count')!
 const lastSync = document.getElementById('last-sync')!
 const syncNowBtn = document.getElementById('sync-now') as HTMLButtonElement
 const openAppBtn = document.getElementById('open-app') as HTMLAnchorElement
@@ -50,9 +57,22 @@ function updateUI(stats: SyncStats): void {
 	// Toggle
 	syncToggle.checked = stats.syncEnabled
 
+	// Shared toggle
+	sharedToggle.checked = stats.sharedSyncEnabled
+	sharedToggle.disabled = !stats.syncEnabled
+
 	// Stats
 	bookmarkCount.textContent = String(stats.bookmarkCount)
 	folderCount.textContent = String(stats.folderCount)
+
+	// Shared stats
+	const showShared = stats.sharedSyncEnabled
+	sharedFolderStat.hidden = !showShared
+	sharedBookmarkStat.hidden = !showShared
+	if (showShared) {
+		sharedFolderCount.textContent = String(stats.sharedFolderCount)
+		sharedBookmarkCount.textContent = String(stats.sharedBookmarkCount)
+	}
 
 	// Last sync
 	lastSync.textContent = `Dernière sync : ${formatDate(stats.lastSyncTime)}`
@@ -75,6 +95,16 @@ syncToggle.addEventListener('change', async () => {
 	})
 	updateUI(stats as SyncStats)
 	syncToggle.disabled = false
+})
+
+sharedToggle.addEventListener('change', async () => {
+	sharedToggle.disabled = true
+	const stats = await chrome.runtime.sendMessage({
+		type: 'setSharedEnabled',
+		enabled: sharedToggle.checked,
+	})
+	updateUI(stats as SyncStats)
+	sharedToggle.disabled = false
 })
 
 syncNowBtn.addEventListener('click', async () => {

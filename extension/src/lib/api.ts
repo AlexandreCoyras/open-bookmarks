@@ -1,4 +1,9 @@
-import type { OBBookmark, OBFolder, SyncSnapshot } from '../types'
+import type {
+	OBBookmark,
+	OBFolder,
+	SharedSyncSnapshot,
+	SyncSnapshot,
+} from '../types'
 import { OB_PROD_URL, STORAGE_KEYS } from './constants'
 
 async function getBaseUrl(): Promise<string> {
@@ -80,6 +85,10 @@ export const api = {
 
 	getSnapshot(): Promise<SyncSnapshot> {
 		return request('/sync/snapshot')
+	},
+
+	getSharedSnapshot(): Promise<SharedSyncSnapshot> {
+		return request('/sync/shared-snapshot')
 	},
 
 	createBookmark(body: {

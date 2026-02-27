@@ -108,7 +108,7 @@ export const bookmarkRoutes = new Elysia({ prefix: '/bookmarks' })
 				title: t.String(),
 				description: t.Optional(t.String()),
 				favicon: t.Optional(t.String()),
-				folderId: t.Optional(t.String()),
+				folderId: t.Optional(t.Nullable(t.String())),
 				position: t.Optional(t.Number()),
 				tags: t.Optional(t.Array(t.String())),
 			}),

@@ -11,7 +11,12 @@ export const STORAGE_KEYS = {
 	lastSyncTime: 'ob-last-sync-time',
 	syncEnabled: 'ob-sync-enabled',
 	baseUrl: 'ob-base-url',
+	lastSharedSnapshot: 'ob-last-shared-snapshot',
+	sharedSyncEnabled: 'ob-shared-sync-enabled',
 } as const
+
+export const SHARED_CONTAINER_NAME = 'Partagés avec moi'
+export const SHARED_CONTAINER_OB_ID = 'SHARED_CONTAINER'
 
 export const CHROME_ROOTS = {
 	BOOKMARKS_BAR: '1',

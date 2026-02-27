@@ -33,6 +33,8 @@ export type IdMapEntry = {
 	type: 'folder' | 'bookmark'
 	updatedAt: string
 	isRoot?: boolean
+	shared?: boolean
+	role?: 'editor' | 'viewer'
 }
 
 export type SyncStatus = 'idle' | 'syncing' | 'error' | 'unauthenticated'
@@ -61,6 +63,7 @@ export type PopupMessage =
 	| { type: 'getStatus' }
 	| { type: 'triggerSync' }
 	| { type: 'setEnabled'; enabled: boolean }
+	| { type: 'setSharedEnabled'; enabled: boolean }
 
 export type SyncStats = {
 	status: SyncStatus
@@ -68,4 +71,30 @@ export type SyncStats = {
 	syncEnabled: boolean
 	bookmarkCount: number
 	folderCount: number
+	sharedSyncEnabled: boolean
+	sharedBookmarkCount: number
+	sharedFolderCount: number
+}
+
+export type SharedFolderMeta = {
+	collaboratorId: string
+	role: 'editor' | 'viewer'
+	folder: {
+		id: string
+		name: string
+		color: string | null
+		icon: string | null
+	}
+	owner: {
+		id: string
+		name: string
+		image: string | null
+	}
+}
+
+export type SharedSyncSnapshot = {
+	sharedFolders: SharedFolderMeta[]
+	folders: OBFolder[]
+	bookmarks: OBBookmark[]
+	serverTime: string
 }
