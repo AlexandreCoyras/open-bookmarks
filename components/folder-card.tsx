@@ -51,7 +51,8 @@ export function FolderCard({
 	const t = useTranslations('ContextMenu')
 	const nav = useFolderNavigationOptional()
 
-	const linkHref = href ?? (nav ? nav.buildHref(folder.id) : `/dashboard/folders/${folder.id}`)
+	const linkHref =
+		href ?? (nav ? nav.buildHref(folder.id) : `/dashboard/folders/${folder.id}`)
 
 	const content = (
 		<Card className="group relative">

@@ -12,7 +12,10 @@ import {
 
 type FolderNavigationContextValue = {
 	currentFolderId: string | null
-	navigateToFolder: (folderId: string | null, options?: { replace?: boolean }) => void
+	navigateToFolder: (
+		folderId: string | null,
+		options?: { replace?: boolean },
+	) => void
 	buildHref: (folderId: string | null) => string
 }
 

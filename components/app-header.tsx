@@ -35,7 +35,8 @@ export function AppHeader() {
 
 	function handleSwitchLocale() {
 		// Read from window.location to get the real current path after pushState navigation
-		const currentPath = window.location.pathname.replace(`/${locale}`, '') || '/'
+		const currentPath =
+			window.location.pathname.replace(`/${locale}`, '') || '/'
 		router.replace(currentPath, { locale: otherLocale })
 	}
 

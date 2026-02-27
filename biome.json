@@ -40,7 +40,8 @@
 			"!!**/public/sw*",
 			"!!**/drizzle/migrations",
 			"!!**/.agents",
-			"!!**/.claude"
+			"!!**/.claude",
+			"!!**/extension/dist"
 		]
 	}
 }

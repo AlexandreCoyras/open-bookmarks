@@ -45,6 +45,7 @@
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@types/three": "^0.182.0",
+        "chrome-types": "^0.1.418",
         "drizzle-kit": "^0.31.9",
         "esbuild-wasm": "^0.27.3",
         "serwist": "^9.5.6",
@@ -714,6 +715,8 @@
     "caniuse-lite": ["caniuse-lite@1.0.30001769", "", {}, "sha512-BCfFL1sHijQlBGWBMuJyhZUhzo7wer5sVj9hqekB/7xn0Ypy+pER/edCYQm4exbXj4WiySGp40P8UuTh6w1srg=="],
 
     "chalk": ["chalk@5.6.2", "", {}, "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA=="],
+
+    "chrome-types": ["chrome-types@0.1.418", "", {}, "sha512-bzgVUoohkYEAo6dzPd2Hkm/Xm3IrW5p7DQh5SVhp2yxkdYOV56l6Y0ddjhxltttqWbc5aKk1BW1SKvlAiQ/gMQ=="],
 
     "class-variance-authority": ["class-variance-authority@0.7.1", "", { "dependencies": { "clsx": "^2.1.1" } }, "sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg=="],
 

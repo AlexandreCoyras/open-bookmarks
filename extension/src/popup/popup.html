@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=300" />
+		<title>Open Bookmarks Sync</title>
+		<link rel="stylesheet" href="popup.css" />
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>Open Bookmarks</h1>
+				<span id="status-badge" class="badge">...</span>
+			</header>
+
+			<div id="auth-warning" class="warning" hidden>
+				<p>Non connecté. Connectez-vous à Open Bookmarks d'abord.</p>
+				<a id="open-app" class="btn btn-primary" href="#"
+					>Ouvrir Open Bookmarks</a
+				>
+			</div>
+
+			<div id="sync-controls">
+				<div class="toggle-row">
+					<label for="sync-toggle">Synchronisation auto</label>
+					<input type="checkbox" id="sync-toggle" />
+				</div>
+
+				<div class="stats">
+					<div class="stat">
+						<span class="stat-value" id="bookmark-count">-</span>
+						<span class="stat-label">favoris</span>
+					</div>
+					<div class="stat">
+						<span class="stat-value" id="folder-count">-</span>
+						<span class="stat-label">dossiers</span>
+					</div>
+				</div>
+
+				<p class="last-sync" id="last-sync">Dernière sync : jamais</p>
+
+				<button id="sync-now" class="btn btn-secondary">
+					Synchroniser maintenant
+				</button>
+			</div>
+
+			<footer>
+				<a id="open-app-link" href="#">openbookmarks.app</a>
+			</footer>
+		</div>
+
+		<script src="popup.js" type="module"></script>
+	</body>
+</html>

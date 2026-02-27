@@ -26,3 +26,6 @@ public/swe-worker*
 .agents/
 
 .DS_Store
+
+# chrome extension build
+extension/dist/
